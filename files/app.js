@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     
     /* ==========================================
        STICKY HEADER TRANSITION
@@ -17,37 +17,100 @@
     handleScroll(); // Initial check on load
     
     /* ==========================================
-       MOBILE NAV DRAWER TOGGLE
+       MOBILE NAV DRAWER TOGGLE & MINIMIZE HANDLERS
        ========================================== */
     const mobileToggle = document.querySelector('.mobile-toggle');
     const mobileDrawer = document.querySelector('.mobile-nav-drawer');
     const mobileLinks = document.querySelectorAll('.mobile-nav-link');
     
-    const toggleMenu = () => {
-        mobileToggle.classList.toggle('active');
-        mobileDrawer.classList.toggle('active');
-        
-        // Prevent body scrolling when mobile menu is open
-        document.body.style.overflow = mobileDrawer.classList.contains('active') ? 'hidden' : '';
-    };
-    
-    mobileToggle.addEventListener('click', toggleMenu);
-    
-    // Close drawer when clicking a mobile nav link
-    mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
+    if (mobileDrawer) {
+        // Ensure overlay element exists for backdrop click minimize
+        let mobileOverlay = document.querySelector('.mobile-nav-overlay');
+        if (!mobileOverlay) {
+            mobileOverlay = document.createElement('div');
+            mobileOverlay.className = 'mobile-nav-overlay';
+            document.body.appendChild(mobileOverlay);
+        }
+
+        // Ensure 3-lines minimize button inside drawer exists
+        let drawerCloseBtn = mobileDrawer.querySelector('.mobile-drawer-close');
+        if (!drawerCloseBtn) {
+            drawerCloseBtn = document.createElement('button');
+            drawerCloseBtn.className = 'mobile-drawer-close';
+            drawerCloseBtn.setAttribute('aria-label', 'Minimize menu');
+            drawerCloseBtn.setAttribute('title', 'Minimize menu');
+            drawerCloseBtn.innerHTML = '<span class="bar"></span><span class="bar"></span><span class="bar"></span>';
+            mobileDrawer.insertBefore(drawerCloseBtn, mobileDrawer.firstChild);
+        }
+
+        const openMenu = () => {
+            if (mobileToggle) mobileToggle.classList.add('active');
+            mobileDrawer.classList.add('active');
+            if (mobileOverlay) mobileOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeMenu = () => {
+            if (mobileToggle) mobileToggle.classList.remove('active');
+            mobileDrawer.classList.remove('active');
+            if (mobileOverlay) mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        const toggleMenu = () => {
             if (mobileDrawer.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        };
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 toggleMenu();
+            });
+        }
+
+        if (drawerCloseBtn) {
+            drawerCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeMenu();
+            });
+        }
+
+        // Close drawer when clicking backdrop overlay
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', () => {
+                closeMenu();
+            });
+        }
+
+        // Close drawer when clicking outside side nav
+        document.addEventListener('click', (e) => {
+            if (mobileDrawer.classList.contains('active')) {
+                if (!mobileDrawer.contains(e.target) && (!mobileToggle || !mobileToggle.contains(e.target))) {
+                    closeMenu();
+                }
             }
         });
-    });
-    
-    // Close drawer when resizing screen beyond mobile width
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768 && mobileDrawer.classList.contains('active')) {
-            toggleMenu();
-        }
-    });
+
+        // Close drawer when clicking a mobile nav link
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileDrawer.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+        });
+
+        // Close drawer when resizing screen beyond mobile width
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768 && mobileDrawer.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+    }
 
     /* ==========================================
        MOBILE TOUCH/TAP CARD FLIPPING
