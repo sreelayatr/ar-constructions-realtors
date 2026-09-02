@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr Bijoy Varghese – AR Constructions & Realtors</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css?v=202609021620">
+    <style>
+        .bijoy-banner {
+            width: 100%;
+            height: 60vh;
+            overflow: hidden;
+            border-bottom: var(--border-glass);
+            box-shadow: var(--shadow-gold-heavy);
+            position: relative;
+        }
+        .bijoy-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .bijoy-title-container {
+            text-align: center;
+            margin: 60px 0 40px 0;
+        }
+        .bijoy-title-container h1 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            color: var(--color-text-light);
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .bijoy-gallery-section {
+            padding: 0 0 80px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .bijoy-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .bijoy-gallery-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .bijoy-gallery-item {
+            border-radius: 4px;
+            overflow: hidden;
+            border: var(--border-glass);
+            box-shadow: var(--shadow-gold);
+            background-color: var(--color-bg-card);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .bijoy-gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.6s;
+        }
+        .bijoy-gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold-heavy);
+        }
+        .bijoy-gallery-item:hover img {
+            transform: scale(1.03);
+        }
+        @media screen and (max-width: 900px) {
+            .bijoy-gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media screen and (max-width: 600px) {
+            .bijoy-gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .bijoy-title-container h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="ar-logo.png">`n    <link rel="shortcut icon" type="image/png" href="ar-logo.png">`n    <link rel="apple-touch-icon" href="ar-logo.png">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo-link">
+                <img src="ar-logo.png" alt="AR Constructions & Realtors Logo" class="header-logo">
+                <span class="logo-text-fallback">AR Constructions & Realtors</span>
+            </a>
+            
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Workspace</a></li>
+                    <li><a href="about.html" class="nav-link">About Us</a></li>
+                    <li><a href="projects.html" class="nav-link active">Projects</a></li>
+                    <li><a href="services.html" class="nav-link">Services</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <button class="mobile-toggle" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer">
+        <ul class="mobile-nav-list">
+            <li><a href="index.html" class="mobile-nav-link">Workspace</a></li>
+            <li><a href="about.html" class="mobile-nav-link">About Us</a></li>
+            <li><a href="projects.html" class="mobile-nav-link active">Projects</a></li>
+            <li><a href="services.html" class="mobile-nav-link">Services</a></li>
+            <li><a href="contact.html" class="mobile-nav-link">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Feature Image (Full width banner) -->
+    <div class="bijoy-banner">
+        <img src="https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg" alt="Mr Bijoy Varghese Main Living Room View">
+    </div>
+
+    <!-- Centered Title -->
+    <div class="bijoy-title-container">
+        <nav class="breadcrumb-nav animate-up" aria-label="Breadcrumb" style="margin-bottom: 15px;">
+            <ol class="breadcrumb-list">
+                <li><a href="index.html">Workspace</a></li>
+                <li class="separator"><i class="fa-solid fa-chevron-right"></i></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li class="separator"><i class="fa-solid fa-chevron-right"></i></li>
+                <li class="active">Mr Bijoy Varghese</li>
+            </ol>
+        </nav>
+        <h1 class="animate-up">Mr Bijoy Varghese</h1>
+    </div>
+
+    <!-- Gallery Grid Section (Matching screenshot columns) -->
+    <section class="bijoy-gallery-section section-container animate-fade">
+        <div class="bijoy-gallery-grid">
+            <!-- Column 1 -->
+            <div class="bijoy-gallery-col">
+                <div class="bijoy-gallery-item">
+                    <img src="https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&h=400&q=80'" alt="Living room seating layout">
+                </div>
+            </div>
+            
+            <!-- Column 2 -->
+            <div class="bijoy-gallery-col">
+                <div class="bijoy-gallery-item">
+                    <img src="https://spaceliftstudio.com/wp-content/uploads/2020/03/14.jpg" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&h=400&q=80'" alt="Armchairs lounge details">
+                </div>
+            </div>
+            
+            <!-- Column 3 -->
+            <div class="bijoy-gallery-col">
+                <div class="bijoy-gallery-item">
+                    <img src="https://spaceliftstudio.com/wp-content/uploads/2020/03/15.jpg" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'" alt="Foyer wall console paneling">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                
+                <!-- Column 1: About Studio -->
+                <div class="footer-col brand-col">
+                    <a href="index.html" class="footer-logo-link">
+                        <img src="ar-logo.png" alt="AR Constructions & Realtors Logo" class="footer-logo">
+                    </a>
+                    <p class="footer-tagline">Est 2022 All over India</p>
+                    <p class="footer-desc">
+                        Elevating interior environments with customized layouts and luxury concepts. We craft bespoke spaces that balance utility and aesthetic distinction.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/ar__constructions__?igsi=ZDNxOTdjaGNwdHVv" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div class="footer-col links-col">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="index.html">Workspace</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="projects.html" class="active">Projects</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Contact Us -->
+                <div class="footer-col contact-col">
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <p class="footer-address"><i class="fa-solid fa-location-dot"></i> <a href="https://maps.google.com/?q=37/2+Ynm+Layout,+Nagabushan+Reddy+Building,+Near+Akshaya+Medical,+1st+Cross,+Hale+Devasandra-Krishnarajapura,+Bangalore,+Karnataka+560036" target="_blank" rel="noopener noreferrer">37/2 Ynm Layout, Nagabushan Reddy Building, Near Akshaya Medical, 1st Cross, Hale Devasandra-Krishnarajapura, Bangalore, Karnataka, 560036</a></p>
+                    <ul class="footer-contact-list">
+                        <li><i class="fa-brands fa-whatsapp"></i> Phone: <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer">+91 99727 90814</a></li>
+                        <li><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:arconstructions0923@gmail.com">arconstructions0923@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 AR Constructions & Realtors. All Rights Reserved. Designed for Excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script File -->
+    <script src="app.js"></script>
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+</body>
+</html>
