@@ -1,4 +1,19 @@
+// ============================================================
+// AR CONSTRUCTIONS & REALTORS - BACKEND SERVER
+// ============================================================
+
+// IMPORTANT:
+// Force Node.js to use public DNS servers.
+// This fixes MongoDB Atlas SRV DNS resolution issues on some networks.
+const dns = require('dns');
+
+dns.setServers([
+    '8.8.8.8',
+    '1.1.1.1'
+]);
+
 require('dotenv').config();
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -7,27 +22,37 @@ const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+
 const connectDB = require('./config/db');
 
+// Routes
 const authRoutes = require('./routes/auth');
 const bookingRoutes = require('./routes/bookings');
 const projectRoutes = require('./routes/projects');
 const dashboardRoutes = require('./routes/dashboard');
 
+// ============================================================
+// APP INITIALIZATION
+// ============================================================
+
 const app = express();
 const server = http.createServer(app);
+
 const PORT = process.env.PORT || 9100;
 
-// Initialize Socket.IO for real-time updates across admin dashboard
+// ============================================================
+// SOCKET.IO
+// ============================================================
+
 const io = new Server(server, {
     cors: {
         origin: '*',
-        methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
         credentials: true
     }
 });
 
-// Attach io instance to app
+// Attach Socket.IO to Express
 app.set('io', io);
 
 io.on('connection', (socket) => {
@@ -38,140 +63,366 @@ io.on('connection', (socket) => {
     });
 });
 
-// Trust reverse proxies
+// ============================================================
+// TRUST PROXY
+// ============================================================
+
 app.set('trust proxy', 1);
 
-// Security Headers with Helmet
-app.use(helmet({
-    contentSecurityPolicy: false,
-}));
+// ============================================================
+// SECURITY
+// ============================================================
 
-// CORS Configuration
+app.use(
+    helmet({
+        contentSecurityPolicy: false
+    })
+);
+
+// ============================================================
+// CORS
+// ============================================================
+
 const allowedOrigins = [
-    process.env.PUBLIC_ORIGIN || 'https://arconstructionsandrealtors.com',
-    process.env.ADMIN_ORIGIN || 'https://admin.arconstructionsandrealtors.com',
+    process.env.PUBLIC_ORIGIN ||
+        'https://arconstructionsandrealtors.com',
+
+    process.env.ADMIN_ORIGIN ||
+        'https://admin.arconstructionsandrealtors.com',
+
     'https://www.arconstructionsandrealtors.com',
     'https://arconstructionsandrealtors.com',
     'https://admin.arconstructionsandrealtors.com',
+
+    // Local development
     'http://localhost:9000',
     'http://localhost:9100',
     'http://127.0.0.1:9000',
     'http://127.0.0.1:9100'
 ];
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-            return callback(null, true);
-        }
-        callback(new Error('Not allowed by CORS policy'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            // Allow requests without an Origin header
+            // and allow everything during development.
+            if (
+                !origin ||
+                allowedOrigins.includes(origin) ||
+                process.env.NODE_ENV !== 'production'
+            ) {
+                return callback(null, true);
+            }
 
-// Body Parsing Middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+            return callback(
+                new Error('Not allowed by CORS policy')
+            );
+        },
 
-// MongoDB Connection Init
+        credentials: true,
+
+        methods: [
+            'GET',
+            'POST',
+            'PATCH',
+            'PUT',
+            'DELETE',
+            'OPTIONS'
+        ],
+
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'X-Requested-With'
+        ]
+    })
+);
+
+// ============================================================
+// BODY PARSING
+// ============================================================
+
+app.use(
+    express.json({
+        limit: '10mb'
+    })
+);
+
+app.use(
+    express.urlencoded({
+        extended: true,
+        limit: '10mb'
+    })
+);
+
+// ============================================================
+// MONGODB CONNECTION
+// ============================================================
+
+console.log('🔌 Initializing MongoDB Atlas connection...');
+
 connectDB();
 
-// Session Middleware
-const sessionSecret = process.env.SESSION_SECRET || 'ar_constructions_realtors_default_secret_key';
-const uri = process.env.MONGODB_URI;
-const isRealMongoUri = uri && !uri.includes('USERNAME:PASSWORD') && !uri.includes('127.0.0.1');
+// ============================================================
+// SESSION CONFIGURATION
+// ============================================================
 
+const sessionSecret =
+    process.env.SESSION_SECRET ||
+    'ar_constructions_realtors_default_secret_key';
+
+const uri = process.env.MONGODB_URI;
+
+// Determine whether MongoDB Atlas is configured
+const isRealMongoUri =
+    uri &&
+    uri.startsWith('mongodb+srv://') &&
+    !uri.includes('USERNAME:PASSWORD') &&
+    !uri.includes('127.0.0.1') &&
+    !uri.includes('localhost');
+
+// Session configuration
 const sessionConfig = {
     name: 'ar_admin_sid',
+
     secret: sessionSecret,
+
     resave: false,
+
     saveUninitialized: false,
+
     cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+
+        secure:
+            process.env.NODE_ENV === 'production',
+
         sameSite: 'lax',
+
         maxAge: 24 * 60 * 60 * 1000
     }
 };
 
+// Use MongoDB for session storage when Atlas is configured
 if (isRealMongoUri) {
+    console.log('🗄️ MongoDB session store enabled');
+
     sessionConfig.store = MongoStore.create({
         mongoUrl: uri,
+
         collectionName: 'sessions',
+
         ttl: 14 * 24 * 60 * 60
     });
+} else {
+    console.log(
+        '⚠️ MongoDB session store not enabled.'
+    );
 }
 
 app.use(session(sessionConfig));
 
-// Serve API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+// ============================================================
+// API ROUTES
+// ============================================================
 
-// Static Asset Directories
-const frontendPath = path.join(__dirname, '..', 'frontend');
-const adminPath = path.join(__dirname, '..', 'admin');
+app.use(
+    '/api/auth',
+    authRoutes
+);
 
-// Host-based routing middleware for admin subdomain vs main frontend
+app.use(
+    '/api/bookings',
+    bookingRoutes
+);
+
+app.use(
+    '/api/projects',
+    projectRoutes
+);
+
+app.use(
+    '/api/dashboard',
+    dashboardRoutes
+);
+
+// ============================================================
+// STATIC DIRECTORIES
+// ============================================================
+
+const frontendPath = path.join(
+    __dirname,
+    '..',
+    'frontend'
+);
+
+const adminPath = path.join(
+    __dirname,
+    '..',
+    'admin'
+);
+
+// ============================================================
+// ADMIN SUBDOMAIN ROUTING
+// ============================================================
+
 app.use((req, res, next) => {
     const host = req.headers.host || '';
+
     if (host.startsWith('admin.')) {
-        return express.static(adminPath)(req, res, next);
+        return express.static(adminPath)(
+            req,
+            res,
+            next
+        );
     }
+
     next();
 });
 
-// Explicit Static Routes
-app.use('/admin', express.static(adminPath));
-app.use('/', express.static(frontendPath));
+// ============================================================
+// STATIC FILES
+// ============================================================
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'online',
-        system: 'AR Constructions & Realtors Backend',
-        realtime: 'Socket.IO Enabled',
-        timestamp: new Date().toISOString()
-    });
-});
+// Admin website
+app.use(
+    '/admin',
+    express.static(adminPath)
+);
 
-// Centralized 404 for API
-app.use('/api/*', (req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `API endpoint ${req.originalUrl} not found`
-    });
-});
+// Public website
+app.use(
+    '/',
+    express.static(frontendPath)
+);
 
-// Admin fallback routing
-app.get('/admin/*', (req, res) => {
-    res.sendFile(path.join(adminPath, 'index.html'));
-});
+// ============================================================
+// HEALTH CHECK
+// ============================================================
 
-// Public fallback routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-});
+app.get(
+    '/api/health',
+    (req, res) => {
+        res.json({
+            status: 'online',
 
-// Centralized Error Handling Middleware
-app.use((err, req, res, next) => {
-    console.error('Unhandled Error:', err.stack || err.message);
-    const statusCode = err.statusCode || 500;
-    res.status(statusCode).json({
-        success: false,
-        message: process.env.NODE_ENV === 'production' 
-            ? 'An internal server error occurred' 
-            : err.message
-    });
-});
+            system:
+                'AR Constructions & Realtors Backend',
 
-server.listen(PORT, () => {
-    console.log(`🚀 AR Constructions Backend running on http://localhost:${PORT}`);
-    console.log(`⚡ Real-time Socket.IO connection active`);
-    console.log(`📌 Admin interface available at: http://localhost:${PORT}/admin/`);
-    console.log(`📌 Public website available at: http://localhost:${PORT}/`);
-});
+            realtime:
+                'Socket.IO Enabled',
+
+            database:
+                'MongoDB Atlas',
+
+            timestamp:
+                new Date().toISOString()
+        });
+    }
+);
+
+// ============================================================
+// API 404 HANDLER
+// ============================================================
+
+app.use(
+    '/api/*',
+    (req, res) => {
+        res.status(404).json({
+            success: false,
+
+            message:
+                `API endpoint ${req.originalUrl} not found`
+        });
+    }
+);
+
+// ============================================================
+// ADMIN FALLBACK
+// ============================================================
+
+app.get(
+    '/admin/*',
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                adminPath,
+                'index.html'
+            )
+        );
+    }
+);
+
+// ============================================================
+// PUBLIC WEBSITE FALLBACK
+// ============================================================
+
+app.get(
+    '*',
+    (req, res) => {
+        res.sendFile(
+            path.join(
+                frontendPath,
+                'index.html'
+            )
+        );
+    }
+);
+
+// ============================================================
+// ERROR HANDLER
+// ============================================================
+
+app.use(
+    (err, req, res, next) => {
+        console.error(
+            '❌ Unhandled Error:',
+            err.stack || err.message
+        );
+
+        const statusCode =
+            err.statusCode || 500;
+
+        res.status(statusCode).json({
+            success: false,
+
+            message:
+                process.env.NODE_ENV === 'production'
+                    ? 'An internal server error occurred'
+                    : err.message
+        });
+    }
+);
+
+// ============================================================
+// START SERVER
+// ============================================================
+
+server.listen(
+    PORT,
+    () => {
+        console.log(
+            '--------------------------------------------------'
+        );
+
+        console.log(
+            `🚀 AR Constructions Backend running on http://localhost:${PORT}`
+        );
+
+        console.log(
+            '⚡ Real-time Socket.IO connection active'
+        );
+
+        console.log(
+            `📌 Admin interface available at: http://localhost:${PORT}/admin/`
+        );
+
+        console.log(
+            `📌 Public website available at: http://localhost:${PORT}/`
+        );
+
+        console.log(
+            '--------------------------------------------------'
+        );
+    }
+);
