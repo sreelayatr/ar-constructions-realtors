@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Portfolio – AR Constructions & Realtors Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
+</head>
+<body>
+    <div class="admin-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/ar-logo.png" alt="AR Logo" class="sidebar-logo" onerror="this.src='../frontend/images/ar-logo.png'">
+                <div>
+                    <h2 class="sidebar-title">AR CONSTRUCTIONS</h2>
+                    <span class="sidebar-subtitle">Realtors Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="projects.html" class="nav-item active">
+                    <i class="fa-solid fa-building-user"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Portfolio Projects Management</h1>
+                </div>
+
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-initial">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-email">Administrator</span>
+                        <span class="user-role">Super Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Projects Content -->
+            <div class="admin-content">
+                
+                <div class="card-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Projects Catalog</h2>
+                        
+                        <div class="controls-wrap">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="project-search" placeholder="Search title or location..." oninput="debounceProjectSearch()">
+                            </div>
+
+                            <select id="category-filter" class="filter-select" onchange="loadProjects()">
+                                <option value="all">All Categories</option>
+                                <option value="Residential">Residential</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Interior">Interior</option>
+                                <option value="Renovation">Renovation</option>
+                            </select>
+
+                            <select id="status-filter" class="filter-select" onchange="loadProjects()">
+                                <option value="all">All Statuses</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Upcoming">Upcoming</option>
+                            </select>
+
+                            <button class="btn-gold" onclick="openAddProjectModal()">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Add New Project</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Thumbnail</th>
+                                    <th>Project Title</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Date Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projects-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading projects from MongoDB...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Project Modal -->
+    <div class="modal-overlay" id="project-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-project-title">Add New Project</h3>
+                <button class="modal-close" onclick="closeProjectModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="project-form" onsubmit="handleProjectSave(event)">
+                <input type="hidden" id="project-id">
+                
+                <div class="form-grid">
+                    <div class="admin-form-group form-group-full">
+                        <label for="p-title">Project Title *</label>
+                        <input type="text" id="p-title" class="admin-input" required placeholder="e.g. Skyline Ranch Residence">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="p-category">Category *</label>
+                        <select id="p-category" class="admin-select" required>
+                            <option value="Residential">Residential</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Interior">Interior</option>
+                            <option value="Renovation">Renovation</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="p-status">Status *</label>
+                        <select id="p-status" class="admin-select" required>
+                            <option value="Completed">Completed</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Upcoming">Upcoming</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-form-group form-group-full">
+                        <label for="p-location">Location *</label>
+                        <input type="text" id="p-location" class="admin-input" required placeholder="e.g. Thrissur, Kerala">
+                    </div>
+
+                    <div class="admin-form-group form-group-full">
+                        <label for="p-description">Description *</label>
+                        <textarea id="p-description" class="admin-textarea" rows="4" required placeholder="Detailed overview of the project architecture and layout..."></textarea>
+                    </div>
+
+                    <div class="admin-form-group form-group-full">
+                        <label for="p-images">Image URL(s) (One per line or comma-separated)</label>
+                        <textarea id="p-images" class="admin-textarea" rows="3" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeProjectModal()">Cancel</button>
+                    <button type="submit" class="btn-gold" id="save-project-btn">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-project-modal">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3 class="modal-title" style="color: var(--status-cancelled);">Delete Project</h3>
+                <button class="modal-close" onclick="closeDeleteProjectModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                Are you sure you want to remove this project from the database?
+            </p>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDeleteProjectModal()">Cancel</button>
+                <button class="btn-danger" id="confirm-delete-project-btn">Delete Project</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+    <script src="projects.js"></script>
+</body>
+</html>

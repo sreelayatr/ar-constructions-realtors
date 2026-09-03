@@ -1,0 +1,150 @@
+/* ==========================================================================
+   AR CONSTRUCTIONS & REALTORS - ADMIN COMMON SCRIPT
+   ========================================================================== */
+
+const API_BASE = '/api';
+
+// Initialize Global Socket.IO Real-time Connection
+let socket = null;
+if (typeof io !== 'undefined') {
+    socket = io();
+    socket.on('connect', () => {
+        console.log('⚡ Socket.IO real-time connection active:', socket.id);
+    });
+}
+
+// Check auth status on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    setupMobileSidebar();
+    
+    const isLoginPage = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/admin/') || window.location.pathname.endsWith('/admin');
+    
+    try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+
+        const data = await res.json();
+
+        if (data.success && data.user) {
+            if (isLoginPage) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            updateUserInfo(data.user);
+        } else {
+            if (!isLoginPage) {
+                window.location.href = 'index.html';
+            }
+        }
+    } catch (err) {
+        console.error('Auth Check Error:', err);
+        if (!isLoginPage) {
+            window.location.href = 'index.html';
+        }
+    }
+});
+
+// Mobile Sidebar Toggle
+function setupMobileSidebar() {
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('admin-sidebar');
+    let overlay = document.getElementById('mobile-overlay');
+
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'mobile-overlay';
+        overlay.className = 'mobile-overlay';
+        document.body.appendChild(overlay);
+    }
+
+    if (mobileBtn && sidebar) {
+        mobileBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    }
+}
+
+// Update Topbar User Information
+function updateUserInfo(user) {
+    const nameEl = document.getElementById('user-email');
+    const avatarEl = document.getElementById('user-initial');
+    if (nameEl) nameEl.textContent = user.email;
+    if (avatarEl) avatarEl.textContent = user.email.charAt(0).toUpperCase();
+}
+
+// Logout Handler
+async function handleLogout() {
+    try {
+        const res = await fetch(`${API_BASE}/auth/logout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+        });
+        const data = await res.json();
+        if (data.success) {
+            window.location.href = 'index.html';
+        } else {
+            showToast('Logout failed. Please try again.', 'error');
+        }
+    } catch (err) {
+        console.error('Logout error:', err);
+        window.location.href = 'index.html';
+    }
+}
+
+// Toast Notifications System
+function showToast(message, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-bell';
+    toast.innerHTML = `<i class="fa-solid ${icon}" style="color: var(--primary-gold);"></i> <span>${escapeHtml(message)}</span>`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 4500);
+}
+
+// Utility: HTML Escaper
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// Utility: Format Date
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}

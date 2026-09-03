@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In – AR Constructions & Realtors</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
+</head>
+<body class="login-body">
+
+    <div class="login-card">
+        <img src="assets/ar-logo.png" alt="AR Logo" class="login-logo" onerror="this.src='../frontend/images/ar-logo.png'">
+        <h1 class="login-title">AR Constructions</h1>
+        <p class="login-subtitle">Control Panel Authentication</p>
+
+        <div id="login-alert" class="alert-message alert-error"></div>
+
+        <form id="login-form" class="login-form" novalidate>
+            <div class="admin-form-group">
+                <label for="email">Admin Email</label>
+                <input type="email" id="email" class="admin-input" placeholder="admin@example.com" required autocomplete="email">
+            </div>
+
+            <div class="admin-form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="admin-input" placeholder="••••••••••••" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-gold" style="width: 100%; justify-content: center; padding: 14px; margin-top: 10px;">
+                <span id="btn-text">Sign In</span>
+            </button>
+        </form>
+    </div>
+
+    <script src="admin.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const alertEl = document.getElementById('login-alert');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                alertEl.textContent = 'Please enter both email and password';
+                alertEl.style.display = 'block';
+                return;
+            }
+
+            alertEl.style.display = 'none';
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Authenticating...';
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    btnText.textContent = 'Success! Redirecting...';
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alertEl.textContent = data.message || 'Invalid email or password';
+                    alertEl.style.display = 'block';
+                    submitBtn.disabled = false;
+                    btnText.textContent = 'Sign In';
+                }
+            } catch (err) {
+                console.error('Login submit error:', err);
+                alertEl.textContent = 'Server connection error. Please try again.';
+                alertEl.style.display = 'block';
+                submitBtn.disabled = false;
+                btnText.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

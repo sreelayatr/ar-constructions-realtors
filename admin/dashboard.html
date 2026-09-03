@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – AR Constructions & Realtors Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
+</head>
+<body>
+    <div class="admin-layout">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/ar-logo.png" alt="AR Logo" class="sidebar-logo" onerror="this.src='../frontend/images/ar-logo.png'">
+                <div>
+                    <h2 class="sidebar-title">AR CONSTRUCTIONS</h2>
+                    <span class="sidebar-subtitle">Realtors Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="projects.html" class="nav-item">
+                    <i class="fa-solid fa-building-user"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Executive Dashboard</h1>
+                </div>
+
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-initial">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-email">Administrator</span>
+                        <span class="user-role">Super Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="admin-content">
+                
+                <!-- Metrics Summary Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div>
+                            <div class="metric-label">Total Enquiries</div>
+                            <div class="metric-value" id="metric-total-bookings">0</div>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div>
+                            <div class="metric-label">Pending Enquiries</div>
+                            <div class="metric-value" id="metric-pending-bookings">0</div>
+                        </div>
+                        <div class="metric-icon" style="color: var(--status-pending); background: var(--status-pending-bg);">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div>
+                            <div class="metric-label">Confirmed Bookings</div>
+                            <div class="metric-value" id="metric-confirmed-bookings">0</div>
+                        </div>
+                        <div class="metric-icon" style="color: var(--status-confirmed); background: var(--status-confirmed-bg);">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div>
+                            <div class="metric-label">Total Projects</div>
+                            <div class="metric-value" id="metric-total-projects">0</div>
+                        </div>
+                        <div class="metric-icon" style="color: var(--status-completed); background: var(--status-completed-bg);">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Table Section -->
+                <div class="card-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Client Enquiries</h2>
+                        <a href="bookings.html" class="btn-gold" style="font-size: 0.85rem; padding: 8px 14px;">
+                            <span>View All Bookings</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-bookings-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading metrics from MongoDB Atlas...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Details Modal -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Enquiry Details</h3>
+                <button class="modal-close" onclick="closeDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modal-detail-content">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeDetailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="admin.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
