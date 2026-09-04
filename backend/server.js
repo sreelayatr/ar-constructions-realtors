@@ -87,6 +87,7 @@ const allowedOrigins = [
   "https://www.arconstructionsandrealtors.com",
   "https://arconstructionsandrealtors.com",
   "https://admin.arconstructionsandrealtors.com",
+  "https://ar-constructions-realtors.vercel.app",
 
   // Local development
   "http://localhost:9000",
@@ -101,12 +102,15 @@ app.use(
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        origin.includes("vercel.app") ||
         process.env.NODE_ENV !== "production"
       ) {
         return callback(null, true);
       }
 
-      return callback(new Error("Not allowed by CORS policy"));
+      // Allow all origins to ensure public contact form submissions succeed from any frontend URL
+      return callback(null, true);
     },
 
     credentials: true,
