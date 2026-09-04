@@ -164,6 +164,8 @@ const isRealMongoUri =
   !uri.includes("127.0.0.1") &&
   !uri.includes("localhost");
 
+const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+
 // Session configuration
 const sessionConfig = {
   name: "ar_admin_sid",
@@ -176,8 +178,8 @@ const sessionConfig = {
 
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
   },
 };

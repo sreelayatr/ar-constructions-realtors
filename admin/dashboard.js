@@ -32,7 +32,7 @@ function setupRealtimeDashboard() {
 
 async function loadDashboardMetrics() {
     try {
-        const res = await fetch('/api/dashboard', {
+        const res = await fetch(`${API_BASE}/dashboard`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include'
@@ -124,7 +124,7 @@ function renderRecentBookings(bookings) {
 
 async function viewBookingDetails(id) {
     try {
-        const res = await fetch(`/api/bookings/${id}`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/bookings/${id}`, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.data) {
             const b = data.data;

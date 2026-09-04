@@ -67,7 +67,7 @@ async function loadBookings() {
     const status = document.getElementById('status-filter').value;
     const search = document.getElementById('search-input').value;
 
-    let url = `/api/bookings?status=${encodeURIComponent(status)}`;
+    let url = `${API_BASE}/bookings?status=${encodeURIComponent(status)}`;
     if (search.trim()) {
         url += `&search=${encodeURIComponent(search.trim())}`;
     }
@@ -154,7 +154,7 @@ function renderBookingsTable(bookings) {
 
 async function updateBookingStatus(id, newStatus) {
     try {
-        const res = await fetch(`/api/bookings/${id}`, {
+        const res = await fetch(`${API_BASE}/bookings/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -178,7 +178,7 @@ async function updateBookingStatus(id, newStatus) {
 
 async function viewBookingDetails(id) {
     try {
-        const res = await fetch(`/api/bookings/${id}`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/bookings/${id}`, { credentials: 'include' });
         const data = await res.json();
         if (data.success && data.data) {
             const b = data.data;
@@ -222,7 +222,7 @@ function closeDeleteModal() {
 
 async function executeDeleteBooking(id) {
     try {
-        const res = await fetch(`/api/bookings/${id}`, {
+        const res = await fetch(`${API_BASE}/bookings/${id}`, {
             method: 'DELETE',
             credentials: 'include'
         });

@@ -2,12 +2,16 @@
    AR CONSTRUCTIONS & REALTORS - ADMIN COMMON SCRIPT
    ========================================================================== */
 
-const API_BASE = '/api';
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:9100'
+    : (window.location.origin.includes('onrender.com') ? '' : 'https://ar-constructions-realtors.onrender.com');
+
+const API_BASE = `${API_BASE_URL}/api`;
 
 // Initialize Global Socket.IO Real-time Connection
 let socket = null;
 if (typeof io !== 'undefined') {
-    socket = io();
+    socket = API_BASE_URL ? io(API_BASE_URL, { withCredentials: true }) : io();
     socket.on('connect', () => {
         console.log('⚡ Socket.IO real-time connection active:', socket.id);
     });

@@ -143,7 +143,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const res = await fetch('/api/auth/me', { credentials: 'include' });
+                const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
                 const data = await res.json();
                 if (data.success && data.user) {
                     document.getElementById('profile-email').textContent = data.user.email;
@@ -171,7 +171,7 @@
             btn.textContent = 'Updating...';
 
             try {
-                const res = await fetch('/api/auth/change-password', {
+                const res = await fetch(`${API_BASE}/auth/change-password`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',

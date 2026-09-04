@@ -20,7 +20,7 @@ async function loadProjects() {
     const status = document.getElementById('status-filter').value;
     const search = document.getElementById('project-search').value;
 
-    let url = `/api/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
+    let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
     if (search.trim()) {
         url += `&search=${encodeURIComponent(search.trim())}`;
     }
@@ -93,7 +93,7 @@ function openAddProjectModal() {
 
 async function openEditProjectModal(id) {
     try {
-        const res = await fetch(`/api/projects/${id}`, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/projects/${id}`, { credentials: 'include' });
         const data = await res.json();
 
         if (data.success && data.data) {
@@ -134,7 +134,7 @@ async function handleProjectSave(e) {
 
     const payload = { title, category, status, location, description, images };
     const method = id ? 'PATCH' : 'POST';
-    const url = id ? `/api/projects/${id}` : '/api/projects';
+    const url = id ? `${API_BASE}/projects/${id}` : `${API_BASE}/projects`;
 
     const saveBtn = document.getElementById('save-project-btn');
     saveBtn.disabled = true;
@@ -178,7 +178,7 @@ function closeDeleteProjectModal() {
 
 async function executeDeleteProject(id) {
     try {
-        const res = await fetch(`/api/projects/${id}`, {
+        const res = await fetch(`${API_BASE}/projects/${id}`, {
             method: 'DELETE',
             credentials: 'include'
         });
