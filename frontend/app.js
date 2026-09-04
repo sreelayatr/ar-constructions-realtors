@@ -378,15 +378,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     successModal?.classList.add('active');
                     form.reset();
 
+                    if (nameInput) nameInput.value = '';
+                    if (emailInput) emailInput.value = '';
+                    if (phoneInput) phoneInput.value = '';
+                    if (subjectInput) subjectInput.value = '';
+                    if (messageInput) messageInput.value = '';
+                    if (serviceSelect) serviceSelect.value = '';
+
+                    const customDropdown = document.getElementById('custom-service-dropdown');
+                    if (customDropdown) {
+                        const selectedText = customDropdown.querySelector('.custom-dropdown-selected');
+                        const items = customDropdown.querySelectorAll('.custom-dropdown-item');
+                        if (selectedText) selectedText.textContent = '';
+                        items.forEach(i => i.classList.remove('selected'));
+                        customDropdown.classList.remove('active');
+                    }
+
                     document
                         .querySelectorAll('.form-group')
                         .forEach(group => {
-
                             group.classList.remove(
                                 'invalid',
+                                'valid',
                                 'has-value'
                             );
-
                         });
 
                 } else {
