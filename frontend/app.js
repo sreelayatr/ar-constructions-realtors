@@ -268,29 +268,73 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        const serviceSelect = document.getElementById('service');
+        const customDropdown = document.getElementById('custom-service-dropdown');
+
+        if (customDropdown && serviceSelect) {
+            const trigger = customDropdown.querySelector('.custom-dropdown-trigger');
+            const selectedText = customDropdown.querySelector('.custom-dropdown-selected');
+            const items = customDropdown.querySelectorAll('.custom-dropdown-item');
+            const group = customDropdown.closest('.form-group');
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                customDropdown.classList.toggle('active');
+            });
+
+            items.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = item.getAttribute('data-value');
+                    selectedText.textContent = item.textContent;
+                    serviceSelect.value = val;
+
+                    items.forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+
+                    customDropdown.classList.remove('active');
+                    group.classList.add('has-value');
+                    validateField(serviceSelect, serviceSelect.value !== '', group);
+                });
+            });
+
+            document.addEventListener('click', () => {
+                customDropdown.classList.remove('active');
+            });
+        } else if (serviceSelect) {
+            serviceSelect.addEventListener('change', () => {
+                const group = serviceSelect.closest('.form-group');
+                validateField(serviceSelect, serviceSelect.value !== '', group);
+            });
+        }
+
         // Form submit listener
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const nameGroup = nameInput.closest('.form-group');
             const emailGroup = emailInput.closest('.form-group');
+            const serviceGroup = serviceSelect ? serviceSelect.closest('.form-group') : null;
             const subjectInput = document.getElementById('subject');
             const phoneInput = document.getElementById('phone');
             const messageInput = document.getElementById('message');
             
             const isNameValid = validateField(nameInput, nameInput.value.trim() !== '', nameGroup);
             const isEmailValid = validateField(emailInput, isValidEmail(emailInput.value.trim()), emailGroup);
+            const isServiceValid = serviceSelect ? validateField(serviceSelect, serviceSelect.value !== '', serviceGroup) : true;
             
-            if (isNameValid && isEmailValid) {
+            if (isNameValid && isEmailValid && isServiceValid) {
                 submitBtn.disabled = true;
                 btnText.textContent = 'Sending...';
                 submitBtn.querySelector('.btn-icon').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
                 
+                const selectedService = serviceSelect ? serviceSelect.value : '';
                 const payload = {
                     name: nameInput.value.trim(),
                     email: emailInput.value.trim(),
                     phone: phoneInput ? phoneInput.value.trim() : '',
-                    subject: subjectInput ? subjectInput.value.trim() : 'General Inquiry',
+                    service: selectedService,
+                    subject: selectedService ? `Service: ${selectedService}` : (subjectInput ? subjectInput.value.trim() : 'General Inquiry'),
                     message: messageInput ? messageInput.value.trim() : '',
                     source: 'website-contact-form'
                 };
@@ -307,8 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok && data.success) {
                         if (successModal) successModal.classList.add('active');
                         form.reset();
+                        if (customDropdown) {
+                            const selectedText = customDropdown.querySelector('.custom-dropdown-selected');
+                            if (selectedText) selectedText.textContent = '';
+                            customDropdown.querySelectorAll('.custom-dropdown-item').forEach(i => i.classList.remove('selected'));
+                        }
                         document.querySelectorAll('.form-group').forEach(group => {
-                            group.classList.remove('invalid');
+                            group.classList.remove('invalid', 'has-value');
                         });
                     } else {
                         alert(data.message || 'Unable to submit your inquiry. Please try again.');

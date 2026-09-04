@@ -22,6 +22,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const mongoose = require('mongoose'); // ✅ Added
 
 const connectDB = require('./config/db');
 
@@ -203,17 +204,27 @@ const sessionConfig = {
     }
 };
 
-// Use MongoDB for session storage when Atlas is configured
+// Use MongoDB for session storage when Atlas is configured safely
 if (isRealMongoUri) {
-    console.log('🗄️ MongoDB session store enabled');
+    try {
+        console.log('🗄️ MongoDB session store configured (lazy connect)');
 
-    sessionConfig.store = MongoStore.create({
-        mongoUrl: uri,
+        const clientPromise = mongoose.connection
+            .asPromise()
+            .then((m) => m.connection.getClient())
+            .catch(() => null);
 
-        collectionName: 'sessions',
-
-        ttl: 14 * 24 * 60 * 60
-    });
+        sessionConfig.store = MongoStore.create({
+            clientPromise: clientPromise,
+            collectionName: 'sessions',
+            ttl: 14 * 24 * 60 * 60
+        });
+    } catch (err) {
+        console.warn(
+            '⚠️ MongoStore fallback to MemoryStore:',
+            err.message
+        );
+    }
 } else {
     console.log(
         '⚠️ MongoDB session store not enabled.'
@@ -226,25 +237,10 @@ app.use(session(sessionConfig));
 // API ROUTES
 // ============================================================
 
-app.use(
-    '/api/auth',
-    authRoutes
-);
-
-app.use(
-    '/api/bookings',
-    bookingRoutes
-);
-
-app.use(
-    '/api/projects',
-    projectRoutes
-);
-
-app.use(
-    '/api/dashboard',
-    dashboardRoutes
-);
+app.use('/api/auth', authRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // ============================================================
 // STATIC DIRECTORIES
@@ -285,144 +281,104 @@ app.use((req, res, next) => {
 // ============================================================
 
 // Admin website
-app.use(
-    '/admin',
-    express.static(adminPath)
-);
+app.use('/admin', express.static(adminPath));
 
 // Public website
-app.use(
-    '/',
-    express.static(frontendPath)
-);
+app.use('/', express.static(frontendPath));
 
 // ============================================================
 // HEALTH CHECK
 // ============================================================
 
-app.get(
-    '/api/health',
-    (req, res) => {
-        res.json({
-            status: 'online',
-
-            system:
-                'AR Constructions & Realtors Backend',
-
-            realtime:
-                'Socket.IO Enabled',
-
-            database:
-                'MongoDB Atlas',
-
-            timestamp:
-                new Date().toISOString()
-        });
-    }
-);
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'online',
+        system: 'AR Constructions & Realtors Backend',
+        realtime: 'Socket.IO Enabled',
+        database: 'MongoDB Atlas',
+        timestamp: new Date().toISOString()
+    });
+});
 
 // ============================================================
 // API 404 HANDLER
 // ============================================================
 
-app.use(
-    '/api/*',
-    (req, res) => {
-        res.status(404).json({
-            success: false,
-
-            message:
-                `API endpoint ${req.originalUrl} not found`
-        });
-    }
-);
+app.use('/api/*', (req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `API endpoint ${req.originalUrl} not found`
+    });
+});
 
 // ============================================================
 // ADMIN FALLBACK
 // ============================================================
 
-app.get(
-    '/admin/*',
-    (req, res) => {
-        res.sendFile(
-            path.join(
-                adminPath,
-                'index.html'
-            )
-        );
-    }
-);
+app.get('/admin/*', (req, res) => {
+    res.sendFile(
+        path.join(adminPath, 'index.html')
+    );
+});
 
 // ============================================================
 // PUBLIC WEBSITE FALLBACK
 // ============================================================
 
-app.get(
-    '*',
-    (req, res) => {
-        res.sendFile(
-            path.join(
-                frontendPath,
-                'index.html'
-            )
-        );
-    }
-);
+app.get('*', (req, res) => {
+    res.sendFile(
+        path.join(frontendPath, 'index.html')
+    );
+});
 
 // ============================================================
 // ERROR HANDLER
 // ============================================================
 
-app.use(
-    (err, req, res, next) => {
-        console.error(
-            '❌ Unhandled Error:',
-            err.stack || err.message
-        );
+app.use((err, req, res, next) => {
+    console.error(
+        '❌ Unhandled Error:',
+        err.stack || err.message
+    );
 
-        const statusCode =
-            err.statusCode || 500;
+    const statusCode =
+        err.statusCode || 500;
 
-        res.status(statusCode).json({
-            success: false,
-
-            message:
-                process.env.NODE_ENV === 'production'
-                    ? 'An internal server error occurred'
-                    : err.message
-        });
-    }
-);
+    res.status(statusCode).json({
+        success: false,
+        message:
+            process.env.NODE_ENV === 'production'
+                ? 'An internal server error occurred'
+                : err.message
+    });
+});
 
 // ============================================================
 // START SERVER
 // ============================================================
 
-server.listen(
-    PORT,
-    () => {
-        console.log(
-            '--------------------------------------------------'
-        );
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(
+        '--------------------------------------------------'
+    );
 
-        console.log(
-            `🚀 AR Constructions Backend running on http://localhost:${PORT}`
-        );
+    console.log(
+        `🚀 AR Constructions Backend running on port ${PORT}`
+    );
 
-        console.log(
-            '⚡ Real-time Socket.IO connection active'
-        );
+    console.log(
+        '⚡ Real-time Socket.IO connection active'
+    );
 
-        console.log(
-            `📌 Admin interface available at: http://localhost:${PORT}/admin/`
-        );
+    console.log(
+        `📌 Admin interface available at: /admin/`
+    );
 
-        console.log(
-            `📌 Public website available at: http://localhost:${PORT}/`
-        );
+    console.log(
+        `📌 Public website available at: /`
+    );
 
-        console.log(
-            '--------------------------------------------------'
-        );
-    }
-);
+    console.log(
+        '--------------------------------------------------'
+    );
+});

@@ -102,14 +102,14 @@ button, input, textarea {
     background: rgba(9, 13, 22, 0.4);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: none;
     transition: var(--transition-smooth);
 }
 
 .main-header.scrolled {
     padding: 14px 0;
     background: rgba(9, 13, 22, 0.95);
-    border-bottom: 1px solid rgba(203, 170, 92, 0.2);
+    border-bottom: none;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -340,7 +340,7 @@ button, input, textarea {
         url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
-    border-bottom: 1px solid rgba(203, 170, 92, 0.15);
+    border-bottom: none;
     padding-top: 80px;
 }
 
@@ -667,6 +667,7 @@ button, input, textarea {
 }
 
 .form-group input,
+.form-group select,
 .form-group textarea {
     width: 100%;
     padding: 14px 16px;
@@ -677,6 +678,24 @@ button, input, textarea {
     font-size: 0.95rem;
     transition: var(--transition-fast);
     outline: none;
+}
+
+.form-group select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23cbaa5c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.form-group select option {
+    background-color: #16181e;
+    color: #f3f4f6;
+    padding: 12px;
 }
 
 .form-group textarea {
@@ -694,9 +713,101 @@ button, input, textarea {
     transform-origin: left top;
 }
 
-/* Floating Animation trigger */
+.visually-hidden-select {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
+
+/* Custom Dropdown Component */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+.custom-dropdown-trigger {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: var(--color-bg-input);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: var(--transition-fast);
+    min-height: 48px;
+}
+
+.custom-dropdown.active .custom-dropdown-trigger,
+.custom-dropdown-trigger:hover {
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 10px rgba(203, 170, 92, 0.15);
+    background-color: var(--color-bg-card-hover);
+}
+
+.custom-dropdown-arrow {
+    color: var(--color-accent-gold);
+    font-size: 0.85rem;
+    transition: transform 0.3s ease;
+}
+
+.custom-dropdown.active .custom-dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background-color: #12141a;
+    border: 1px solid rgba(203, 170, 92, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    display: none;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.custom-dropdown.active .custom-dropdown-menu {
+    display: block;
+    animation: fadeInDown 0.2s ease;
+}
+
+.custom-dropdown-item {
+    padding: 14px 18px;
+    color: #e2e8f0;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.custom-dropdown-item:hover,
+.custom-dropdown-item.selected {
+    background-color: rgba(203, 170, 92, 0.15);
+    color: var(--color-accent-gold-light);
+    font-weight: 500;
+}
+
+/* Segregation Line Between Options */
+.custom-dropdown-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(203, 170, 92, 0.35) 15%, rgba(203, 170, 92, 0.35) 85%, transparent);
+    margin: 0;
+}
+
+.form-group.has-value label,
 .form-group input:focus ~ label,
 .form-group input:not(:placeholder-shown) ~ label,
+.form-group select:focus ~ label,
+.form-group select:valid ~ label,
 .form-group textarea:focus ~ label,
 .form-group textarea:not(:placeholder-shown) ~ label {
     transform: translateY(-24px) scale(0.8);
@@ -707,6 +818,7 @@ button, input, textarea {
 }
 
 .form-group input:focus,
+.form-group select:focus,
 .form-group textarea:focus {
     border-color: var(--color-accent-gold);
     box-shadow: 0 0 10px rgba(203, 170, 92, 0.15);
@@ -715,6 +827,7 @@ button, input, textarea {
 
 /* Validation styling */
 .form-group.invalid input,
+.form-group.invalid select,
 .form-group.invalid textarea {
     border-color: #ef4444;
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.15);
@@ -2001,8 +2114,8 @@ button, input, textarea {
         rgba(0, 0, 0, 0.1) 10px,
         rgba(0, 0, 0, 0.1) 20px
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: none;
+    border-bottom: none;
     padding: 30px 0;
     text-align: center;
     margin: 40px 0 60px 0;
@@ -2239,53 +2352,165 @@ button, input, textarea {
     color: var(--color-text-light);
 }
 
-/* Home Tags Row */
-.home-tag-icons-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+/* ==========================================
+   EXACT STAGGERED TAGS DESIGN SECTION
+   ========================================== */
+.home-tags-section {
+    position: relative;
+    padding: 70px 0;
     margin-bottom: 60px;
+    background-color: #000000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding-bottom: 40px;
+    overflow: hidden;
 }
 
-.home-tag-card {
-    text-align: center;
-}
-
-.home-tag-card .tag-icon-circle {
-    width: 54px;
-    height: 54px;
-    margin: 0 auto 15px auto;
-    border-radius: 50%;
-    background-color: var(--color-accent-gold);
-    color: var(--color-bg-deep);
-    display: flex;
+/* 6 Column Grid */
+.staggered-tags-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
     align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    box-shadow: 0 4px 10px rgba(203, 170, 92, 0.2);
+}
+
+/* Individual Column Item */
+.stagger-col-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 4px;
+    min-height: 250px;
     transition: var(--transition-smooth);
 }
 
-.home-tag-card:hover .tag-icon-circle {
-    box-shadow: 0 0 10px rgba(203, 170, 92, 0.4), 
-                0 0 25px rgba(203, 170, 92, 0.3), 
-                0 0 50px rgba(203, 170, 92, 0.15);
-    transform: translateY(-3px);
+/* Top Icon Placement (Columns 1, 3, 5) */
+.stagger-col-item.pos-top-icon {
+    justify-content: flex-start;
 }
 
-.home-tag-card h3 {
+/* Bottom Icon Placement (Columns 2, 4) */
+.stagger-col-item.pos-bottom-icon {
+    justify-content: flex-end;
+}
+
+/* Icon Box Container Base */
+.stagger-icon-box {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: #000000;
+    transition: var(--transition-smooth);
+    margin: 12px 0;
+}
+
+/* Gold Variant (Columns 1, 3, 5) */
+.stagger-icon-box.gold-icon-box {
+    border: 2px solid var(--color-accent-gold);
+    color: var(--color-accent-gold);
+    box-shadow: 0 0 18px rgba(203, 170, 92, 0.25);
+}
+
+.stagger-icon-box.gold-icon-box svg {
+    width: 44px;
+    height: 44px;
+    stroke: var(--color-accent-gold);
+    transition: var(--transition-smooth);
+}
+
+/* White Variant (Columns 2, 4, 6) */
+.stagger-icon-box.white-icon-box {
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
+}
+
+.stagger-icon-box.white-icon-box svg {
+    width: 44px;
+    height: 44px;
+    stroke: #ffffff;
+    transition: var(--transition-smooth);
+}
+
+.stagger-col-item:hover .stagger-icon-box.gold-icon-box {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 28px rgba(203, 170, 92, 0.5);
+}
+
+.stagger-col-item:hover .stagger-icon-box.white-icon-box {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 28px rgba(255, 255, 255, 0.4);
+}
+
+/* Category Title Base */
+.stagger-title {
     font-family: var(--font-heading);
-    font-size: 1.15rem;
-    color: var(--color-accent-gold-light);
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin: 10px 0 2px 0;
+    transition: var(--transition-fast);
 }
 
-.home-tag-card p {
-    font-size: 0.9rem;
+.stagger-title.gold-title {
+    color: var(--color-accent-gold-light);
+}
+
+.stagger-title.white-title {
+    color: #ffffff;
+}
+
+/* Underline Dash Accent */
+.title-dash {
+    width: 24px;
+    height: 2px;
+    margin: 6px auto 10px auto;
+    border-radius: 1px;
+    transition: var(--transition-fast);
+}
+
+.title-dash.gold-dash {
+    background-color: var(--color-accent-gold);
+    box-shadow: 0 0 6px rgba(203, 170, 92, 0.6);
+}
+
+.title-dash.white-dash {
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+.stagger-col-item:hover .title-dash {
+    width: 34px;
+}
+
+/* Hashtags Container */
+.stagger-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 6px;
+    max-width: 220px;
+    margin: 4px 0;
+}
+
+.tag-item {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 400;
     color: var(--color-text-muted);
+    line-height: 1.4;
+    transition: var(--transition-fast);
+    white-space: nowrap;
+}
+
+.stagger-col-item:hover .tag-item {
+    color: #cbd5e1;
 }
 
 /* Video Block */
@@ -2955,4 +3180,29 @@ button, input, textarea {
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+/* Responsive Media Queries for Staggered Tags Grid */
+@media screen and (max-width: 1200px) {
+    .staggered-tags-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .staggered-tags-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    .stagger-col-item {
+        min-height: auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .staggered-tags-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
 }

@@ -89,11 +89,13 @@
                             </div>
                             <h3>Call Us To Schedule</h3>
                             <p>Talk to our luxury design experts</p>
-                            <span class="flip-hint">Hover to see numbers</span>
                         </div>
                         <div class="card-face card-back">
                             <h3>Call Us Today!</h3>
                             <div class="phone-links">
+                                <a href="https://wa.me/916363548054" target="_blank" rel="noopener noreferrer" class="contact-action-link">
+                                    <i class="fa-brands fa-whatsapp"></i> +91 63635 48054
+                                </a>
                                 <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer" class="contact-action-link">
                                     <i class="fa-brands fa-whatsapp"></i> +91 99727 90814
                                 </a>
@@ -111,7 +113,6 @@
                             </div>
                             <h3>Send Us An Email</h3>
                             <p>Write to us for design consults</p>
-                            <span class="flip-hint">Hover to see email</span>
                         </div>
                         <div class="card-face card-back">
                             <h3>Email Us Directly</h3>
@@ -133,16 +134,15 @@
                             </div>
                             <h3>Visit Our Studio</h3>
                             <p>Check out our creative workspace</p>
-                            <span class="flip-hint">Hover to see address</span>
                         </div>
                         <div class="card-face card-back">
                             <h3>Our Main Studio</h3>
                             <p class="address-text">
-                                37/2 Ynm Layout, Nagabushan Reddy Building,<br> Near Akshaya Medical, 1st Cross,<br>
-                                Hale Devasandra-Krishnarajapura,<br>
-                                Bangalore, Karnataka 560036
+                                BHIVE PREMIUM WHITEFIELD CAMPUS,<br>
+                                Jbr Tech Park, Plot No. 77, 6th Rd, EPIP Zone,<br>
+                                Whitefield, Bengaluru, Karnataka 560066
                             </p>
-                            <a href="https://maps.google.com/?q=37/2+Ynm+Layout,+Nagabushan+Reddy+Building,+Near+Akshaya+Medical,+1st+Cross,+Hale+Devasandra-Krishnarajapura,+Bangalore,+Karnataka+560036" target="_blank" rel="noopener noreferrer" class="contact-action-link btn-link">
+                            <a href="https://maps.google.com/?q=BHIVE+PREMIUM+WHITEFIELD+CAMPUS,+Jbr+Tech+Park,+Plot+No.+77,+6th+Rd,+EPIP+Zone,+Whitefield,+Bengaluru,+Karnataka+560066" target="_blank" rel="noopener noreferrer" class="contact-action-link btn-link">
                                 <i class="fa-solid fa-map-location-dot"></i> Get Directions
                             </a>
                         </div>
@@ -162,7 +162,7 @@
                 <div class="map-container animate-left">
                     <div class="map-wrapper">
                         <iframe 
-                            src="https://maps.google.com/maps?q=37%2F2+Ynm+Layout%2C+Nagabushan+Reddy+Building%2C+Near+Akshaya+Medical%2C+1st+Cross%2C+Hale+Devasandra-Krishnarajapura%2C+Bangalore%2C+Karnataka%2C+560036&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                            src="https://maps.google.com/maps?q=BHIVE+PREMIUM+WHITEFIELD+CAMPUS%2C+Jbr+Tech+Park%2C+Plot+No.+77%2C+6th+Rd%2C+EPIP+Zone%2C+Whitefield%2C+Bengaluru%2C+Karnataka+560066&t=&z=15&ie=UTF8&iwloc=&output=embed" 
                             width="100%" 
                             height="100%" 
                             style="border:0;" 
@@ -197,9 +197,40 @@
                                 <input type="tel" id="phone" name="your-phone" placeholder=" ">
                                 <label for="phone">Your Phone Number</label>
                             </div>
-                            <div class="form-group">
-                                <input type="text" id="subject" name="your-subject" placeholder=" ">
-                                <label for="subject">Subject</label>
+                            <div class="form-group custom-select-group">
+                                <div class="custom-dropdown" id="custom-service-dropdown">
+                                    <div class="custom-dropdown-trigger">
+                                        <span class="custom-dropdown-selected"></span>
+                                        <i class="fa-solid fa-chevron-down custom-dropdown-arrow"></i>
+                                    </div>
+                                    <div class="custom-dropdown-menu">
+                                        <div class="custom-dropdown-item" data-value="Building Contractor">Building Contractor (Residential, Commercial, Structural)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Painting Contractor">Painting Contractor (Interior, Exterior, Texture, Weatherproof)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Interior Contractor">Interior Contractor (Modular Kitchen, Wardrobes, False Ceiling)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Renovation">Renovation (Home Remodeling, Redesign, Modernization)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Demolishing">Demolishing (Site Clearance, Dismantling, Debris Removal)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Real Estate">Real Estate (Investing, Plots, Leasing, Land Acquisition)</div>
+                                        <div class="custom-dropdown-divider"></div>
+                                        <div class="custom-dropdown-item" data-value="Other / General Query">Other / General Inquiry</div>
+                                    </div>
+                                </div>
+                                <select id="service" name="your-service" required class="visually-hidden-select">
+                                    <option value="" disabled selected hidden></option>
+                                    <option value="Building Contractor">Building Contractor (Residential, Commercial, Structural)</option>
+                                    <option value="Painting Contractor">Painting Contractor (Interior, Exterior, Texture, Weatherproof)</option>
+                                    <option value="Interior Contractor">Interior Contractor (Modular Kitchen, Wardrobes, False Ceiling)</option>
+                                    <option value="Renovation">Renovation (Home Remodeling, Redesign, Modernization)</option>
+                                    <option value="Demolishing">Demolishing (Site Clearance, Dismantling, Debris Removal)</option>
+                                    <option value="Real Estate">Real Estate (Investing, Plots, Leasing, Land Acquisition)</option>
+                                    <option value="Other / General Query">Other / General Inquiry</option>
+                                </select>
+                                <label for="service">Select Service *</label>
+                                <span class="error-msg">Please select a service</span>
                             </div>
                             <div class="form-group">
                                 <textarea id="message" name="your-message" rows="5" placeholder=" "></textarea>
@@ -254,9 +285,9 @@
                 <!-- Column 3: Contact Us -->
                 <div class="footer-col contact-col">
                     <h4 class="footer-heading">Contact Us</h4>
-                    <p class="footer-address"><i class="fa-solid fa-location-dot"></i> <a href="https://maps.google.com/?q=37/2+Ynm+Layout,+Nagabushan+Reddy+Building,+Near+Akshaya+Medical,+1st+Cross,+Hale+Devasandra-Krishnarajapura,+Bangalore,+Karnataka+560036" target="_blank" rel="noopener noreferrer">37/2 Ynm Layout, Nagabushan Reddy Building, Near Akshaya Medical, 1st Cross, Hale Devasandra-Krishnarajapura, Bangalore, Karnataka, 560036</a></p>
+                    <p class="footer-address"><i class="fa-solid fa-location-dot"></i> <a href="https://maps.google.com/?q=BHIVE+PREMIUM+WHITEFIELD+CAMPUS,+Jbr+Tech+Park,+Plot+No.+77,+6th+Rd,+EPIP+Zone,+Whitefield,+Bengaluru,+Karnataka+560066" target="_blank" rel="noopener noreferrer">BHIVE PREMIUM WHITEFIELD CAMPUS, Jbr Tech Park, Plot No. 77, 6th Rd, EPIP Zone, Whitefield, Bengaluru, Karnataka 560066</a></p>
                     <ul class="footer-contact-list">
-                        <li><i class="fa-brands fa-whatsapp"></i> Phone: <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer">+91 99727 90814</a></li>
+                        <li><i class="fa-brands fa-whatsapp"></i> Phone: <a href="https://wa.me/916363548054" target="_blank" rel="noopener noreferrer">+91 63635 48054</a> / <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer">+91 99727 90814</a></li>
                         <li><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:arconstructions0923@gmail.com">arconstructions0923@gmail.com</a></li>
                     </ul>
                 </div>
