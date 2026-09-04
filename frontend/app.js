@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCTION API BASE URL (Render Backend)
     // ==========================================================
 
-    const API_BASE_URL = 'https://ar-constructions-realtors.onrender.com';
+    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:9100'
+        : 'https://ar-constructions-realtors.onrender.com';
 
     /* ==========================================
        STICKY HEADER TRANSITION
@@ -257,6 +259,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailInput.closest('.form-group')
             )
         );
+
+        const customDropdown = document.getElementById('custom-service-dropdown');
+        if (customDropdown && serviceSelect) {
+            const trigger = customDropdown.querySelector('.custom-dropdown-trigger');
+            const selectedText = customDropdown.querySelector('.custom-dropdown-selected');
+            const items = customDropdown.querySelectorAll('.custom-dropdown-item');
+            const group = customDropdown.closest('.form-group');
+            const label = group ? group.querySelector('label') : null;
+
+            const toggleDropdown = (e) => {
+                if (e) e.stopPropagation();
+                customDropdown.classList.toggle('active');
+            };
+
+            if (trigger) trigger.addEventListener('click', toggleDropdown);
+            if (label) label.addEventListener('click', toggleDropdown);
+
+            items.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const val = item.getAttribute('data-value');
+                    selectedText.textContent = item.textContent;
+                    serviceSelect.value = val;
+
+                    items.forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+
+                    customDropdown.classList.remove('active');
+                    group.classList.add('has-value');
+                    validateField(serviceSelect, serviceSelect.value !== '', group);
+                });
+            });
+
+            document.addEventListener('click', () => {
+                customDropdown.classList.remove('active');
+            });
+        }
 
         serviceSelect?.addEventListener('change', () =>
             validateField(

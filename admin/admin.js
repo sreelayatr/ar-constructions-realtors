@@ -13,6 +13,44 @@ if (typeof io !== 'undefined') {
     });
 }
 
+// Web Audio API Notification Chime
+function playNotificationChime() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        
+        osc1.frequency.setValueAtTime(587.33, now); // D5
+        osc1.frequency.setValueAtTime(880.00, now + 0.12); // A5
+        
+        osc2.frequency.setValueAtTime(293.66, now);
+        osc2.frequency.setValueAtTime(440.00, now + 0.12);
+        
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.45);
+        osc2.stop(now + 0.45);
+    } catch (e) {
+        console.log('Audio chime skipped by browser policy');
+    }
+}
+
 // Check auth status on page load
 document.addEventListener('DOMContentLoaded', async () => {
     setupMobileSidebar();

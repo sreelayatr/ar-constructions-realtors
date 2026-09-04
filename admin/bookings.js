@@ -14,16 +14,44 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupRealtimeBookings() {
     if (typeof socket !== 'undefined' && socket) {
         socket.on('new_booking', (booking) => {
-            showToast(`🔔 New Live Inquiry: ${booking.name} (${booking.subject || 'General'})`, 'info');
-            loadBookings();
+            playNotificationChime();
+            showToast(`🔔 New Live Inquiry: ${booking.name} (${booking.subject || 'General Inquiry'})`, 'info');
+            
+            const tbody = document.getElementById('bookings-tbody');
+            if (tbody) {
+                const emptyMsg = tbody.querySelector('td[colspan]');
+                if (emptyMsg) tbody.innerHTML = '';
+
+                const existingRow = document.getElementById(`booking-row-${booking._id}`);
+                if (!existingRow) {
+                    const temp = document.createElement('tbody');
+                    temp.innerHTML = createBookingRowHtml(booking, true);
+                    tbody.insertBefore(temp.firstElementChild, tbody.firstElementChild);
+                } else {
+                    loadBookings();
+                }
+            }
         });
 
         socket.on('booking_updated', (updatedBooking) => {
-            loadBookings();
+            const row = document.getElementById(`booking-row-${updatedBooking._id}`);
+            if (row) {
+                const temp = document.createElement('tbody');
+                temp.innerHTML = createBookingRowHtml(updatedBooking, true);
+                row.replaceWith(temp.firstElementChild);
+            } else {
+                loadBookings();
+            }
         });
 
         socket.on('booking_deleted', ({ id }) => {
-            loadBookings();
+            const row = document.getElementById(`booking-row-${id}`);
+            if (row) {
+                row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                setTimeout(() => row.remove(), 400);
+            }
         });
     }
 }
@@ -64,6 +92,48 @@ async function loadBookings() {
     }
 }
 
+function createBookingRowHtml(b, isNew = false) {
+    const phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
+    const waLink = phoneClean ? `https://wa.me/${phoneClean}` : '#';
+    const highlightClass = isNew ? 'row-highlight-new' : '';
+
+    return `
+        <tr id="booking-row-${b._id}" class="${highlightClass}">
+            <td><strong>${escapeHtml(b.name)}</strong></td>
+            <td><a href="mailto:${escapeHtml(b.email)}" style="color: var(--text-primary); text-decoration: none;">${escapeHtml(b.email)}</a></td>
+            <td>${b.phone ? escapeHtml(b.phone) : '<span style="color: var(--text-muted);">N/A</span>'}</td>
+            <td>${escapeHtml(b.subject || 'General Inquiry')}</td>
+            <td>
+                <select class="filter-select" style="padding: 4px 8px; font-size: 0.8rem;" onchange="updateBookingStatus('${b._id}', this.value)">
+                    <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                    <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                </select>
+            </td>
+            <td>${formatDate(b.createdAt)}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="icon-btn" title="View Details" onclick="viewBookingDetails('${b._id}')">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                    <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" class="icon-btn" title="Email Client">
+                        <i class="fa-regular fa-envelope"></i>
+                    </a>
+                    ${phoneClean ? `
+                        <a href="${waLink}" target="_blank" class="icon-btn whatsapp-btn" title="WhatsApp Client">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    ` : ''}
+                    <button class="icon-btn delete-btn" title="Delete Booking" onclick="promptDeleteBooking('${b._id}')">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+}
+
 function renderBookingsTable(bookings) {
     const tbody = document.getElementById('bookings-tbody');
     if (!tbody) return;
@@ -79,46 +149,7 @@ function renderBookingsTable(bookings) {
         return;
     }
 
-    tbody.innerHTML = bookings.map(b => {
-        const phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
-        const waLink = phoneClean ? `https://wa.me/${phoneClean}` : '#';
-
-        return `
-            <tr id="booking-row-${b._id}">
-                <td><strong>${escapeHtml(b.name)}</strong></td>
-                <td><a href="mailto:${escapeHtml(b.email)}" style="color: var(--text-primary); text-decoration: none;">${escapeHtml(b.email)}</a></td>
-                <td>${b.phone ? escapeHtml(b.phone) : '<span style="color: var(--text-muted);">N/A</span>'}</td>
-                <td>${escapeHtml(b.subject || 'General Inquiry')}</td>
-                <td>
-                    <select class="filter-select" style="padding: 4px 8px; font-size: 0.8rem;" onchange="updateBookingStatus('${b._id}', this.value)">
-                        <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                        <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
-                        <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                    </select>
-                </td>
-                <td>${formatDate(b.createdAt)}</td>
-                <td>
-                    <div class="action-btns">
-                        <button class="icon-btn" title="View Details" onclick="viewBookingDetails('${b._id}')">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" class="icon-btn" title="Email Client">
-                            <i class="fa-regular fa-envelope"></i>
-                        </a>
-                        ${phoneClean ? `
-                            <a href="${waLink}" target="_blank" class="icon-btn whatsapp-btn" title="WhatsApp Client">
-                                <i class="fa-brands fa-whatsapp"></i>
-                            </a>
-                        ` : ''}
-                        <button class="icon-btn delete-btn" title="Delete Booking" onclick="promptDeleteBooking('${b._id}')">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
+    tbody.innerHTML = bookings.map(b => createBookingRowHtml(b)).join('');
 }
 
 async function updateBookingStatus(id, newStatus) {

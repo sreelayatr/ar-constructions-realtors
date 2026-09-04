@@ -562,6 +562,22 @@ body {
     border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
+/* Live Real-time Row Highlight Animation */
+@keyframes highlightNewRow {
+    0% {
+        background-color: rgba(203, 170, 92, 0.35);
+        box-shadow: inset 0 0 20px rgba(203, 170, 92, 0.5);
+    }
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+.row-highlight-new {
+    animation: highlightNewRow 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .badge-ongoing {
     background-color: rgba(223, 183, 108, 0.12);
     color: var(--status-pending);

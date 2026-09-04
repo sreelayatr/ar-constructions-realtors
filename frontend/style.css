@@ -622,7 +622,7 @@ button, input, textarea {
     width: 100%;
     box-shadow: var(--shadow-gold);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .form-card::before {
@@ -713,6 +713,11 @@ button, input, textarea {
     transform-origin: left top;
 }
 
+.custom-select-group {
+    position: relative;
+    z-index: 50;
+}
+
 .visually-hidden-select {
     position: absolute;
     opacity: 0;
@@ -767,10 +772,10 @@ button, input, textarea {
     left: 0;
     right: 0;
     background-color: #12141a;
-    border: 1px solid rgba(203, 170, 92, 0.3);
+    border: 1px solid rgba(203, 170, 92, 0.4);
     border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    z-index: 100;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), 0 0 15px rgba(203, 170, 92, 0.2);
+    z-index: 9999;
     display: none;
     max-height: 280px;
     overflow-y: auto;

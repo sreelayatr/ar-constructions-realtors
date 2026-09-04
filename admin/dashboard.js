@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupRealtimeDashboard() {
     if (typeof socket !== 'undefined' && socket) {
         socket.on('new_booking', (booking) => {
-            showToast(`🔔 New Live Inquiry: ${booking.name} (${booking.subject || 'General'})`, 'info');
+            playNotificationChime();
+            showToast(`🔔 New Live Inquiry: ${booking.name} (${booking.subject || 'General Inquiry'})`, 'info');
             loadDashboardMetrics();
         });
 
