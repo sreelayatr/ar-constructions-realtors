@@ -268,9 +268,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const group = customDropdown.closest('.form-group');
             const label = group ? group.querySelector('label') : null;
 
+            const syncDropdownState = () => {
+                if (serviceSelect.value || customDropdown.classList.contains('active') || selectedText.textContent.trim() !== '') {
+                    group?.classList.add('has-value');
+                } else {
+                    group?.classList.remove('has-value');
+                }
+            };
+
             const toggleDropdown = (e) => {
                 if (e) e.stopPropagation();
                 customDropdown.classList.toggle('active');
+                syncDropdownState();
             };
 
             if (trigger) trigger.addEventListener('click', toggleDropdown);
@@ -287,13 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.classList.add('selected');
 
                     customDropdown.classList.remove('active');
-                    group.classList.add('has-value');
+                    syncDropdownState();
                     validateField(serviceSelect, serviceSelect.value !== '', group);
                 });
             });
 
             document.addEventListener('click', () => {
                 customDropdown.classList.remove('active');
+                syncDropdownState();
             });
         }
 
