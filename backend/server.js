@@ -164,7 +164,7 @@ const isRealMongoUri =
   !uri.includes("127.0.0.1") &&
   !uri.includes("localhost");
 
-const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true" || !!process.env.PORT || !!process.env.RENDER_SERVICE_ID;
 
 // Session configuration
 const sessionConfig = {
@@ -175,6 +175,8 @@ const sessionConfig = {
   resave: false,
 
   saveUninitialized: false,
+
+  proxy: true,
 
   cookie: {
     httpOnly: true,
