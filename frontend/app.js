@@ -541,4 +541,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
+    /* ==========================================
+       PROJECT CARDS INTERACTION (NO NAVIGATION)
+       ========================================== */
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            projectCards.forEach(c => {
+                if (c !== card) c.classList.remove('active');
+            });
+            card.classList.toggle('active');
+        });
+    });
+
 });

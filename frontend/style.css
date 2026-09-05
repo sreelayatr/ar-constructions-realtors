@@ -1945,11 +1945,17 @@ button, input, textarea {
     transition: var(--transition-smooth);
 }
 
-.project-card:hover .project-img {
+.project-card:hover .project-img,
+.project-card:focus .project-img,
+.project-card:active .project-img,
+.project-card.active .project-img {
     transform: scale(1.08);
 }
 
-.project-card:hover .project-overlay {
+.project-card:hover .project-overlay,
+.project-card:focus .project-overlay,
+.project-card:active .project-overlay,
+.project-card.active .project-overlay {
     opacity: 1;
     transform: translateY(0);
 }
