@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://localhost:9100'
-        : (window.location.origin.includes('onrender.com') ? '' : 'https://ar-constructions-realtors.onrender.com');
+        : 'https://ar-constructions-realtors.onrender.com';
 
     /* ==========================================
        STICKY HEADER TRANSITION
