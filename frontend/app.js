@@ -546,17 +546,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       PROJECT CARDS INTERACTION (NO NAVIGATION)
+       DYNAMIC PUBLIC PROJECTS WITH REAL-TIME LIVE UPDATES
        ========================================== */
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            e.preventDefault();
-            projectCards.forEach(c => {
-                if (c !== card) c.classList.remove('active');
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (projectsGrid) {
+        let lastProjectsJson = '';
+
+        const fetchAndRenderPublicProjects = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/projects`);
+                const data = await res.json();
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                    const currentJson = JSON.stringify(data.data);
+                    if (currentJson === lastProjectsJson) return;
+                    lastProjectsJson = currentJson;
+
+                    projectsGrid.innerHTML = data.data.map(p => {
+                        const imgUrl = (p.images && p.images.length > 0 && p.images[0]) 
+                            ? p.images[0] 
+                            : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
+                        const title = p.title || 'Untitled Project';
+                        const clientOrLocation = p.location ? `${p.location}` : '';
+
+                        return `
+                            <div class="project-card animate-up" tabindex="0">
+                                <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${title}">
+                                <div class="project-overlay">
+                                    <h3 class="project-title">${title}</h3>
+                                    <p class="project-client">${clientOrLocation}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const cards = projectsGrid.querySelectorAll('.project-card');
+                    cards.forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            cards.forEach(c => {
+                                if (c !== card) c.classList.remove('active');
+                            });
+                            card.classList.toggle('active');
+                        });
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching public projects:', err);
+            }
+        };
+
+        fetchAndRenderPublicProjects();
+
+        if (typeof io !== 'undefined') {
+            try {
+                const socket = io(API_BASE_URL);
+                socket.on('project_created', () => fetchAndRenderPublicProjects());
+                socket.on('project_updated', () => fetchAndRenderPublicProjects());
+                socket.on('project_deleted', () => fetchAndRenderPublicProjects());
+                socket.on('projects_changed', () => fetchAndRenderPublicProjects());
+            } catch (sErr) {
+                console.warn('Socket connection warning:', sErr);
+            }
+        }
+
+        setInterval(fetchAndRenderPublicProjects, 3000);
+    } else {
+        const projectCards = document.querySelectorAll('.project-card');
+        projectCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                projectCards.forEach(c => {
+                    if (c !== card) c.classList.remove('active');
+                });
+                card.classList.toggle('active');
             });
-            card.classList.toggle('active');
         });
-    });
+    }
 
 });

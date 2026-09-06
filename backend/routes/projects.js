@@ -259,6 +259,9 @@ router.post('/', requireAuth, async (req, res) => {
                 images: imageArray,
                 createdAt: new Date()
             };
+            defaultProjects.unshift(newProj);
+            req.app.get('io')?.emit('project_created', newProj);
+            req.app.get('io')?.emit('projects_changed');
             return res.status(201).json({ success: true, message: 'Project created', data: newProj });
         }
 
@@ -272,6 +275,8 @@ router.post('/', requireAuth, async (req, res) => {
         });
 
         await project.save();
+        req.app.get('io')?.emit('project_created', project);
+        req.app.get('io')?.emit('projects_changed');
 
         res.status(201).json({
             success: true,
@@ -293,6 +298,16 @@ router.patch('/:id', requireAuth, async (req, res) => {
         const { title, category, location, description, status, images } = req.body;
 
         if (mongoose.connection.readyState !== 1) {
+            const index = defaultProjects.findIndex(p => p._id === req.params.id);
+            if (index !== -1) {
+                if (title !== undefined) defaultProjects[index].title = String(title).trim();
+                if (category !== undefined) defaultProjects[index].category = category;
+                if (location !== undefined) defaultProjects[index].location = String(location).trim();
+                if (description !== undefined) defaultProjects[index].description = String(description).trim();
+                if (status !== undefined) defaultProjects[index].status = status;
+                if (images !== undefined) defaultProjects[index].images = Array.isArray(images) ? images : [images];
+            }
+            req.app.get('io')?.emit('projects_changed');
             return res.json({ success: true, message: 'Project updated successfully' });
         }
 
@@ -321,6 +336,9 @@ router.patch('/:id', requireAuth, async (req, res) => {
             });
         }
 
+        req.app.get('io')?.emit('project_updated', project);
+        req.app.get('io')?.emit('projects_changed');
+
         res.json({
             success: true,
             message: 'Project updated successfully',
@@ -339,6 +357,9 @@ router.patch('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
         if (mongoose.connection.readyState !== 1) {
+            const index = defaultProjects.findIndex(p => p._id === req.params.id);
+            if (index !== -1) defaultProjects.splice(index, 1);
+            req.app.get('io')?.emit('projects_changed');
             return res.json({ success: true, message: 'Project deleted successfully' });
         }
 
@@ -349,6 +370,9 @@ router.delete('/:id', requireAuth, async (req, res) => {
                 message: 'Project not found'
             });
         }
+
+        req.app.get('io')?.emit('project_deleted', { id: req.params.id });
+        req.app.get('io')?.emit('projects_changed');
 
         res.json({
             success: true,
