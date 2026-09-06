@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       MOBILE CARD FLIP & TAP OUTSIDE TO HIDE
+       MOBILE CARD FLIP & TAP OUTSIDE TO HIDE (PHONE ONLY)
        ========================================== */
 
     const cardWrappers = document.querySelectorAll('.info-card-wrapper');
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cardWrappers.length) {
         cardWrappers.forEach(wrapper => {
             wrapper.addEventListener('click', e => {
+                if (window.innerWidth > 768) return;
                 if (e.target.closest('a')) return;
                 
                 const isCurrentlyFlipped = wrapper.classList.contains('flipped');
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.addEventListener('click', e => {
+            if (window.innerWidth > 768) return;
             if (!e.target.closest('.info-card-wrapper')) {
                 cardWrappers.forEach(wrapper => wrapper.classList.remove('flipped'));
             }
