@@ -5,16 +5,16 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
 
+// Rate limit login attempts: max 10 requests per 15 minutes window
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 500,
+    max: 10,
     message: {
         success: false,
         message: 'Too many login attempts. Please try again after 15 minutes.'
     },
     standardHeaders: true,
     legacyHeaders: false,
-    skip: (req) => req.hostname === 'localhost' || req.hostname === '127.0.0.1'
 });
 
 // POST /api/auth/login
@@ -77,15 +77,10 @@ router.post('/login', loginLimiter, async (req, res) => {
         req.session.userEmail = authenticatedUser.email;
         req.session.userRole = authenticatedUser.role;
 
-        req.session.save((saveErr) => {
-            if (saveErr) {
-                console.error('Session save error:', saveErr);
-            }
-            return res.json({
-                success: true,
-                message: 'Authentication successful',
-                user: authenticatedUser
-            });
+        return res.json({
+            success: true,
+            message: 'Authentication successful',
+            user: authenticatedUser
         });
     } catch (error) {
         console.error('Login Error:', error.message);

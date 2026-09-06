@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCTION API BASE URL (Render Backend)
     // ==========================================================
 
-    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' || !window.location.hostname)
+    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://localhost:9100'
-        : (window.location.origin && window.location.origin.includes('onrender.com') ? '' : 'https://ar-constructions-realtors.onrender.com');
+        : 'https://ar-constructions-realtors.onrender.com';
 
     /* ==========================================
        STICKY HEADER TRANSITION
@@ -546,99 +546,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       PROJECT CARDS INTERACTION (NO NAVIGATION)
+       DYNAMIC PUBLIC PROJECTS FETCH & REAL-TIME SYNC
        ========================================== */
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            e.preventDefault();
-            projectCards.forEach(c => {
-                if (c !== card) c.classList.remove('active');
-            });
-            card.classList.toggle('active');
-        });
-    });
+    const projectsGrid = document.getElementById('projects-grid');
 
-    /* ==========================================
-       PUBLIC PROJECTS DYNAMIC & REAL-TIME RENDERER
-       ========================================== */
-    initPublicProjects();
+    if (projectsGrid) {
+        async function fetchPublicProjects() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/projects`, { cache: 'no-store' });
+                const data = await res.json();
 
-    function initPublicProjects() {
-        const gridEl = document.querySelector('.projects-grid');
-        if (!gridEl) return;
-
-        let publicSocket = null;
-        if (typeof io !== 'undefined') {
-            publicSocket = API_BASE_URL ? io(API_BASE_URL) : io();
-            publicSocket.on('connect', () => {
-                console.log('⚡ Public Projects real-time socket connected:', publicSocket.id);
-            });
-
-            publicSocket.on('project_created', () => fetchAndRenderPublicProjects(gridEl));
-            publicSocket.on('project_updated', () => fetchAndRenderPublicProjects(gridEl));
-            publicSocket.on('project_deleted', (evt) => {
-                if (evt && evt.id) {
-                    const card = gridEl.querySelector(`[data-project-id="${evt.id}"]`);
-                    if (card) {
-                        card.style.transition = 'all 0.3s ease';
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.9)';
-                        setTimeout(() => card.remove(), 300);
-                    } else {
-                        fetchAndRenderPublicProjects(gridEl);
-                    }
-                } else {
-                    fetchAndRenderPublicProjects(gridEl);
+                if (data.success && Array.isArray(data.data)) {
+                    renderPublicProjects(data.data);
                 }
-            });
-        }
-
-        fetchAndRenderPublicProjects(gridEl);
-    }
-
-    async function fetchAndRenderPublicProjects(gridEl) {
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/projects`, {
-                headers: { 'Cache-Control': 'no-cache' }
-            });
-            const data = await res.json();
-            if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-                renderPublicProjectsGrid(gridEl, data.data);
+            } catch (err) {
+                console.error('Error loading public projects:', err);
             }
-        } catch (err) {
-            console.error('Error fetching public projects:', err);
-        }
-    }
-
-    function renderPublicProjectsGrid(gridEl, projects) {
-        if (!projects || projects.length === 0) {
-            gridEl.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #a0a0b0; padding: 40px;">No projects available at the moment.</div>';
-            return;
         }
 
-        gridEl.innerHTML = projects.map(p => {
-            const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
-            return `
-                <div class="project-card animate-up" tabindex="0" data-project-id="${p._id}">
-                    <img class="project-img" src="${escapeHtml(thumb)}" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'" alt="${escapeHtml(p.title)}">
-                    <div class="project-overlay">
-                        <h3 class="project-title">${escapeHtml(p.title)}</h3>
-                        <p class="project-client">${escapeHtml(p.description || p.location)}</p>
+        function renderPublicProjects(projects) {
+            if (!projectsGrid) return;
+
+            if (projects.length === 0) {
+                projectsGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; color: #a0a0b0; padding: 60px 20px; font-size: 1.1rem;">
+                        No projects currently available.
                     </div>
-                </div>
-            `;
-        }).join('');
-    }
+                `;
+                return;
+            }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+            projectsGrid.innerHTML = projects.map(p => {
+                const thumb = (p.images && p.images.length > 0 && p.images[0].trim()) 
+                    ? p.images[0] 
+                    : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
+                
+                const clientText = p.description ? p.description : p.location;
+
+                return `
+                    <div class="project-card animate-up" tabindex="0" data-project-id="${escapeHtml(p._id)}">
+                        <img class="project-img" src="${escapeHtml(thumb)}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${escapeHtml(p.title)}">
+                        <div class="project-overlay">
+                            <h3 class="project-title">${escapeHtml(p.title)}</h3>
+                            <p class="project-client">${escapeHtml(clientText)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Re-bind click event listeners for cards
+            const cards = projectsGrid.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    cards.forEach(c => {
+                        if (c !== card) c.classList.remove('active');
+                    });
+                    card.classList.toggle('active');
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        fetchPublicProjects();
+
+        // Real-time Socket.IO sync for public website
+        if (typeof io !== 'undefined') {
+            try {
+                const publicSocket = io(API_BASE_URL, { withCredentials: true });
+                publicSocket.on('projects_changed', () => fetchPublicProjects());
+                publicSocket.on('project_deleted', ({ id }) => {
+                    const el = projectsGrid.querySelector(`[data-project-id="${id}"]`);
+                    if (el) el.remove();
+                    fetchPublicProjects();
+                });
+                publicSocket.on('project_created', () => fetchPublicProjects());
+                publicSocket.on('project_updated', () => fetchPublicProjects());
+            } catch (err) {
+                console.warn('Public Socket.IO setup note:', err);
+            }
+        }
+    } else {
+        const projectCards = document.querySelectorAll('.project-card');
+        projectCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                projectCards.forEach(c => {
+                    if (c !== card) c.classList.remove('active');
+                });
+                card.classList.toggle('active');
+            });
+        });
     }
 
 });
