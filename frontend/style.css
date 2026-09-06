@@ -2742,7 +2742,22 @@ button, input, textarea {
 
 .about-value-card {
     text-align: center;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.55s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
+.about-value-card.reveal-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.about-values-row .about-value-card:nth-child(1) { transition-delay: 0.08s; }
+.about-values-row .about-value-card:nth-child(2) { transition-delay: 0.20s; }
+.about-values-row .about-value-card:nth-child(3) { transition-delay: 0.32s; }
+.about-values-row .about-value-card:nth-child(4) { transition-delay: 0.44s; }
+.about-values-row .about-value-card:nth-child(5) { transition-delay: 0.56s; }
+.about-values-row .about-value-card:nth-child(6) { transition-delay: 0.68s; }
 
 .about-value-card .value-icon {
     display: inline-flex;
