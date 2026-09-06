@@ -566,47 +566,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE_URL}/api/projects`);
                 const result = await response.json();
 
-                if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
-                    const existingTitles = new Set(
-                        Array.from(projectsGrid.querySelectorAll('.project-title'))
-                            .map(el => el.textContent.trim().toLowerCase())
-                    );
+                if (response.ok && result.success && Array.isArray(result.data)) {
+                    if (result.data.length === 0) {
+                        projectsGrid.innerHTML = `
+                            <div style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 60px 20px;">
+                                <p style="font-size: 1.1rem; letter-spacing: 0.5px;">No projects available yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
 
-                    const projectsToInsert = result.data.slice().reverse();
+                    projectsGrid.innerHTML = result.data.map(p => {
+                        const imgUrl = (p.images && p.images.length > 0 && p.images[0])
+                            ? p.images[0]
+                            : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
 
-                    projectsToInsert.forEach(p => {
-                        const titleLower = (p.title || '').trim().toLowerCase();
-                        if (!existingTitles.has(titleLower)) {
-                            const imgUrl = (p.images && p.images.length > 0 && p.images[0])
-                                ? p.images[0]
-                                : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
+                        const displayTitle = p.title ? p.title : (p.location ? `${p.category || 'Project'} (${p.location})` : (p.category || 'Project'));
+                        const clientText = p.location
+                            ? `${p.category || 'Residential'} • ${p.location}`
+                            : (p.description || p.category || 'Custom Project');
 
-                            const clientText = p.location
-                                ? `${p.category || 'Residential'} • ${p.location}`
-                                : (p.description || p.category || 'Custom Project');
-
-                            const card = document.createElement('div');
-                            card.className = 'project-card animate-up reveal-active';
-                            card.setAttribute('tabindex', '0');
-                            card.innerHTML = `
-                                <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'" alt="${p.title}">
+                        return `
+                            <div class="project-card animate-up reveal-active" tabindex="0">
+                                <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'" alt="${displayTitle}">
                                 <div class="project-overlay">
-                                    <h3 class="project-title">${p.title}</h3>
+                                    <h3 class="project-title">${displayTitle}</h3>
                                     <p class="project-client">${clientText}</p>
                                 </div>
-                            `;
+                            </div>
+                        `;
+                    }).join('');
 
-                            card.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                document.querySelectorAll('.project-card').forEach(c => {
-                                    if (c !== card) c.classList.remove('active');
-                                });
-                                card.classList.toggle('active');
+                    document.querySelectorAll('.project-card').forEach(card => {
+                        card.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            document.querySelectorAll('.project-card').forEach(c => {
+                                if (c !== card) c.classList.remove('active');
                             });
-
-                            projectsGrid.insertBefore(card, projectsGrid.firstChild);
-                            existingTitles.add(titleLower);
-                        }
+                            card.classList.toggle('active');
+                        });
                     });
                 }
             } catch (err) {

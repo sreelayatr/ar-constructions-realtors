@@ -4,38 +4,7 @@ const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const { requireAuth } = require('../middleware/auth');
 
-const defaultProjects = [
-    {
-        _id: 'default-1',
-        title: "Skyline Ranch",
-        category: "Residential",
-        location: "Thripoonithara, Kerala",
-        description: "Bespoke luxury residential space designed for Mr Sijo & Festy.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"],
-        createdAt: new Date()
-    },
-    {
-        _id: 'default-2',
-        title: "Eza - Gold Thrissur",
-        category: "Commercial",
-        location: "Thrissur, Kerala",
-        description: "Premium retail jewel showroom interior and space optimization.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Mr-Biju-Eza-Gold-Thrissur.jpg"],
-        createdAt: new Date()
-    },
-    {
-        _id: 'default-3',
-        title: "Navya Bake House",
-        category: "Commercial",
-        location: "Kerala",
-        description: "Artisanal bakery aesthetic space crafted for Kurian & Hitha.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"],
-        createdAt: new Date()
-    }
-];
+const defaultProjects = [];
 
 // Public/Admin: Get all projects
 router.get('/', async (req, res) => {
