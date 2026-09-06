@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCTION API BASE URL (Render Backend)
     // ==========================================================
 
-    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' || !window.location.hostname)
         ? 'http://localhost:9100'
-        : 'https://ar-constructions-realtors.onrender.com';
+        : (window.location.origin && window.location.origin.includes('onrender.com') ? '' : 'https://ar-constructions-realtors.onrender.com');
 
     /* ==========================================
        STICKY HEADER TRANSITION
