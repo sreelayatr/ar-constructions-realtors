@@ -4,10 +4,6 @@
 
 let searchTimeout = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadProjects();
-});
-
 function debounceProjectSearch() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
@@ -168,10 +164,48 @@ const FALLBACK_15_PROJECTS = [
     }
 ];
 
+function getDeletedProjectIds() {
+    try {
+        return JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+
+function registerDeletedProjectId(id) {
+    const list = getDeletedProjectIds();
+    if (!list.includes(id)) {
+        list.push(id);
+        localStorage.setItem('deleted_project_ids', JSON.stringify(list));
+    }
+    localStorage.setItem('projects_sync_event', Date.now().toString());
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadProjects();
+
+    if (typeof socket !== 'undefined' && socket) {
+        socket.on('project_deleted', ({ id }) => {
+            if (id) registerDeletedProjectId(id);
+            loadProjects();
+        });
+        socket.on('refresh_projects', () => {
+            loadProjects();
+        });
+    }
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'deleted_project_ids' || e.key === 'projects_sync_event') {
+            loadProjects();
+        }
+    });
+});
+
 async function loadProjects() {
     const category = document.getElementById('category-filter').value;
     const status = document.getElementById('status-filter').value;
     const search = document.getElementById('project-search').value.toLowerCase().trim();
+    const deletedIds = getDeletedProjectIds();
 
     let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
     if (search) {
@@ -183,9 +217,10 @@ async function loadProjects() {
         const data = await res.json();
 
         if (data.success && data.data && data.data.length > 0) {
-            renderProjectsTable(data.data);
+            let activeProjects = data.data.filter(p => !deletedIds.includes(p._id));
+            renderProjectsTable(activeProjects);
         } else {
-            let filtered = FALLBACK_15_PROJECTS;
+            let filtered = FALLBACK_15_PROJECTS.filter(p => !deletedIds.includes(p._id));
             if (category !== 'all') filtered = filtered.filter(p => p.category === category);
             if (status !== 'all') filtered = filtered.filter(p => p.status === status);
             if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
@@ -193,7 +228,7 @@ async function loadProjects() {
         }
     } catch (err) {
         console.error('Error loading projects:', err);
-        let filtered = FALLBACK_15_PROJECTS;
+        let filtered = FALLBACK_15_PROJECTS.filter(p => !deletedIds.includes(p._id));
         if (category !== 'all') filtered = filtered.filter(p => p.category === category);
         if (status !== 'all') filtered = filtered.filter(p => p.status === status);
         if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));

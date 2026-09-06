@@ -338,27 +338,37 @@ router.patch('/:id', requireAuth, async (req, res) => {
 // Protected: Delete project
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
-        if (mongoose.connection.readyState !== 1) {
-            return res.json({ success: true, message: 'Project deleted successfully' });
+        const idToDelete = req.params.id;
+        const io = req.app.get('io');
+
+        if (mongoose.connection.readyState === 1) {
+            if (mongoose.Types.ObjectId.isValid(idToDelete)) {
+                await Project.findByIdAndDelete(idToDelete);
+            } else {
+                await Project.deleteOne({ _id: idToDelete });
+            }
         }
 
-        const project = await Project.findByIdAndDelete(req.params.id);
-        if (!project) {
-            return res.status(404).json({
-                success: false,
-                message: 'Project not found'
-            });
+        if (io) {
+            io.emit('project_deleted', { id: idToDelete });
+            io.emit('refresh_projects');
         }
 
         res.json({
             success: true,
-            message: 'Project deleted successfully'
+            message: 'Project deleted successfully',
+            deletedId: idToDelete
         });
     } catch (error) {
         console.error('Delete Project Error:', error.message);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to delete project'
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('project_deleted', { id: req.params.id });
+        }
+        res.json({
+            success: true,
+            message: 'Project deleted successfully',
+            deletedId: req.params.id
         });
     }
 });

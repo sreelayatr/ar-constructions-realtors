@@ -559,4 +559,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    /* ==========================================
+       REAL-TIME PROJECT DELETION SYNC (NO REFRESH)
+       ========================================== */
+    const syncWebsiteProjects = () => {
+        let deletedIds = [];
+        try {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+        } catch (e) {
+            deletedIds = [];
+        }
+
+        if (!Array.isArray(deletedIds) || deletedIds.length === 0) return;
+
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => {
+            const cardId = card.getAttribute('data-id');
+            const cardTitle = card.querySelector('.project-title')?.textContent?.trim()?.toLowerCase() || '';
+
+            const isDeleted = (cardId && deletedIds.includes(cardId)) ||
+                deletedIds.some(id => id.toLowerCase() === cardId?.toLowerCase() || (cardTitle && id.toLowerCase().includes(cardTitle)));
+
+            if (isDeleted) {
+                card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.85)';
+                setTimeout(() => {
+                    card.remove();
+                }, 350);
+            }
+        });
+    };
+
+    syncWebsiteProjects();
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'deleted_project_ids' || e.key === 'projects_sync_event') {
+            syncWebsiteProjects();
+        }
+    });
+
+    if (typeof io !== 'undefined') {
+        try {
+            const socket = io(API_BASE_URL);
+            socket.on('project_deleted', (data) => {
+                let deletedIds = [];
+                try {
+                    deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+                } catch (e) {}
+                if (data && data.id && !deletedIds.includes(data.id)) {
+                    deletedIds.push(data.id);
+                    localStorage.setItem('deleted_project_ids', JSON.stringify(deletedIds));
+                }
+                syncWebsiteProjects();
+            });
+        } catch (e) {
+            console.log('Socket sync notice:', e);
+        }
+    }
+
 });
