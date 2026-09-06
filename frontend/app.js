@@ -4,12 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCTION API BASE URL (Render Backend)
     // ==========================================================
 
-    const API_BASE_URL = (
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        window.location.hostname === '' ||
-        window.location.protocol === 'file:'
-    ) ? 'http://localhost:9100' : 'https://ar-constructions-realtors.onrender.com';
+    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:9100'
+        : 'https://ar-constructions-realtors.onrender.com';
 
     /* ==========================================
        STICKY HEADER TRANSITION
@@ -549,127 +546,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       DYNAMIC PUBLIC PROJECTS FETCH & REAL-TIME SYNC
+       PROJECT CARDS INTERACTION (NO NAVIGATION)
        ========================================== */
-    const projectsGrid = document.getElementById('projects-grid');
-
-    const DEFAULT_PUBLIC_PROJECTS = [
-        { _id: 'default-1', title: "Skyline Ranch", description: "Mr Sijo & Festy (Thripoonithara)", images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"] },
-        { _id: 'default-2', title: "Eza - Gold Thrissur", description: "Mr Biju (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Mr-Biju-Eza-Gold-Thrissur.jpg"] },
-        { _id: 'default-3', title: "Navya Bake House", description: "Kurian & Hitha", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"] },
-        { _id: 'default-4', title: "Residence Thrissur", description: "Mr Pinto Francis (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0040.jpg"] },
-        { _id: 'default-5', title: "Residence Thrissur", description: "Mr Rajesh Francis (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0061.jpg"] },
-        { _id: 'default-6', title: "Residence Layout", description: "Mr Justin Raphael", images: ["https://spaceliftstudio.com/wp-content/uploads/2022/03/1.jpeg"] },
-        { _id: 'default-7', title: "Casablanca Apartment", description: "Mr Joju (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/04/1.jpg"] },
-        { _id: 'default-8', title: "Residence Design", description: "Mr Bijoy Varghese", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg"] },
-        { _id: 'default-9', title: "Modern Layout", description: "Mr Jino Jose", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/DSC_0371.jpg"] },
-        { _id: 'default-10', title: "Sobha Saphire", description: "Mr Daison (Sobha Saphire)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/IMG_9675-1.jpg"] },
-        { _id: 'default-11', title: "Residence Project", description: "Dr Rajesh & Dr Anu", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/4L8A9460.jpg"] },
-        { _id: 'default-12', title: "Sobha Jade", description: "Mr Girilal (Sobha Jade)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/2L6A9378-3.jpg"] },
-        { _id: 'default-13', title: "Sobha Saphire", description: "Mrs Anita (Sobha Saphire)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-13-2.jpg"] },
-        { _id: 'default-14', title: "Residence Design", description: "Mr Mejo Chittilappally", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-28-2.jpg"] },
-        { _id: 'default-15', title: "Residence Project", description: "Mr Antochan Manjaly", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto8.jpg"] }
-    ];
-
-    if (projectsGrid) {
-        async function fetchPublicProjects() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/projects`, { cache: 'no-store' });
-                const data = await res.json();
-
-                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-                    renderPublicProjects(data.data);
-                } else {
-                    renderPublicProjects(DEFAULT_PUBLIC_PROJECTS);
-                }
-            } catch (err) {
-                console.warn('Backend API offline or unreachable, rendering fallback project photos:', err);
-                renderPublicProjects(DEFAULT_PUBLIC_PROJECTS);
-            }
-        }
-
-        function renderPublicProjects(projects) {
-            if (!projectsGrid) return;
-
-            if (projects.length === 0) {
-                projectsGrid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; color: #a0a0b0; padding: 60px 20px; font-size: 1.1rem;">
-                        No projects currently available.
-                    </div>
-                `;
-                return;
-            }
-
-            projectsGrid.innerHTML = projects.map(p => {
-                const thumb = (p.images && p.images.length > 0 && p.images[0].trim()) 
-                    ? p.images[0] 
-                    : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
-                
-                const clientText = p.description ? p.description : p.location;
-
-                return `
-                    <div class="project-card animate-up" tabindex="0" data-project-id="${escapeHtml(p._id)}">
-                        <img class="project-img" src="${escapeHtml(thumb)}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${escapeHtml(p.title)}">
-                        <div class="project-overlay">
-                            <h3 class="project-title">${escapeHtml(p.title)}</h3>
-                            <p class="project-client">${escapeHtml(clientText)}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Re-bind click event listeners for cards
-            const cards = projectsGrid.querySelectorAll('.project-card');
-            cards.forEach(card => {
-                card.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    cards.forEach(c => {
-                        if (c !== card) c.classList.remove('active');
-                    });
-                    card.classList.toggle('active');
-                });
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            projectCards.forEach(c => {
+                if (c !== card) c.classList.remove('active');
             });
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        fetchPublicProjects();
-
-        // Real-time Socket.IO sync for public website
-        if (typeof io !== 'undefined') {
-            try {
-                const publicSocket = io(API_BASE_URL, { withCredentials: true });
-                publicSocket.on('projects_changed', () => fetchPublicProjects());
-                publicSocket.on('project_deleted', ({ id }) => {
-                    const el = projectsGrid.querySelector(`[data-project-id="${id}"]`);
-                    if (el) el.remove();
-                    fetchPublicProjects();
-                });
-                publicSocket.on('project_created', () => fetchPublicProjects());
-                publicSocket.on('project_updated', () => fetchPublicProjects());
-            } catch (err) {
-                console.warn('Public Socket.IO setup note:', err);
-            }
-        }
-    } else {
-        const projectCards = document.querySelectorAll('.project-card');
-        projectCards.forEach(card => {
-            card.addEventListener('click', (e) => {
-                e.preventDefault();
-                projectCards.forEach(c => {
-                    if (c !== card) c.classList.remove('active');
-                });
-                card.classList.toggle('active');
-            });
+            card.classList.toggle('active');
         });
-    }
+    });
 
 });

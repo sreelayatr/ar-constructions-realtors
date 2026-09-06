@@ -157,41 +157,28 @@ const defaultProjects = [
     }
 ];
 
-let inMemoryProjects = [...defaultProjects];
-
-const notifyProjectsChanged = (req, action, data) => {
-    const io = req.app.get('io');
-    if (io) {
-        io.emit('projects_changed', { action, ...data });
-        if (action === 'create') io.emit('project_created', data.project);
-        if (action === 'update') io.emit('project_updated', data.project);
-        if (action === 'delete') io.emit('project_deleted', { id: data.id });
-    }
-};
-
 // Public/Admin: Get all projects
 router.get('/', async (req, res) => {
     try {
-        const { category, status, search } = req.query;
-
         if (mongoose.connection.readyState !== 1) {
-            let filtered = [...inMemoryProjects];
-            if (category && category !== 'all') filtered = filtered.filter(p => p.category === category);
-            if (status && status !== 'all') filtered = filtered.filter(p => p.status === status);
-            if (search) {
-                const s = search.toLowerCase().trim();
-                filtered = filtered.filter(p => p.title.toLowerCase().includes(s) || p.location.toLowerCase().includes(s) || p.description.toLowerCase().includes(s));
-            }
             return res.json({
                 success: true,
-                count: filtered.length,
-                data: filtered
+                count: defaultProjects.length,
+                data: defaultProjects
             });
         }
 
+        const { category, status, search } = req.query;
         const query = {};
-        if (category && category !== 'all') query.category = category;
-        if (status && status !== 'all') query.status = status;
+
+        if (category && category !== 'all') {
+            query.category = category;
+        }
+
+        if (status && status !== 'all') {
+            query.status = status;
+        }
+
         if (search) {
             const searchRegex = new RegExp(search.trim(), 'i');
             query.$or = [
@@ -220,10 +207,9 @@ router.get('/', async (req, res) => {
 // Public/Admin: Get single project by ID
 router.get('/:id', async (req, res) => {
     try {
-        if (mongoose.connection.readyState !== 1 || !mongoose.Types.ObjectId.isValid(req.params.id)) {
-            const found = inMemoryProjects.find(p => p._id === req.params.id);
-            if (found) return res.json({ success: true, data: found });
-            if (mongoose.connection.readyState !== 1) return res.status(404).json({ success: false, message: 'Project not found' });
+        if (mongoose.connection.readyState !== 1) {
+            const found = defaultProjects.find(p => p._id === req.params.id) || defaultProjects[0];
+            return res.json({ success: true, data: found });
         }
 
         const project = await Project.findById(req.params.id);
@@ -264,7 +250,7 @@ router.post('/', requireAuth, async (req, res) => {
 
         if (mongoose.connection.readyState !== 1) {
             const newProj = {
-                _id: 'proj-' + Date.now(),
+                _id: 'temp-' + Date.now(),
                 title: String(title).trim(),
                 category: category || 'Residential',
                 location: String(location).trim(),
@@ -273,9 +259,7 @@ router.post('/', requireAuth, async (req, res) => {
                 images: imageArray,
                 createdAt: new Date()
             };
-            inMemoryProjects.unshift(newProj);
-            notifyProjectsChanged(req, 'create', { project: newProj });
-            return res.status(201).json({ success: true, message: 'Project created successfully', data: newProj });
+            return res.status(201).json({ success: true, message: 'Project created', data: newProj });
         }
 
         const project = new Project({
@@ -288,7 +272,6 @@ router.post('/', requireAuth, async (req, res) => {
         });
 
         await project.save();
-        notifyProjectsChanged(req, 'create', { project });
 
         res.status(201).json({
             success: true,
@@ -309,26 +292,8 @@ router.patch('/:id', requireAuth, async (req, res) => {
     try {
         const { title, category, location, description, status, images } = req.body;
 
-        if (mongoose.connection.readyState !== 1 || !mongoose.Types.ObjectId.isValid(req.params.id)) {
-            const idx = inMemoryProjects.findIndex(p => p._id === req.params.id);
-            if (idx !== -1) {
-                if (title !== undefined) inMemoryProjects[idx].title = String(title).trim();
-                if (category !== undefined) inMemoryProjects[idx].category = category;
-                if (location !== undefined) inMemoryProjects[idx].location = String(location).trim();
-                if (description !== undefined) inMemoryProjects[idx].description = String(description).trim();
-                if (status !== undefined) inMemoryProjects[idx].status = status;
-                if (images !== undefined) {
-                    inMemoryProjects[idx].images = Array.isArray(images)
-                        ? images.filter(img => typeof img === 'string' && img.trim() !== '')
-                        : (images ? [String(images).trim()] : []);
-                }
-                const updatedProj = inMemoryProjects[idx];
-                notifyProjectsChanged(req, 'update', { project: updatedProj });
-                return res.json({ success: true, message: 'Project updated successfully', data: updatedProj });
-            }
-            if (mongoose.connection.readyState !== 1) {
-                return res.status(404).json({ success: false, message: 'Project not found' });
-            }
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ success: true, message: 'Project updated successfully' });
         }
 
         const updateData = {};
@@ -356,8 +321,6 @@ router.patch('/:id', requireAuth, async (req, res) => {
             });
         }
 
-        notifyProjectsChanged(req, 'update', { project });
-
         res.json({
             success: true,
             message: 'Project updated successfully',
@@ -375,30 +338,17 @@ router.patch('/:id', requireAuth, async (req, res) => {
 // Protected: Delete project
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
-        const id = req.params.id;
-
-        // First check in-memory list if present
-        const inMemIdx = inMemoryProjects.findIndex(p => p._id === id);
-        if (inMemIdx !== -1) {
-            inMemoryProjects.splice(inMemIdx, 1);
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ success: true, message: 'Project deleted successfully' });
         }
 
-        if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(id)) {
-            const project = await Project.findByIdAndDelete(id);
-            if (!project && inMemIdx === -1) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'Project not found in database'
-                });
-            }
-        } else if (inMemIdx === -1 && mongoose.connection.readyState !== 1) {
+        const project = await Project.findByIdAndDelete(req.params.id);
+        if (!project) {
             return res.status(404).json({
                 success: false,
                 message: 'Project not found'
             });
         }
-
-        notifyProjectsChanged(req, 'delete', { id });
 
         res.json({
             success: true,
