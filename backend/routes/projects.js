@@ -243,21 +243,13 @@ router.get('/:id', async (req, res) => {
 
         const { id } = req.params;
 
-        if (mongoose.connection.readyState !== 1) {
-            const found = defaultProjects.find(p => String(p._id) === String(id)) || defaultProjects[0];
-            return res.json({ success: true, data: found });
-        }
-
         let project = null;
-        if (mongoose.Types.ObjectId.isValid(id)) {
+        if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(id)) {
             project = await Project.findById(id);
         }
+
         if (!project) {
-            project = await Project.findOne({ _id: id });
-        }
-        if (!project) {
-            const foundDefault = defaultProjects.find(p => String(p._id) === String(id));
-            if (foundDefault) project = foundDefault;
+            project = defaultProjects.find(p => String(p._id) === String(id)) || null;
         }
 
         if (!project) {
@@ -362,13 +354,8 @@ router.patch('/:id', requireAuth, async (req, res) => {
 
         let updatedProject = null;
 
-        if (mongoose.connection.readyState === 1) {
-            if (mongoose.Types.ObjectId.isValid(id)) {
-                updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
-            }
-            if (!updatedProject) {
-                updatedProject = await Project.findOneAndUpdate({ _id: id }, updateData, { new: true, runValidators: true });
-            }
+        if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(id)) {
+            updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
         }
 
         // Also update default fallback array if present
@@ -409,38 +396,24 @@ router.patch('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
         const { id } = req.params;
-        let deleted = false;
         let deletedId = id;
-
-        if (mongoose.connection.readyState === 1) {
-            if (mongoose.Types.ObjectId.isValid(id)) {
-                const resDoc = await Project.findByIdAndDelete(id);
-                if (resDoc) deleted = true;
-            }
-            if (!deleted) {
-                const resDoc = await Project.findOneAndDelete({ _id: id });
-                if (resDoc) deleted = true;
-            }
-        }
+        let targetTitle = null;
 
         // Remove from in-memory default array if matching
         const defaultIdx = defaultProjects.findIndex(p => String(p._id) === String(id));
         if (defaultIdx !== -1) {
+            targetTitle = defaultProjects[defaultIdx].title;
             defaultProjects.splice(defaultIdx, 1);
-            deleted = true;
         }
 
-        if (!deleted && mongoose.connection.readyState === 1) {
-            // Check if deleted by title or loose match fallback
-            const countBefore = await Project.countDocuments({ _id: id });
-            if (countBefore > 0) {
-                await Project.deleteOne({ _id: id });
-                deleted = true;
+        if (mongoose.connection.readyState === 1) {
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                await Project.findByIdAndDelete(id);
+            } else if (targetTitle) {
+                // If ID is string like 'default-1', delete matching document by title from MongoDB safely
+                await Project.deleteMany({ title: targetTitle });
             }
         }
-
-        // Even if the ID was a default or non-standard ID, confirm deletion
-        deleted = true;
 
         // Real-time broadcast to all clients
         const io = req.app.get('io');
@@ -448,7 +421,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
             io.emit('project_deleted', { id: deletedId });
         }
 
-        res.json({
+        return res.json({
             success: true,
             message: 'Project deleted successfully',
             id: deletedId
