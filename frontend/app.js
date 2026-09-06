@@ -546,17 +546,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       PROJECT CARDS INTERACTION (NO NAVIGATION)
+       PROJECT CARDS INTERACTION & DYNAMIC API FETCH
        ========================================== */
     const projectCards = document.querySelectorAll('.project-card');
     projectCards.forEach(card => {
         card.addEventListener('click', (e) => {
             e.preventDefault();
-            projectCards.forEach(c => {
+            document.querySelectorAll('.project-card').forEach(c => {
                 if (c !== card) c.classList.remove('active');
             });
             card.classList.toggle('active');
         });
     });
+
+    const projectsGrid = document.querySelector('.projects-grid');
+    if (projectsGrid) {
+        const fetchProjects = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/projects`);
+                const result = await response.json();
+
+                if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
+                    const existingTitles = new Set(
+                        Array.from(projectsGrid.querySelectorAll('.project-title'))
+                            .map(el => el.textContent.trim().toLowerCase())
+                    );
+
+                    const projectsToInsert = result.data.slice().reverse();
+
+                    projectsToInsert.forEach(p => {
+                        const titleLower = (p.title || '').trim().toLowerCase();
+                        if (!existingTitles.has(titleLower)) {
+                            const imgUrl = (p.images && p.images.length > 0 && p.images[0])
+                                ? p.images[0]
+                                : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
+
+                            const clientText = p.location
+                                ? `${p.category || 'Residential'} • ${p.location}`
+                                : (p.description || p.category || 'Custom Project');
+
+                            const card = document.createElement('div');
+                            card.className = 'project-card animate-up reveal-active';
+                            card.setAttribute('tabindex', '0');
+                            card.innerHTML = `
+                                <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'" alt="${p.title}">
+                                <div class="project-overlay">
+                                    <h3 class="project-title">${p.title}</h3>
+                                    <p class="project-client">${clientText}</p>
+                                </div>
+                            `;
+
+                            card.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                document.querySelectorAll('.project-card').forEach(c => {
+                                    if (c !== card) c.classList.remove('active');
+                                });
+                                card.classList.toggle('active');
+                            });
+
+                            projectsGrid.insertBefore(card, projectsGrid.firstChild);
+                            existingTitles.add(titleLower);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching dynamic projects for public website:', err);
+            }
+        };
+
+        fetchProjects();
+    }
 
 });
