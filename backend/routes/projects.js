@@ -117,12 +117,14 @@ router.post('/', requireAuth, async (req, res) => {
     try {
         const { title, category, location, description, status, images } = req.body;
 
-        if (!title || !location) {
+        if (!location) {
             return res.status(400).json({
                 success: false,
-                message: 'Title and location are required'
+                message: 'Location is required'
             });
         }
+
+        const resolvedTitle = title ? String(title).trim() : (location ? `${category || 'Project'} (${String(location).trim()})` : 'Untitled Project');
 
         const imageArray = Array.isArray(images) 
             ? images.filter(img => typeof img === 'string' && img.trim() !== '')
@@ -131,7 +133,7 @@ router.post('/', requireAuth, async (req, res) => {
         if (mongoose.connection.readyState !== 1) {
             const newProj = {
                 _id: 'temp-' + Date.now(),
-                title: String(title).trim(),
+                title: resolvedTitle,
                 category: category || 'Residential',
                 location: String(location).trim(),
                 description: description ? String(description).trim() : '',
@@ -143,10 +145,10 @@ router.post('/', requireAuth, async (req, res) => {
         }
 
         const project = new Project({
-            title: String(title).trim(),
+            title: resolvedTitle,
             category: category || 'Residential',
             location: String(location).trim(),
-            description: String(description).trim(),
+            description: description ? String(description).trim() : '',
             status: status || 'Completed',
             images: imageArray
         });

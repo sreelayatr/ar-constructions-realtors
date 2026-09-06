@@ -60,13 +60,14 @@ function renderProjectsTable(projects) {
 
     tbody.innerHTML = projects.map(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80';
+        const displayTitle = p.title ? p.title : (p.location ? `${p.category || 'Project'} (${p.location})` : (p.category || 'Untitled Project'));
 
         return `
             <tr>
                 <td>
                     <img src="${escapeHtml(thumb)}" alt="Thumb" style="width: 50px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80'">
                 </td>
-                <td><strong>${escapeHtml(p.title)}</strong></td>
+                <td><strong>${escapeHtml(displayTitle)}</strong></td>
                 <td><span style="font-size: 0.85rem; color: var(--text-secondary);">${escapeHtml(p.category)}</span></td>
                 <td>${escapeHtml(p.location)}</td>
                 <td>${formatDate(p.createdAt)}</td>
@@ -122,9 +123,10 @@ function closeProjectModal() {
 async function handleProjectSave(e) {
     e.preventDefault();
     const id = document.getElementById('project-id').value;
-    const title = document.getElementById('p-title').value.trim();
+    const rawTitle = document.getElementById('p-title').value.trim();
     const category = document.getElementById('p-category').value;
     const location = document.getElementById('p-location').value.trim();
+    const title = rawTitle || (location ? `${category} (${location})` : category);
     const description = location || title;
     const status = 'Completed';
     const imagesRaw = document.getElementById('p-images').value;
