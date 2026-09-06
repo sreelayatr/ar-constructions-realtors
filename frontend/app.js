@@ -546,22 +546,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       PROJECT CARDS INTERACTION (NO NAVIGATION)
+       DYNAMIC PROJECTS PORTFOLIO LOAD & REAL-TIME SYNC
        ========================================== */
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            e.preventDefault();
-            projectCards.forEach(c => {
-                if (c !== card) c.classList.remove('active');
-            });
-            card.classList.toggle('active');
-        });
-    });
+    const projectsGrid = document.querySelector('.projects-grid');
 
-    /* ==========================================
-       REAL-TIME PROJECT DELETION SYNC (NO REFRESH)
-       ========================================== */
     const syncWebsiteProjects = () => {
         let deletedIds = [];
         try {
@@ -591,10 +579,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    syncWebsiteProjects();
+    const renderPublicProjects = (projects) => {
+        if (!projectsGrid) return;
+        
+        let deletedIds = [];
+        try {
+            deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+        } catch (e) {}
+
+        const activeProjects = projects.filter(p => 
+            !deletedIds.includes(p._id) && 
+            !deletedIds.includes(String(p._id)) && 
+            !deletedIds.some(id => id.toLowerCase() === String(p._id).toLowerCase() || (p.title && id.toLowerCase().includes(p.title.toLowerCase())))
+        );
+
+        if (activeProjects.length === 0) {
+            projectsGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; color: #a0a0b0; padding: 40px;">
+                    <p style="font-size: 1.1rem;">No projects currently available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        projectsGrid.innerHTML = activeProjects.map((p) => {
+            const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
+            const title = p.title || 'Portfolio Project';
+            const subtitle = p.description || p.location || 'AR Constructions & Realtors';
+
+            return `
+                <div class="project-card animate-up" data-id="${p._id}" tabindex="0">
+                    <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${title}">
+                    <div class="project-overlay">
+                        <h3 class="project-title">${title}</h3>
+                        <p class="project-client">${subtitle}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const newCards = projectsGrid.querySelectorAll('.project-card');
+        newCards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                newCards.forEach(c => { if (c !== card) c.classList.remove('active'); });
+                card.classList.toggle('active');
+            });
+        });
+    };
+
+    const fetchPublicProjects = async () => {
+        if (!projectsGrid) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/projects`);
+            const data = await res.json();
+            if (data.success && data.data) {
+                renderPublicProjects(data.data);
+            } else {
+                syncWebsiteProjects();
+            }
+        } catch (err) {
+            console.error('Error fetching public projects:', err);
+            syncWebsiteProjects();
+        }
+    };
+
+    fetchPublicProjects();
 
     window.addEventListener('storage', (e) => {
         if (e.key === 'deleted_project_ids' || e.key === 'projects_sync_event') {
+            fetchPublicProjects();
             syncWebsiteProjects();
         }
     });
@@ -611,6 +665,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     deletedIds.push(data.id);
                     localStorage.setItem('deleted_project_ids', JSON.stringify(deletedIds));
                 }
+                fetchPublicProjects();
+                syncWebsiteProjects();
+            });
+            socket.on('refresh_projects', () => {
+                fetchPublicProjects();
                 syncWebsiteProjects();
             });
         } catch (e) {
