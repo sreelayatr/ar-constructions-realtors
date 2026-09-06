@@ -164,24 +164,19 @@ const isRealMongoUri =
   !uri.includes("127.0.0.1") &&
   !uri.includes("localhost");
 
-const isProduction = process.env.NODE_ENV === "production" || process.env.RENDER === "true" || !!process.env.PORT || !!process.env.RENDER_SERVICE_ID;
+const isSecureCookie = process.env.NODE_ENV === "production" && (process.env.RENDER === "true" || !!process.env.RENDER_SERVICE_ID);
 
 // Session configuration
 const sessionConfig = {
   name: "ar_admin_sid",
-
   secret: sessionSecret,
-
   resave: false,
-
   saveUninitialized: false,
-
   proxy: true,
-
   cookie: {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    secure: isSecureCookie,
+    sameSite: isSecureCookie ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
   },
 };
