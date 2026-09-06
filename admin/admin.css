@@ -750,17 +750,32 @@ body {
    ========================================================================== */
 
 .login-body {
-    background: linear-gradient(rgba(10, 10, 12, 0.4), rgba(10, 10, 12, 0.6)), url('assets/login-bg.jpg') no-repeat center center / cover;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 20px;
     position: relative;
+    overflow: hidden;
+    background-color: #0a0a0c;
+}
+
+.login-body::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: linear-gradient(rgba(10, 10, 12, 0.4), rgba(10, 10, 12, 0.6)), url('assets/login-bg.jpg') no-repeat center center / cover;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+    transform: scale(1.03);
+    z-index: 0;
 }
 
 .login-card {
-    background: rgba(18, 18, 22, 0.82);
+    background: rgba(18, 18, 22, 0.85);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(197, 160, 89, 0.3);
@@ -772,6 +787,7 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+    z-index: 1;
 }
 
 .login-card::before {
