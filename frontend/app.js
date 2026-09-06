@@ -4,9 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // PRODUCTION API BASE URL (Render Backend)
     // ==========================================================
 
-    const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'http://localhost:9100'
-        : 'https://ar-constructions-realtors.onrender.com';
+    const API_BASE_URL = (
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === '' ||
+        window.location.protocol === 'file:'
+    ) ? 'http://localhost:9100' : 'https://ar-constructions-realtors.onrender.com';
 
     /* ==========================================
        STICKY HEADER TRANSITION
@@ -550,17 +553,38 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================== */
     const projectsGrid = document.getElementById('projects-grid');
 
+    const DEFAULT_PUBLIC_PROJECTS = [
+        { _id: 'default-1', title: "Skyline Ranch", description: "Mr Sijo & Festy (Thripoonithara)", images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"] },
+        { _id: 'default-2', title: "Eza - Gold Thrissur", description: "Mr Biju (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Mr-Biju-Eza-Gold-Thrissur.jpg"] },
+        { _id: 'default-3', title: "Navya Bake House", description: "Kurian & Hitha", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"] },
+        { _id: 'default-4', title: "Residence Thrissur", description: "Mr Pinto Francis (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0040.jpg"] },
+        { _id: 'default-5', title: "Residence Thrissur", description: "Mr Rajesh Francis (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0061.jpg"] },
+        { _id: 'default-6', title: "Residence Layout", description: "Mr Justin Raphael", images: ["https://spaceliftstudio.com/wp-content/uploads/2022/03/1.jpeg"] },
+        { _id: 'default-7', title: "Casablanca Apartment", description: "Mr Joju (Thrissur)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/04/1.jpg"] },
+        { _id: 'default-8', title: "Residence Design", description: "Mr Bijoy Varghese", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg"] },
+        { _id: 'default-9', title: "Modern Layout", description: "Mr Jino Jose", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/DSC_0371.jpg"] },
+        { _id: 'default-10', title: "Sobha Saphire", description: "Mr Daison (Sobha Saphire)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/IMG_9675-1.jpg"] },
+        { _id: 'default-11', title: "Residence Project", description: "Dr Rajesh & Dr Anu", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/4L8A9460.jpg"] },
+        { _id: 'default-12', title: "Sobha Jade", description: "Mr Girilal (Sobha Jade)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/2L6A9378-3.jpg"] },
+        { _id: 'default-13', title: "Sobha Saphire", description: "Mrs Anita (Sobha Saphire)", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-13-2.jpg"] },
+        { _id: 'default-14', title: "Residence Design", description: "Mr Mejo Chittilappally", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-28-2.jpg"] },
+        { _id: 'default-15', title: "Residence Project", description: "Mr Antochan Manjaly", images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto8.jpg"] }
+    ];
+
     if (projectsGrid) {
         async function fetchPublicProjects() {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/projects`, { cache: 'no-store' });
                 const data = await res.json();
 
-                if (data.success && Array.isArray(data.data)) {
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
                     renderPublicProjects(data.data);
+                } else {
+                    renderPublicProjects(DEFAULT_PUBLIC_PROJECTS);
                 }
             } catch (err) {
-                console.error('Error loading public projects:', err);
+                console.warn('Backend API offline or unreachable, rendering fallback project photos:', err);
+                renderPublicProjects(DEFAULT_PUBLIC_PROJECTS);
             }
         }
 
