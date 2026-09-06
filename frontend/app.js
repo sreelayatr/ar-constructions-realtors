@@ -552,51 +552,86 @@ document.addEventListener('DOMContentLoaded', () => {
     if (projectsGrid) {
         let lastProjectsJson = '';
 
+        const getLocalStoredProjects = () => {
+            try {
+                const stored = localStorage.getItem('ar_custom_projects');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {}
+            return null;
+        };
+
         const fetchAndRenderPublicProjects = async () => {
+            let projectsToDisplay = getLocalStoredProjects();
+
             try {
                 const res = await fetch(`${API_BASE_URL}/api/projects`);
                 const data = await res.json();
                 if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-                    const currentJson = JSON.stringify(data.data);
-                    if (currentJson === lastProjectsJson) return;
-                    lastProjectsJson = currentJson;
-
-                    projectsGrid.innerHTML = data.data.map(p => {
-                        const imgUrl = (p.images && p.images.length > 0 && p.images[0]) 
-                            ? p.images[0] 
-                            : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
-                        const title = p.title || 'Untitled Project';
-                        const clientOrLocation = p.location ? `${p.location}` : '';
-
-                        return `
-                            <div class="project-card animate-up" tabindex="0">
-                                <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${title}">
-                                <div class="project-overlay">
-                                    <h3 class="project-title">${title}</h3>
-                                    <p class="project-client">${clientOrLocation}</p>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-
-                    const cards = projectsGrid.querySelectorAll('.project-card');
-                    cards.forEach(card => {
-                        card.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            cards.forEach(c => {
-                                if (c !== card) c.classList.remove('active');
-                            });
-                            card.classList.toggle('active');
-                        });
-                    });
+                    projectsToDisplay = data.data;
                 }
             } catch (err) {
-                console.error('Error fetching public projects:', err);
+                // If backend fetch is offline, use local storage copy
             }
+
+            if (!projectsToDisplay) return;
+
+            const currentJson = JSON.stringify(projectsToDisplay);
+            if (currentJson === lastProjectsJson) return;
+            lastProjectsJson = currentJson;
+
+            projectsGrid.innerHTML = projectsToDisplay.map(p => {
+                const imgUrl = (p.images && p.images.length > 0 && p.images[0]) 
+                    ? p.images[0] 
+                    : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
+                const title = p.title || 'Untitled Project';
+                const clientOrLocation = p.location ? `${p.location}` : '';
+
+                return `
+                    <div class="project-card animate-up" tabindex="0">
+                        <img class="project-img" src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80'" alt="${title}">
+                        <div class="project-overlay">
+                            <h3 class="project-title">${title}</h3>
+                            <p class="project-client">${clientOrLocation}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const cards = projectsGrid.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    cards.forEach(c => {
+                        if (c !== card) c.classList.remove('active');
+                    });
+                    card.classList.toggle('active');
+                });
+            });
         };
 
         fetchAndRenderPublicProjects();
 
+        // BroadcastChannel for instant cross-tab live updates without refresh
+        if (typeof BroadcastChannel !== 'undefined') {
+            const bc = new BroadcastChannel('ar_projects_sync');
+            bc.onmessage = () => {
+                fetchAndRenderPublicProjects();
+            };
+        }
+
+        // Storage event listener for cross-window real-time updates
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'ar_custom_projects') {
+                fetchAndRenderPublicProjects();
+            }
+        });
+
+        // Socket.IO real-time updates
         if (typeof io !== 'undefined') {
             try {
                 const socket = io(API_BASE_URL);
@@ -604,12 +639,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 socket.on('project_updated', () => fetchAndRenderPublicProjects());
                 socket.on('project_deleted', () => fetchAndRenderPublicProjects());
                 socket.on('projects_changed', () => fetchAndRenderPublicProjects());
-            } catch (sErr) {
-                console.warn('Socket connection warning:', sErr);
-            }
+            } catch (sErr) {}
         }
 
-        setInterval(fetchAndRenderPublicProjects, 3000);
+        // Fast background poll every 1 second
+        setInterval(fetchAndRenderPublicProjects, 1000);
     } else {
         const projectCards = document.querySelectorAll('.project-card');
         projectCards.forEach(card => {
