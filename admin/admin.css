@@ -960,17 +960,44 @@ body {
     }
 }
 
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        min-width: 650px;
+    }
+
+    .action-btns {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+}
+
 @media (max-width: 640px) {
     .admin-content {
-        padding: 16px;
+        padding: 16px 12px;
     }
 
     .admin-topbar {
-        padding: 0 16px;
+        padding: 0 14px;
+        height: 60px;
+    }
+
+    .page-title {
+        font-size: 1.05rem;
+    }
+
+    .user-info {
+        display: none;
     }
 
     .metrics-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .form-grid {
@@ -989,5 +1016,14 @@ body {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+    }
+
+    .card-section {
+        padding: 18px 14px;
+    }
+
+    .login-card {
+        padding: 24px 18px;
     }
 }
