@@ -27,21 +27,7 @@ function setupRealtimeDashboard() {
         socket.on('booking_deleted', () => {
             loadDashboardMetrics();
         });
-
-        socket.on('project_deleted', () => {
-            loadDashboardMetrics();
-        });
-
-        socket.on('refresh_projects', () => {
-            loadDashboardMetrics();
-        });
     }
-
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'deleted_project_ids' || e.key === 'projects_sync_event') {
-            loadDashboardMetrics();
-        }
-    });
 }
 
 async function loadDashboardMetrics() {
@@ -61,18 +47,12 @@ async function loadDashboardMetrics() {
 
         if (data.success && data.data) {
             const metrics = data.data;
-            let deletedCount = 0;
-            try {
-                const deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
-                deletedCount = deletedIds.length;
-            } catch(e) {}
-            const totalProjCount = Math.max(0, (metrics.totalProjects || 15) - deletedCount);
 
             // Update Counts with animation highlight
             updateMetricAnimated('metric-total-bookings', metrics.totalBookings || 0);
             updateMetricAnimated('metric-pending-bookings', metrics.pendingBookings || 0);
             updateMetricAnimated('metric-confirmed-bookings', metrics.confirmedBookings || 0);
-            updateMetricAnimated('metric-total-projects', totalProjCount);
+            updateMetricAnimated('metric-total-projects', metrics.totalProjects || 0);
 
             // Render Recent Bookings Table
             renderRecentBookings(metrics.recentBookings || []);

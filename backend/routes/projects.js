@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const { requireAuth } = require('../middleware/auth');
 
-let defaultProjects = [
+const defaultProjects = [
     {
         _id: 'default-1',
         title: "Skyline Ranch",
@@ -338,51 +338,27 @@ router.patch('/:id', requireAuth, async (req, res) => {
 // Protected: Delete project
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
-        const idToDelete = req.params.id;
-        const { title, img } = req.body || {};
-        const io = req.app.get('io');
-
-        const deletedTarget = defaultProjects.find(p => String(p._id) === String(idToDelete)) || {};
-        defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
-
-        if (mongoose.connection.readyState === 1) {
-            if (mongoose.Types.ObjectId.isValid(idToDelete)) {
-                await Project.findByIdAndDelete(idToDelete);
-            } else {
-                await Project.deleteOne({ _id: idToDelete });
-            }
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({ success: true, message: 'Project deleted successfully' });
         }
 
-        const deletePayload = {
-            id: idToDelete,
-            title: title || deletedTarget.title || '',
-            img: img || (deletedTarget.images && deletedTarget.images[0]) || ''
-        };
-
-        if (io) {
-            io.emit('project_deleted', deletePayload);
-            io.emit('refresh_projects');
+        const project = await Project.findByIdAndDelete(req.params.id);
+        if (!project) {
+            return res.status(404).json({
+                success: false,
+                message: 'Project not found'
+            });
         }
 
         res.json({
             success: true,
-            message: 'Project deleted successfully',
-            deletedId: idToDelete
+            message: 'Project deleted successfully'
         });
     } catch (error) {
         console.error('Delete Project Error:', error.message);
-        const idToDelete = req.params.id;
-        const { title, img } = req.body || {};
-        defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
-        const io = req.app.get('io');
-        if (io) {
-            io.emit('project_deleted', { id: idToDelete, title, img });
-            io.emit('refresh_projects');
-        }
-        res.json({
-            success: true,
-            message: 'Project deleted successfully',
-            deletedId: idToDelete
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete project'
         });
     }
 });
