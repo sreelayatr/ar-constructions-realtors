@@ -577,7 +577,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const cardId = card.getAttribute('data-id');
             const cardTitle = card.querySelector('.project-title')?.textContent?.trim()?.toLowerCase() || '';
 
-            const isDeleted = Boolean(cardId && deletedIds.includes(cardId));
+            const isDeleted = (cardId && deletedIds.includes(cardId)) ||
+                deletedIds.some(id => id.toLowerCase() === cardId?.toLowerCase() || (cardTitle && id.toLowerCase().includes(cardTitle)));
 
             if (isDeleted) {
                 card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
