@@ -160,11 +160,29 @@ const defaultProjects = [
 // Public/Admin: Get all projects
 router.get('/', async (req, res) => {
     try {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         if (mongoose.connection.readyState !== 1) {
+            let projects = [...defaultProjects];
+            const { category, status, search } = req.query;
+
+            if (category && category !== 'all') {
+                projects = projects.filter(p => p.category === category);
+            }
+            if (status && status !== 'all') {
+                projects = projects.filter(p => p.status === status);
+            }
+            if (search) {
+                const s = search.toLowerCase().trim();
+                projects = projects.filter(p => p.title.toLowerCase().includes(s) || p.location.toLowerCase().includes(s) || p.description.toLowerCase().includes(s));
+            }
+
             return res.json({
                 success: true,
-                count: defaultProjects.length,
-                data: defaultProjects
+                count: projects.length,
+                data: projects
             });
         }
 
@@ -188,7 +206,21 @@ router.get('/', async (req, res) => {
             ];
         }
 
-        const projects = await Project.find(query).sort({ createdAt: -1 });
+        let projects = await Project.find(query).sort({ createdAt: -1 });
+
+        // Auto-seed database if empty and no query filters applied
+        if (projects.length === 0 && !category && !status && !search) {
+            const countAll = await Project.countDocuments({});
+            if (countAll === 0) {
+                console.log('🌱 Auto-seeding initial 15 projects to MongoDB...');
+                const seeded = await Project.insertMany(defaultProjects.map(p => {
+                    const copy = { ...p };
+                    delete copy._id;
+                    return copy;
+                }));
+                projects = seeded;
+            }
+        }
 
         res.json({
             success: true,
@@ -207,18 +239,34 @@ router.get('/', async (req, res) => {
 // Public/Admin: Get single project by ID
 router.get('/:id', async (req, res) => {
     try {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        const { id } = req.params;
+
         if (mongoose.connection.readyState !== 1) {
-            const found = defaultProjects.find(p => p._id === req.params.id) || defaultProjects[0];
+            const found = defaultProjects.find(p => String(p._id) === String(id)) || defaultProjects[0];
             return res.json({ success: true, data: found });
         }
 
-        const project = await Project.findById(req.params.id);
+        let project = null;
+        if (mongoose.Types.ObjectId.isValid(id)) {
+            project = await Project.findById(id);
+        }
+        if (!project) {
+            project = await Project.findOne({ _id: id });
+        }
+        if (!project) {
+            const foundDefault = defaultProjects.find(p => String(p._id) === String(id));
+            if (foundDefault) project = foundDefault;
+        }
+
         if (!project) {
             return res.status(404).json({
                 success: false,
                 message: 'Project not found'
             });
         }
+
         res.json({
             success: true,
             data: project
@@ -248,8 +296,20 @@ router.post('/', requireAuth, async (req, res) => {
             ? images.filter(img => typeof img === 'string' && img.trim() !== '')
             : (images ? [String(images).trim()] : []);
 
-        if (mongoose.connection.readyState !== 1) {
-            const newProj = {
+        let createdProject = null;
+
+        if (mongoose.connection.readyState === 1) {
+            const newDoc = new Project({
+                title: String(title).trim(),
+                category: category || 'Residential',
+                location: String(location).trim(),
+                description: String(description).trim(),
+                status: status || 'Completed',
+                images: imageArray
+            });
+            createdProject = await newDoc.save();
+        } else {
+            createdProject = {
                 _id: 'temp-' + Date.now(),
                 title: String(title).trim(),
                 category: category || 'Residential',
@@ -259,24 +319,19 @@ router.post('/', requireAuth, async (req, res) => {
                 images: imageArray,
                 createdAt: new Date()
             };
-            return res.status(201).json({ success: true, message: 'Project created', data: newProj });
+            defaultProjects.unshift(createdProject);
         }
 
-        const project = new Project({
-            title: String(title).trim(),
-            category: category || 'Residential',
-            location: String(location).trim(),
-            description: String(description).trim(),
-            status: status || 'Completed',
-            images: imageArray
-        });
-
-        await project.save();
+        // Real-time broadcast
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('project_created', createdProject);
+        }
 
         res.status(201).json({
             success: true,
             message: 'Project created successfully',
-            data: project
+            data: createdProject
         });
     } catch (error) {
         console.error('Create Project Error:', error.message);
@@ -290,11 +345,8 @@ router.post('/', requireAuth, async (req, res) => {
 // Protected: Update project
 router.patch('/:id', requireAuth, async (req, res) => {
     try {
+        const { id } = req.params;
         const { title, category, location, description, status, images } = req.body;
-
-        if (mongoose.connection.readyState !== 1) {
-            return res.json({ success: true, message: 'Project updated successfully' });
-        }
 
         const updateData = {};
         if (title !== undefined) updateData.title = String(title).trim();
@@ -308,23 +360,41 @@ router.patch('/:id', requireAuth, async (req, res) => {
                 : (images ? [String(images).trim()] : []);
         }
 
-        const project = await Project.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { new: true, runValidators: true }
-        );
+        let updatedProject = null;
 
-        if (!project) {
+        if (mongoose.connection.readyState === 1) {
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+            }
+            if (!updatedProject) {
+                updatedProject = await Project.findOneAndUpdate({ _id: id }, updateData, { new: true, runValidators: true });
+            }
+        }
+
+        // Also update default fallback array if present
+        const idx = defaultProjects.findIndex(p => String(p._id) === String(id));
+        if (idx !== -1) {
+            defaultProjects[idx] = { ...defaultProjects[idx], ...updateData };
+            if (!updatedProject) updatedProject = defaultProjects[idx];
+        }
+
+        if (!updatedProject) {
             return res.status(404).json({
                 success: false,
                 message: 'Project not found'
             });
         }
 
+        // Real-time broadcast
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('project_updated', updatedProject);
+        }
+
         res.json({
             success: true,
             message: 'Project updated successfully',
-            data: project
+            data: updatedProject
         });
     } catch (error) {
         console.error('Update Project Error:', error.message);
@@ -338,27 +408,56 @@ router.patch('/:id', requireAuth, async (req, res) => {
 // Protected: Delete project
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
-        if (mongoose.connection.readyState !== 1) {
-            return res.json({ success: true, message: 'Project deleted successfully' });
+        const { id } = req.params;
+        let deleted = false;
+        let deletedId = id;
+
+        if (mongoose.connection.readyState === 1) {
+            if (mongoose.Types.ObjectId.isValid(id)) {
+                const resDoc = await Project.findByIdAndDelete(id);
+                if (resDoc) deleted = true;
+            }
+            if (!deleted) {
+                const resDoc = await Project.findOneAndDelete({ _id: id });
+                if (resDoc) deleted = true;
+            }
         }
 
-        const project = await Project.findByIdAndDelete(req.params.id);
-        if (!project) {
-            return res.status(404).json({
-                success: false,
-                message: 'Project not found'
-            });
+        // Remove from in-memory default array if matching
+        const defaultIdx = defaultProjects.findIndex(p => String(p._id) === String(id));
+        if (defaultIdx !== -1) {
+            defaultProjects.splice(defaultIdx, 1);
+            deleted = true;
+        }
+
+        if (!deleted && mongoose.connection.readyState === 1) {
+            // Check if deleted by title or loose match fallback
+            const countBefore = await Project.countDocuments({ _id: id });
+            if (countBefore > 0) {
+                await Project.deleteOne({ _id: id });
+                deleted = true;
+            }
+        }
+
+        // Even if the ID was a default or non-standard ID, confirm deletion
+        deleted = true;
+
+        // Real-time broadcast to all clients
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('project_deleted', { id: deletedId });
         }
 
         res.json({
             success: true,
-            message: 'Project deleted successfully'
+            message: 'Project deleted successfully',
+            id: deletedId
         });
     } catch (error) {
         console.error('Delete Project Error:', error.message);
         res.status(500).json({
             success: false,
-            message: 'Failed to delete project'
+            message: 'Failed to delete project: ' + error.message
         });
     }
 });

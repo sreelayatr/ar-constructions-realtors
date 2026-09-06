@@ -1,12 +1,42 @@
-/* ==========================================================================
-   AR CONSTRUCTIONS & REALTORS - PROJECTS MANAGEMENT SCRIPT
-   ========================================================================== */
-
+let currentProjectsList = [];
 let searchTimeout = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     loadProjects();
+    setupProjectSocketListeners();
 });
+
+function setupProjectSocketListeners() {
+    if (typeof socket !== 'undefined' && socket) {
+        socket.on('project_created', (newProj) => {
+            if (typeof playNotificationChime === 'function') playNotificationChime();
+            showToast(`New project added: ${newProj.title || 'Portfolio Item'}`, 'success');
+            loadProjects();
+        });
+
+        socket.on('project_updated', (updatedProj) => {
+            showToast(`Project updated: ${updatedProj.title || 'Portfolio Item'}`, 'success');
+            loadProjects();
+        });
+
+        socket.on('project_deleted', (evt) => {
+            if (evt && evt.id) {
+                removeProjectFromState(evt.id);
+            } else {
+                loadProjects();
+            }
+        });
+    }
+}
+
+function removeProjectFromState(id) {
+    currentProjectsList = currentProjectsList.filter(p => String(p._id) !== String(id));
+    const idx = FALLBACK_15_PROJECTS.findIndex(p => String(p._id) === String(id));
+    if (idx !== -1) {
+        FALLBACK_15_PROJECTS.splice(idx, 1);
+    }
+    renderProjectsTable(currentProjectsList);
+}
 
 function debounceProjectSearch() {
     clearTimeout(searchTimeout);
@@ -169,9 +199,13 @@ const FALLBACK_15_PROJECTS = [
 ];
 
 async function loadProjects() {
-    const category = document.getElementById('category-filter').value;
-    const status = document.getElementById('status-filter').value;
-    const search = document.getElementById('project-search').value.toLowerCase().trim();
+    const categoryEl = document.getElementById('category-filter');
+    const statusEl = document.getElementById('status-filter');
+    const searchEl = document.getElementById('project-search');
+
+    const category = categoryEl ? categoryEl.value : 'all';
+    const status = statusEl ? statusEl.value : 'all';
+    const search = searchEl ? searchEl.value.toLowerCase().trim() : '';
 
     let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
     if (search) {
@@ -179,33 +213,38 @@ async function loadProjects() {
     }
 
     try {
-        const res = await fetch(url, { credentials: 'include' });
+        const res = await fetch(url, {
+            headers: { 'Cache-Control': 'no-cache' },
+            credentials: 'include'
+        });
         const data = await res.json();
 
-        if (data.success && data.data && data.data.length > 0) {
-            renderProjectsTable(data.data);
+        if (data.success && Array.isArray(data.data)) {
+            currentProjectsList = data.data;
         } else {
-            let filtered = FALLBACK_15_PROJECTS;
+            let filtered = [...FALLBACK_15_PROJECTS];
             if (category !== 'all') filtered = filtered.filter(p => p.category === category);
             if (status !== 'all') filtered = filtered.filter(p => p.status === status);
             if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
-            renderProjectsTable(filtered);
+            currentProjectsList = filtered;
         }
     } catch (err) {
         console.error('Error loading projects:', err);
-        let filtered = FALLBACK_15_PROJECTS;
+        let filtered = [...FALLBACK_15_PROJECTS];
         if (category !== 'all') filtered = filtered.filter(p => p.category === category);
         if (status !== 'all') filtered = filtered.filter(p => p.status === status);
         if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
-        renderProjectsTable(filtered);
+        currentProjectsList = filtered;
     }
+
+    renderProjectsTable(currentProjectsList);
 }
 
 function renderProjectsTable(projects) {
     const tbody = document.getElementById('projects-tbody');
     if (!tbody) return;
 
-    if (projects.length === 0) {
+    if (!Array.isArray(projects) || projects.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
@@ -221,7 +260,7 @@ function renderProjectsTable(projects) {
         const badgeClass = p.status === 'Completed' ? 'badge-completed' : (p.status === 'Ongoing' ? 'badge-ongoing' : 'badge-upcoming');
 
         return `
-            <tr>
+            <tr id="project-row-${p._id}">
                 <td>
                     <img src="${escapeHtml(thumb)}" alt="Thumb" style="width: 50px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80'">
                 </td>
@@ -338,6 +377,12 @@ function closeDeleteProjectModal() {
 }
 
 async function executeDeleteProject(id) {
+    const confirmBtn = document.getElementById('confirm-delete-project-btn');
+    if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Deleting...';
+    }
+
     try {
         const res = await fetch(`${API_BASE}/projects/${id}`, {
             method: 'DELETE',
@@ -349,12 +394,17 @@ async function executeDeleteProject(id) {
         if (data.success) {
             showToast('Project deleted successfully', 'success');
             closeDeleteProjectModal();
-            loadProjects();
+            removeProjectFromState(id);
         } else {
             showToast(data.message || 'Failed to delete project', 'error');
         }
     } catch (err) {
         console.error('Error deleting project:', err);
         showToast('Server error while deleting project', 'error');
+    } finally {
+        if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Delete Project';
+        }
     }
 }
