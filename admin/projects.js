@@ -15,216 +15,29 @@ function debounceProjectSearch() {
     }, 350);
 }
 
-const FALLBACK_15_PROJECTS = [
-    {
-        _id: 'default-1',
-        title: "Skyline Ranch",
-        category: "Residential",
-        location: "Thripoonithara, Kerala",
-        description: "Bespoke luxury residential space designed for Mr Sijo & Festy (Thripoonithara).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"],
-        createdAt: '2026-02-01T10:00:00.000Z'
-    },
-    {
-        _id: 'default-2',
-        title: "Eza - Gold Thrissur",
-        category: "Commercial",
-        location: "Thrissur, Kerala",
-        description: "Premium retail jewel showroom interior and space optimization for Mr Biju.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Mr-Biju-Eza-Gold-Thrissur.jpg"],
-        createdAt: '2026-01-15T10:00:00.000Z'
-    },
-    {
-        _id: 'default-3',
-        title: "Navya Bake House",
-        category: "Commercial",
-        location: "Kerala",
-        description: "Artisanal bakery aesthetic space crafted for Kurian & Hitha.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"],
-        createdAt: '2024-10-14T10:00:00.000Z'
-    },
-    {
-        _id: 'default-4',
-        title: "Residence Thrissur (Pinto Francis)",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Elegant modern residence architectural layout for Mr Pinto Francis.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0040.jpg"],
-        createdAt: '2024-10-14T09:00:00.000Z'
-    },
-    {
-        _id: 'default-5',
-        title: "Residence Thrissur (Rajesh Francis)",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "High-end contemporary interior space for Mr Rajesh Francis.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0061.jpg"],
-        createdAt: '2024-10-14T08:00:00.000Z'
-    },
-    {
-        _id: 'default-6',
-        title: "Residence Layout (Justin Raphael)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Custom space planning and interior design for Mr Justin Raphael.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2022/03/1.jpeg"],
-        createdAt: '2022-03-01T10:00:00.000Z'
-    },
-    {
-        _id: 'default-7',
-        title: "Casablanca Apartment",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Luxury high-rise apartment interior overhaul for Mr Joju.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/04/1.jpg"],
-        createdAt: '2020-04-10T10:00:00.000Z'
-    },
-    {
-        _id: 'default-8',
-        title: "Residence Design (Bijoy Varghese)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Warm-toned aesthetic living room and interior design for Mr Bijoy Varghese.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg"],
-        createdAt: '2020-03-25T10:00:00.000Z'
-    },
-    {
-        _id: 'default-9',
-        title: "Modern Layout (Jino Jose)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Bespoke modern home layout and interior for Mr Jino Jose.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/DSC_0371.jpg"],
-        createdAt: '2020-03-20T10:00:00.000Z'
-    },
-    {
-        _id: 'default-10',
-        title: "Sobha Saphire (Daison)",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Classy luxury apartment styling for Mr Daison (Sobha Saphire).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/IMG_9675-1.jpg"],
-        createdAt: '2020-03-18T10:00:00.000Z'
-    },
-    {
-        _id: 'default-11',
-        title: "Residence Project (Dr Rajesh & Dr Anu)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Contemporary architectural home layout for Dr Rajesh & Dr Anu.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/4L8A9460.jpg"],
-        createdAt: '2020-03-15T10:00:00.000Z'
-    },
-    {
-        _id: 'default-12',
-        title: "Sobha Jade (Girilal)",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Sophisticated open-concept interior execution for Mr Girilal (Sobha Jade).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/2L6A9378-3.jpg"],
-        createdAt: '2020-03-12T10:00:00.000Z'
-    },
-    {
-        _id: 'default-13',
-        title: "Sobha Saphire (Anita)",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Luxury interior design and finishing for Mrs Anita (Sobha Saphire).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-13-2.jpg"],
-        createdAt: '2020-03-10T10:00:00.000Z'
-    },
-    {
-        _id: 'default-14',
-        title: "Residence Design (Mejo Chittilappally)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Bespoke interior supervision and design execution for Mr Mejo Chittilappally.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-28-2.jpg"],
-        createdAt: '2020-03-08T10:00:00.000Z'
-    },
-    {
-        _id: 'default-15',
-        title: "Residence Project (Antochan Manjaly)",
-        category: "Residential",
-        location: "Kerala",
-        description: "Custom luxury residence layout and interior for Mr Antochan Manjaly.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto8.jpg"],
-        createdAt: '2020-03-05T10:00:00.000Z'
-    }
-];
-
-function getStoredProjects() {
-    try {
-        const stored = localStorage.getItem('ar_custom_projects');
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                return parsed;
-            }
-        }
-    } catch (e) {
-        console.error('Error reading stored projects:', e);
-    }
-    return FALLBACK_15_PROJECTS;
-}
-
-function saveStoredProjects(projectsList) {
-    try {
-        localStorage.setItem('ar_custom_projects', JSON.stringify(projectsList));
-        if (typeof BroadcastChannel !== 'undefined') {
-            const bc = new BroadcastChannel('ar_projects_sync');
-            bc.postMessage({ type: 'PROJECTS_UPDATED', timestamp: Date.now() });
-            bc.close();
-        }
-    } catch (e) {
-        console.error('Error saving stored projects:', e);
-    }
-}
-
 async function loadProjects() {
     const category = document.getElementById('category-filter').value;
     const status = document.getElementById('status-filter').value;
-    const search = document.getElementById('project-search').value.toLowerCase().trim();
+    const search = document.getElementById('project-search').value;
 
-    let projectsToRender = getStoredProjects();
+    let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
+    if (search.trim()) {
+        url += `&search=${encodeURIComponent(search.trim())}`;
+    }
 
     try {
-        let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
-        if (search) {
-            url += `&search=${encodeURIComponent(search)}`;
-        }
         const res = await fetch(url, { credentials: 'include' });
         const data = await res.json();
 
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-            projectsToRender = data.data;
-            saveStoredProjects(data.data);
+        if (data.success) {
+            renderProjectsTable(data.data || []);
+        } else {
+            showToast('Failed to load projects', 'error');
         }
     } catch (err) {
-        console.log('Serving projects from local sync storage');
+        console.error('Error loading projects:', err);
+        showToast('Server error while loading projects', 'error');
     }
-
-    let filtered = projectsToRender;
-    if (category !== 'all') filtered = filtered.filter(p => p.category === category);
-    if (status !== 'all') filtered = filtered.filter(p => p.status === status);
-    if (search) filtered = filtered.filter(p => (p.title && p.title.toLowerCase().includes(search)) || (p.location && p.location.toLowerCase().includes(search)) || (p.description && p.description.toLowerCase().includes(search)));
-
-    renderProjectsTable(filtered);
 }
 
 function renderProjectsTable(projects) {
@@ -318,32 +131,14 @@ async function handleProjectSave(e) {
     const imagesRaw = document.getElementById('p-images').value;
 
     const images = imagesRaw.split(/[\n,]/).map(img => img.trim()).filter(img => img.length > 0);
-    const thumb = images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
 
-    const payload = { title, category, status, location, description, images: [thumb] };
+    const payload = { title, category, status, location, description, images };
     const method = id ? 'PATCH' : 'POST';
     const url = id ? `${API_BASE}/projects/${id}` : `${API_BASE}/projects`;
 
     const saveBtn = document.getElementById('save-project-btn');
     saveBtn.disabled = true;
     saveBtn.textContent = 'Saving...';
-
-    // Instant local storage & broadcast sync
-    let currentProjects = getStoredProjects();
-    if (id) {
-        const idx = currentProjects.findIndex(p => p._id === id);
-        if (idx !== -1) {
-            currentProjects[idx] = { ...currentProjects[idx], ...payload, images: [thumb] };
-        }
-    } else {
-        const newProj = {
-            _id: 'proj-' + Date.now(),
-            ...payload,
-            createdAt: new Date().toISOString()
-        };
-        currentProjects.unshift(newProj);
-    }
-    saveStoredProjects(currentProjects);
 
     try {
         const res = await fetch(url, {
@@ -354,15 +149,20 @@ async function handleProjectSave(e) {
         });
 
         const data = await res.json();
-        showToast(id ? 'Project updated successfully' : 'New project created successfully', 'success');
+
+        if (data.success) {
+            showToast(id ? 'Project updated successfully' : 'New project created successfully', 'success');
+            closeProjectModal();
+            loadProjects();
+        } else {
+            showToast(data.message || 'Failed to save project', 'error');
+        }
     } catch (err) {
-        console.warn('Saved project locally:', err);
-        showToast(id ? 'Project updated' : 'New project created', 'success');
+        console.error('Error saving project:', err);
+        showToast('Server error while saving project', 'error');
     } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save Project';
-        closeProjectModal();
-        loadProjects();
     }
 }
 
@@ -377,22 +177,23 @@ function closeDeleteProjectModal() {
 }
 
 async function executeDeleteProject(id) {
-    let currentProjects = getStoredProjects();
-    currentProjects = currentProjects.filter(p => p._id !== id);
-    saveStoredProjects(currentProjects);
-
     try {
         const res = await fetch(`${API_BASE}/projects/${id}`, {
             method: 'DELETE',
             credentials: 'include'
         });
 
-        await res.json();
+        const data = await res.json();
+
+        if (data.success) {
+            showToast('Project deleted successfully', 'success');
+            closeDeleteProjectModal();
+            loadProjects();
+        } else {
+            showToast(data.message || 'Failed to delete project', 'error');
+        }
     } catch (err) {
-        console.warn('Deleted project locally:', err);
-    } finally {
-        showToast('Project deleted successfully', 'success');
-        closeDeleteProjectModal();
-        loadProjects();
+        console.error('Error deleting project:', err);
+        showToast('Server error while deleting project', 'error');
     }
 }
