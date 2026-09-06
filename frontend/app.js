@@ -563,23 +563,34 @@ document.addEventListener('DOMContentLoaded', () => {
        REAL-TIME PROJECT DELETION SYNC (NO REFRESH)
        ========================================== */
     const syncWebsiteProjects = () => {
-        let deletedIds = [];
+        let deletedList = [];
         try {
-            deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+            deletedList = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
         } catch (e) {
-            deletedIds = [];
+            deletedList = [];
         }
 
-        if (!Array.isArray(deletedIds) || deletedIds.length === 0) return;
+        if (!Array.isArray(deletedList) || deletedList.length === 0) return;
 
         const cards = document.querySelectorAll('.project-card');
         cards.forEach(card => {
             const cardId = card.getAttribute('data-id');
-            const cardTitle = card.querySelector('.project-title')?.textContent?.trim();
-            const cardClient = card.querySelector('.project-client')?.textContent?.trim();
+            const cardTitle = card.querySelector('.project-title')?.textContent?.trim() || '';
+            const cardClient = card.querySelector('.project-client')?.textContent?.trim() || '';
+            const cardImgSrc = card.querySelector('.project-img')?.getAttribute('src') || '';
 
-            const isDeleted = (cardId && deletedIds.includes(cardId)) ||
-                deletedIds.some(id => (cardId && id === cardId) || (cardTitle && id === cardTitle) || (cardTitle && cardClient && id.includes(cardTitle) && id.includes(cardClient)));
+            const isDeleted = deletedList.some(item => {
+                if (!item) return false;
+                if (typeof item === 'string') {
+                    if (cardId && item === cardId) return true;
+                    if (cardTitle && item.toLowerCase() === cardTitle.toLowerCase()) return true;
+                    return false;
+                }
+                if (item.id && cardId && item.id === cardId) return true;
+                if (item.img && cardImgSrc && (item.img === cardImgSrc || cardImgSrc.includes(item.img) || item.img.includes(cardImgSrc))) return true;
+                if (item.title && cardTitle && item.title.toLowerCase().includes(cardTitle.toLowerCase())) return true;
+                return false;
+            });
 
             if (isDeleted) {
                 card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -608,13 +619,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const socket = io(socketUrl, { withCredentials: true });
 
             socket.on('project_deleted', (data) => {
-                let deletedIds = [];
+                let deletedList = [];
                 try {
-                    deletedIds = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
+                    deletedList = JSON.parse(localStorage.getItem('deleted_project_ids') || '[]');
                 } catch (e) {}
-                if (data && data.id && !deletedIds.includes(data.id)) {
-                    deletedIds.push(data.id);
-                    localStorage.setItem('deleted_project_ids', JSON.stringify(deletedIds));
+
+                if (data) {
+                    const exists = deletedList.some(item => 
+                        (typeof item === 'string' && item === data.id) || 
+                        (typeof item === 'object' && (item.id === data.id || (data.img && item.img === data.img)))
+                    );
+                    if (!exists) {
+                        deletedList.push(data);
+                        localStorage.setItem('deleted_project_ids', JSON.stringify(deletedList));
+                    }
                 }
                 syncWebsiteProjects();
             });

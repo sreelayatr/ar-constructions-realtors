@@ -339,8 +339,10 @@ router.patch('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
         const idToDelete = req.params.id;
+        const { title, img } = req.body || {};
         const io = req.app.get('io');
 
+        const deletedTarget = defaultProjects.find(p => String(p._id) === String(idToDelete)) || {};
         defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
 
         if (mongoose.connection.readyState === 1) {
@@ -351,8 +353,14 @@ router.delete('/:id', requireAuth, async (req, res) => {
             }
         }
 
+        const deletePayload = {
+            id: idToDelete,
+            title: title || deletedTarget.title || '',
+            img: img || (deletedTarget.images && deletedTarget.images[0]) || ''
+        };
+
         if (io) {
-            io.emit('project_deleted', { id: idToDelete });
+            io.emit('project_deleted', deletePayload);
             io.emit('refresh_projects');
         }
 
@@ -364,10 +372,11 @@ router.delete('/:id', requireAuth, async (req, res) => {
     } catch (error) {
         console.error('Delete Project Error:', error.message);
         const idToDelete = req.params.id;
+        const { title, img } = req.body || {};
         defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
         const io = req.app.get('io');
         if (io) {
-            io.emit('project_deleted', { id: idToDelete });
+            io.emit('project_deleted', { id: idToDelete, title, img });
             io.emit('refresh_projects');
         }
         res.json({

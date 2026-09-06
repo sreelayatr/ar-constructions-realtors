@@ -172,21 +172,48 @@ function getDeletedProjectIds() {
     }
 }
 
-function registerDeletedProjectId(id) {
+function registerDeletedProject(id, title, img) {
     const list = getDeletedProjectIds();
-    if (!list.includes(id)) {
-        list.push(id);
+    const exists = list.some(item => 
+        (typeof item === 'string' && (item === id || (title && item === title))) ||
+        (typeof item === 'object' && (item.id === id || (img && item.img === img) || (title && item.title === title)))
+    );
+
+    if (!exists) {
+        list.push({ id, title, img });
         localStorage.setItem('deleted_project_ids', JSON.stringify(list));
     }
     localStorage.setItem('projects_sync_event', Date.now().toString());
+}
+
+function isProjectDeleted(proj) {
+    const list = getDeletedProjectIds();
+    if (!list || !list.length) return false;
+
+    const pId = proj._id || proj.id || (typeof proj.getAttribute === 'function' ? proj.getAttribute('data-id') : null);
+    const pTitle = proj.title || (typeof proj.querySelector === 'function' ? proj.querySelector('.project-title')?.textContent?.trim() : null);
+    const pImg = (proj.images && proj.images[0]) || proj.img || (typeof proj.querySelector === 'function' ? proj.querySelector('.project-img')?.getAttribute('src') : null);
+
+    return list.some(item => {
+        if (!item) return false;
+        if (typeof item === 'string') {
+            if (pId && item === pId) return true;
+            if (pTitle && item.toLowerCase() === pTitle.toLowerCase()) return true;
+            return false;
+        }
+        if (item.id && pId && item.id === pId) return true;
+        if (item.img && pImg && (item.img === pImg || pImg.includes(item.img) || item.img.includes(pImg))) return true;
+        if (item.title && pTitle && item.title.toLowerCase() === pTitle.toLowerCase()) return true;
+        return false;
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     loadProjects();
 
     if (typeof socket !== 'undefined' && socket) {
-        socket.on('project_deleted', ({ id }) => {
-            if (id) registerDeletedProjectId(id);
+        socket.on('project_deleted', (data) => {
+            if (data) registerDeletedProject(data.id, data.title, data.img);
             loadProjects();
         });
         socket.on('refresh_projects', () => {
@@ -205,7 +232,6 @@ async function loadProjects() {
     const category = document.getElementById('category-filter').value;
     const status = document.getElementById('status-filter').value;
     const search = document.getElementById('project-search').value.toLowerCase().trim();
-    const deletedIds = getDeletedProjectIds();
 
     let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
     if (search) {
@@ -217,10 +243,10 @@ async function loadProjects() {
         const data = await res.json();
 
         if (data.success && data.data && data.data.length > 0) {
-            let activeProjects = data.data.filter(p => !deletedIds.includes(p._id) && !deletedIds.includes(String(p._id)));
+            let activeProjects = data.data.filter(p => !isProjectDeleted(p));
             renderProjectsTable(activeProjects);
         } else {
-            let filtered = FALLBACK_15_PROJECTS.filter(p => !deletedIds.includes(p._id));
+            let filtered = FALLBACK_15_PROJECTS.filter(p => !isProjectDeleted(p));
             if (category !== 'all') filtered = filtered.filter(p => p.category === category);
             if (status !== 'all') filtered = filtered.filter(p => p.status === status);
             if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
@@ -228,7 +254,7 @@ async function loadProjects() {
         }
     } catch (err) {
         console.error('Error loading projects:', err);
-        let filtered = FALLBACK_15_PROJECTS.filter(p => !deletedIds.includes(p._id));
+        let filtered = FALLBACK_15_PROJECTS.filter(p => !isProjectDeleted(p));
         if (category !== 'all') filtered = filtered.filter(p => p.category === category);
         if (status !== 'all') filtered = filtered.filter(p => p.status === status);
         if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search) || p.description.toLowerCase().includes(search));
@@ -254,6 +280,8 @@ function renderProjectsTable(projects) {
     tbody.innerHTML = projects.map(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80';
         const badgeClass = p.status === 'Completed' ? 'badge-completed' : (p.status === 'Ongoing' ? 'badge-ongoing' : 'badge-upcoming');
+        const projTitleEsc = escapeHtml(p.title).replace(/'/g, "\\'");
+        const projImgEsc = (p.images && p.images[0]) ? escapeHtml(p.images[0]).replace(/'/g, "\\'") : '';
 
         return `
             <tr>
@@ -270,7 +298,7 @@ function renderProjectsTable(projects) {
                         <button class="icon-btn" title="Edit Project" onclick="openEditProjectModal('${p._id}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="icon-btn delete-btn" title="Delete Project" onclick="promptDeleteProject('${p._id}')">
+                        <button class="icon-btn delete-btn" title="Delete Project" onclick="promptDeleteProject('${p._id}', '${projTitleEsc}', '${projImgEsc}')">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -362,9 +390,12 @@ async function handleProjectSave(e) {
     }
 }
 
-function promptDeleteProject(id) {
+let currentDeleteTarget = { id: '', title: '', img: '' };
+
+function promptDeleteProject(id, title, img) {
+    currentDeleteTarget = { id, title, img };
     const confirmBtn = document.getElementById('confirm-delete-project-btn');
-    confirmBtn.onclick = () => executeDeleteProject(id);
+    confirmBtn.onclick = () => executeDeleteProject(currentDeleteTarget.id, currentDeleteTarget.title, currentDeleteTarget.img);
     document.getElementById('delete-project-modal').classList.add('active');
 }
 
@@ -372,8 +403,8 @@ function closeDeleteProjectModal() {
     document.getElementById('delete-project-modal').classList.remove('active');
 }
 
-async function executeDeleteProject(id) {
-    if (id) registerDeletedProjectId(id);
+async function executeDeleteProject(id, title, img) {
+    registerDeletedProject(id, title, img);
     closeDeleteProjectModal();
     showToast('Project deleted successfully', 'success');
     loadProjects();
@@ -381,6 +412,8 @@ async function executeDeleteProject(id) {
     try {
         await fetch(`${API_BASE}/projects/${id}`, {
             method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, title, img }),
             credentials: 'include'
         });
     } catch (err) {
