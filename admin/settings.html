@@ -104,17 +104,32 @@
                     <form id="change-password-form" onsubmit="handleChangePassword(event)">
                         <div class="admin-form-group">
                             <label for="current-password">Current Password *</label>
-                            <input type="password" id="current-password" class="admin-input" required autocomplete="current-password">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="current-password" class="admin-input" required autocomplete="current-password">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('current-password', this)" aria-label="Toggle password visibility" title="Show/Hide Password">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="admin-form-group">
                             <label for="new-password">New Password * (Min. 8 characters)</label>
-                            <input type="password" id="new-password" class="admin-input" required minlength="8" autocomplete="new-password">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="new-password" class="admin-input" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('new-password', this)" aria-label="Toggle password visibility" title="Show/Hide Password">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="admin-form-group">
                             <label for="confirm-password">Confirm New Password *</label>
-                            <input type="password" id="confirm-password" class="admin-input" required minlength="8" autocomplete="new-password">
+                            <div class="password-input-wrapper">
+                                <input type="password" id="confirm-password" class="admin-input" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('confirm-password', this)" aria-label="Toggle password visibility" title="Show/Hide Password">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn-gold" id="update-pass-btn" style="margin-top: 10px;">
