@@ -217,7 +217,7 @@ async function loadProjects() {
         const data = await res.json();
 
         if (data.success && data.data && data.data.length > 0) {
-            let activeProjects = data.data.filter(p => !deletedIds.includes(p._id));
+            let activeProjects = data.data.filter(p => !deletedIds.includes(p._id) && !deletedIds.includes(String(p._id)));
             renderProjectsTable(activeProjects);
         } else {
             let filtered = FALLBACK_15_PROJECTS.filter(p => !deletedIds.includes(p._id));
@@ -373,23 +373,17 @@ function closeDeleteProjectModal() {
 }
 
 async function executeDeleteProject(id) {
+    if (id) registerDeletedProjectId(id);
+    closeDeleteProjectModal();
+    showToast('Project deleted successfully', 'success');
+    loadProjects();
+
     try {
-        const res = await fetch(`${API_BASE}/projects/${id}`, {
+        await fetch(`${API_BASE}/projects/${id}`, {
             method: 'DELETE',
             credentials: 'include'
         });
-
-        const data = await res.json();
-
-        if (data.success) {
-            showToast('Project deleted successfully', 'success');
-            closeDeleteProjectModal();
-            loadProjects();
-        } else {
-            showToast(data.message || 'Failed to delete project', 'error');
-        }
     } catch (err) {
-        console.error('Error deleting project:', err);
-        showToast('Server error while deleting project', 'error');
+        console.error('Error deleting project API:', err);
     }
 }

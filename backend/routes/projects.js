@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const { requireAuth } = require('../middleware/auth');
 
-const defaultProjects = [
+let defaultProjects = [
     {
         _id: 'default-1',
         title: "Skyline Ranch",
@@ -341,6 +341,8 @@ router.delete('/:id', requireAuth, async (req, res) => {
         const idToDelete = req.params.id;
         const io = req.app.get('io');
 
+        defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
+
         if (mongoose.connection.readyState === 1) {
             if (mongoose.Types.ObjectId.isValid(idToDelete)) {
                 await Project.findByIdAndDelete(idToDelete);
@@ -361,14 +363,17 @@ router.delete('/:id', requireAuth, async (req, res) => {
         });
     } catch (error) {
         console.error('Delete Project Error:', error.message);
+        const idToDelete = req.params.id;
+        defaultProjects = defaultProjects.filter(p => String(p._id) !== String(idToDelete));
         const io = req.app.get('io');
         if (io) {
-            io.emit('project_deleted', { id: req.params.id });
+            io.emit('project_deleted', { id: idToDelete });
+            io.emit('refresh_projects');
         }
         res.json({
             success: true,
             message: 'Project deleted successfully',
-            deletedId: req.params.id
+            deletedId: idToDelete
         });
     }
 });
