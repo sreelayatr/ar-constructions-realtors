@@ -108,30 +108,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       MOBILE CARD FLIP
+       MOBILE CARD FLIP & TAP OUTSIDE TO HIDE
        ========================================== */
 
-    const cardWrappers =
-        document.querySelectorAll('.info-card-wrapper');
+    const cardWrappers = document.querySelectorAll('.info-card-wrapper');
 
-    cardWrappers.forEach(wrapper => {
+    if (cardWrappers.length) {
+        cardWrappers.forEach(wrapper => {
+            wrapper.addEventListener('click', e => {
+                if (e.target.closest('a')) return;
+                
+                const isCurrentlyFlipped = wrapper.classList.contains('flipped');
 
-        wrapper.addEventListener('click', e => {
+                cardWrappers.forEach(other => other.classList.remove('flipped'));
 
-            if (e.target.closest('a')) return;
-
-            wrapper.classList.toggle('flipped');
-
-            cardWrappers.forEach(other => {
-
-                if (other !== wrapper)
-                    other.classList.remove('flipped');
-
+                if (!isCurrentlyFlipped) {
+                    wrapper.classList.add('flipped');
+                }
             });
-
         });
 
-    });
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.info-card-wrapper')) {
+                cardWrappers.forEach(wrapper => wrapper.classList.remove('flipped'));
+            }
+        });
+    }
 
     /* ==========================================
        SCROLL REVEAL

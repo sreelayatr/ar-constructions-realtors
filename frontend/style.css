@@ -424,7 +424,12 @@ button, input, textarea {
 }
 
 /* Flip Trigger */
-.info-card-wrapper:hover .info-card,
+@media (hover: hover) {
+    .info-card-wrapper:hover .info-card {
+        transform: rotateY(180deg);
+    }
+}
+
 .info-card-wrapper.flipped .info-card {
     transform: rotateY(180deg);
 }
