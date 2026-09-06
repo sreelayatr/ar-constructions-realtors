@@ -39,7 +39,7 @@ const seedData = async () => {
                 title: "Skyline Ranch",
                 category: "Residential",
                 location: "Thripoonithara, Kerala",
-                description: "Bespoke luxury residential space designed for Mr Sijo & Festy featuring modern living amenities.",
+                description: "Bespoke luxury residential space designed for Mr Sijo & Festy (Thripoonithara).",
                 status: "Completed",
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"]
             },
@@ -60,7 +60,7 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"]
             },
             {
-                title: "Residence Thrissur",
+                title: "Residence Thrissur (Pinto Francis)",
                 category: "Residential",
                 location: "Thrissur, Kerala",
                 description: "Elegant modern residence architectural layout for Mr Pinto Francis.",
@@ -68,7 +68,7 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0040.jpg"]
             },
             {
-                title: "Residence Thrissur",
+                title: "Residence Thrissur (Rajesh Francis)",
                 category: "Residential",
                 location: "Thrissur, Kerala",
                 description: "High-end contemporary interior space for Mr Rajesh Francis.",
@@ -76,7 +76,7 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0061.jpg"]
             },
             {
-                title: "Residence Layout",
+                title: "Residence Layout (Justin Raphael)",
                 category: "Residential",
                 location: "Kerala",
                 description: "Custom space planning and interior design for Mr Justin Raphael.",
@@ -92,7 +92,7 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2020/04/1.jpg"]
             },
             {
-                title: "Residence Design",
+                title: "Residence Design (Bijoy Varghese)",
                 category: "Residential",
                 location: "Kerala",
                 description: "Warm-toned aesthetic living room and interior design for Mr Bijoy Varghese.",
@@ -100,7 +100,15 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg"]
             },
             {
-                title: "Sobha Saphire",
+                title: "Modern Layout (Jino Jose)",
+                category: "Residential",
+                location: "Kerala",
+                description: "Bespoke modern home layout and interior for Mr Jino Jose.",
+                status: "Completed",
+                images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/DSC_0371.jpg"]
+            },
+            {
+                title: "Sobha Saphire (Daison)",
                 category: "Residential",
                 location: "Thrissur, Kerala",
                 description: "Classy luxury apartment styling for Mr Daison (Sobha Saphire).",
@@ -108,12 +116,44 @@ const seedData = async () => {
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/IMG_9675-1.jpg"]
             },
             {
-                title: "Sobha Jade",
+                title: "Residence Project (Dr Rajesh & Dr Anu)",
+                category: "Residential",
+                location: "Kerala",
+                description: "Contemporary architectural home layout for Dr Rajesh & Dr Anu.",
+                status: "Completed",
+                images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/4L8A9460.jpg"]
+            },
+            {
+                title: "Sobha Jade (Girilal)",
                 category: "Residential",
                 location: "Thrissur, Kerala",
                 description: "Sophisticated open-concept interior execution for Mr Girilal (Sobha Jade).",
                 status: "Completed",
                 images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/2L6A9378-3.jpg"]
+            },
+            {
+                title: "Sobha Saphire (Anita)",
+                category: "Residential",
+                location: "Thrissur, Kerala",
+                description: "Luxury interior design and finishing for Mrs Anita (Sobha Saphire).",
+                status: "Completed",
+                images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-13-2.jpg"]
+            },
+            {
+                title: "Residence Design (Mejo Chittilappally)",
+                category: "Residential",
+                location: "Kerala",
+                description: "Bespoke interior supervision and design execution for Mr Mejo Chittilappally.",
+                status: "Completed",
+                images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/01-28-2.jpg"]
+            },
+            {
+                title: "Residence Project (Antochan Manjaly)",
+                category: "Residential",
+                location: "Kerala",
+                description: "Custom luxury residence layout and interior for Mr Antochan Manjaly.",
+                status: "Completed",
+                images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto8.jpg"]
             }
         ];
 
