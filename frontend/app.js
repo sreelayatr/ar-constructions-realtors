@@ -575,10 +575,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const cards = document.querySelectorAll('.project-card');
         cards.forEach(card => {
             const cardId = card.getAttribute('data-id');
-            const cardTitle = card.querySelector('.project-title')?.textContent?.trim()?.toLowerCase() || '';
+            const cardTitle = card.querySelector('.project-title')?.textContent?.trim();
+            const cardClient = card.querySelector('.project-client')?.textContent?.trim();
 
             const isDeleted = (cardId && deletedIds.includes(cardId)) ||
-                deletedIds.some(id => id.toLowerCase() === cardId?.toLowerCase() || (cardTitle && id.toLowerCase().includes(cardTitle)));
+                deletedIds.some(id => (cardId && id === cardId) || (cardTitle && id === cardTitle) || (cardTitle && cardClient && id.includes(cardTitle) && id.includes(cardClient)));
 
             if (isDeleted) {
                 card.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -601,7 +602,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof io !== 'undefined') {
         try {
-            const socket = io(API_BASE_URL);
+            const socketUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:9100'
+                : 'https://ar-constructions-realtors.onrender.com';
+            const socket = io(socketUrl, { withCredentials: true });
+
             socket.on('project_deleted', (data) => {
                 let deletedIds = [];
                 try {
@@ -611,6 +616,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     deletedIds.push(data.id);
                     localStorage.setItem('deleted_project_ids', JSON.stringify(deletedIds));
                 }
+                syncWebsiteProjects();
+            });
+
+            socket.on('refresh_projects', () => {
                 syncWebsiteProjects();
             });
         } catch (e) {
