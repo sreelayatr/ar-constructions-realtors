@@ -942,22 +942,9 @@ body {
    RESPONSIVE DESIGN BREAKPOINTS
    ========================================================================== */
 
-/* ==========================================================================
-   RESPONSIVE DESIGN BREAKPOINTS - ADMIN DASHBOARD
-   ========================================================================== */
-
-/* 1. Laptop & Desktop (1025px - 1440px) */
-@media (max-width: 1280px) {
-    .metrics-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* 2. Tablet & Mobile Drawer Transition (max-width: 992px) */
 @media (max-width: 992px) {
     .admin-sidebar {
         transform: translateX(-100%);
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
     }
 
     .admin-sidebar.active {
@@ -973,28 +960,17 @@ body {
     }
 }
 
-/* 3. Mobile Phones (max-width: 768px) */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .admin-content {
-        padding: 18px;
+        padding: 16px;
     }
 
     .admin-topbar {
-        padding: 0 18px;
-        height: 64px;
-    }
-
-    .page-title {
-        font-size: 1.1rem;
-    }
-
-    .user-info {
-        display: none; /* Keep clean avatar only on mobile header */
+        padding: 0 16px;
     }
 
     .metrics-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
     }
 
     .form-grid {
@@ -1013,48 +989,5 @@ body {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
-    }
-
-    .action-bar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .card-section {
-        padding: 20px 16px;
     }
 }
-
-/* 4. Small Mobile Phones (max-width: 480px) */
-@media (max-width: 480px) {
-    .admin-content {
-        padding: 14px;
-    }
-
-    .admin-topbar {
-        padding: 0 14px;
-    }
-
-    .page-title {
-        font-size: 1rem;
-    }
-
-    .btn-gold, .btn-secondary, .logout-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 12px;
-    }
-
-    .login-card {
-        padding: 28px 20px;
-        margin: 16px;
-    }
-}
-

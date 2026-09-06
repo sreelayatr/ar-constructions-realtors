@@ -4,126 +4,51 @@ const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const { requireAuth } = require('../middleware/auth');
 
-const defaultProjects = [
-    {
-        _id: "default-proj-1",
-        title: "Skyline Ranch",
-        category: "Residential",
-        location: "Thripoonithara, Kerala",
-        description: "Bespoke luxury residential space designed for Mr Sijo & Festy featuring modern living amenities.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Sijo-Festy.jpg"]
-    },
-    {
-        _id: "default-proj-2",
-        title: "Eza - Gold Thrissur",
-        category: "Commercial",
-        location: "Thrissur, Kerala",
-        description: "Premium retail jewel showroom interior and space optimization for Mr Biju.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2026/02/Mr-Biju-Eza-Gold-Thrissur.jpg"]
-    },
-    {
-        _id: "default-proj-3",
-        title: "Navya Bake House",
-        category: "Commercial",
-        location: "Kerala",
-        description: "Artisanal bakery aesthetic space crafted for Kurian & Hitha.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/Screenshot-211.png"]
-    },
-    {
-        _id: "default-proj-4",
-        title: "Residence Thrissur",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Elegant modern residence architectural layout for Mr Pinto Francis.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0040.jpg"]
-    },
-    {
-        _id: "default-proj-5",
-        title: "Residence Thrissur",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "High-end contemporary interior space for Mr Rajesh Francis.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0061.jpg"]
-    },
-    {
-        _id: "default-proj-6",
-        title: "Residence Layout",
-        category: "Residential",
-        location: "Kerala",
-        description: "Custom space planning and interior design for Mr Justin Raphael.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2022/03/1.jpeg"]
-    },
-    {
-        _id: "default-proj-7",
-        title: "Casablanca Apartment",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Luxury high-rise apartment interior overhaul for Mr Joju.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/04/1.jpg"]
-    },
-    {
-        _id: "default-proj-8",
-        title: "Residence Design",
-        category: "Residential",
-        location: "Kerala",
-        description: "Warm-toned aesthetic living room and interior design for Mr Bijoy Varghese.",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/13.jpg"]
-    },
-    {
-        _id: "default-proj-9",
-        title: "Sobha Saphire",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Classy luxury apartment styling for Mr Daison (Sobha Saphire).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/IMG_9675-1.jpg"]
-    },
-    {
-        _id: "default-proj-10",
-        title: "Sobha Jade",
-        category: "Residential",
-        location: "Thrissur, Kerala",
-        description: "Sophisticated open-concept interior execution for Mr Girilal (Sobha Jade).",
-        status: "Completed",
-        images: ["https://spaceliftstudio.com/wp-content/uploads/2020/03/2L6A9378-3.jpg"]
-    }
-];
+const defaultProjects = [];
 
 // Public/Admin: Get all projects
 router.get('/', async (req, res) => {
     try {
-        let projects = [];
-        if (mongoose.connection.readyState === 1) {
-            try {
-                projects = await Project.find({}).sort({ createdAt: -1 });
-            } catch (dbErr) {
-                console.warn('DB Find Projects Error:', dbErr.message);
-            }
+        if (mongoose.connection.readyState !== 1) {
+            return res.json({
+                success: true,
+                count: defaultProjects.length,
+                data: defaultProjects
+            });
         }
 
-        if (!projects || projects.length === 0) {
-            projects = defaultProjects;
+        const { category, status, search } = req.query;
+        const query = {};
+
+        if (category && category !== 'all') {
+            query.category = category;
         }
 
-        return res.json({
+        if (status && status !== 'all') {
+            query.status = status;
+        }
+
+        if (search) {
+            const searchRegex = new RegExp(search.trim(), 'i');
+            query.$or = [
+                { title: searchRegex },
+                { location: searchRegex },
+                { description: searchRegex }
+            ];
+        }
+
+        const projects = await Project.find(query).sort({ createdAt: -1 });
+
+        res.json({
             success: true,
             count: projects.length,
             data: projects
         });
     } catch (error) {
         console.error('Get Projects Error:', error.message);
-        return res.json({
-            success: true,
-            count: defaultProjects.length,
-            data: defaultProjects
+        res.status(500).json({
+            success: false,
+            message: 'Failed to fetch projects'
         });
     }
 });
