@@ -1339,6 +1339,69 @@ button, input, textarea {
     .form-header h2 {
         font-size: 1.6rem;
     }
+
+    /* Mobile Footer Centering */
+    .main-footer {
+        padding: 50px 0 20px 0;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .footer-col {
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-heading {
+        text-align: center;
+    }
+
+    .footer-heading::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-logo-link,
+    .brand-col .footer-logo {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .footer-tagline,
+    .footer-desc {
+        text-align: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+
+    .footer-links-list {
+        align-items: center;
+        text-align: center;
+    }
+
+    .recent-works-list {
+        align-items: center;
+    }
+
+    .recent-work-item {
+        justify-content: center;
+    }
+
+    .footer-bottom,
+    .footer-bottom-content {
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -1352,6 +1415,8 @@ button, input, textarea {
     
     .footer-grid {
         grid-template-columns: 1fr;
+        gap: 36px;
+        text-align: center;
     }
     
     .submit-btn {
