@@ -550,7 +550,7 @@ button, input, textarea {
 
 .email-text {
     font-size: 0.9rem;
-    word-break: break-all;
+    white-space: nowrap;
 }
 
 .address-text {
@@ -1330,6 +1330,17 @@ button, input, textarea {
     
     .info-card-wrapper:last-child {
         grid-column: span 1;
+    }
+
+    .card-face {
+        padding: 24px 14px;
+    }
+
+    .email-text {
+        font-size: clamp(0.72rem, 3.4vw, 0.85rem);
+        padding: 10px 8px;
+        gap: 6px;
+        white-space: nowrap;
     }
     
     .form-card {
