@@ -92,13 +92,6 @@
                                 <option value="Renovation">Renovation</option>
                             </select>
 
-                            <select id="status-filter" class="filter-select" onchange="loadProjects()">
-                                <option value="all">All Statuses</option>
-                                <option value="Completed">Completed</option>
-                                <option value="Ongoing">Ongoing</option>
-                                <option value="Upcoming">Upcoming</option>
-                            </select>
-
                             <button class="btn-gold" onclick="openAddProjectModal()">
                                 <i class="fa-solid fa-plus"></i>
                                 <span>Add New Project</span>
@@ -114,14 +107,13 @@
                                     <th>Project Title</th>
                                     <th>Category</th>
                                     <th>Location</th>
-                                    <th>Status</th>
                                     <th>Date Added</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="projects-tbody">
                                 <tr>
-                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
                                         <i class="fa-solid fa-circle-notch fa-spin"></i> Loading projects from MongoDB...
                                     </td>
                                 </tr>
@@ -151,7 +143,7 @@
                         <input type="text" id="p-title" class="admin-input" required placeholder="e.g. Skyline Ranch Residence">
                     </div>
 
-                    <div class="admin-form-group">
+                    <div class="admin-form-group form-group-full">
                         <label for="p-category">Category *</label>
                         <select id="p-category" class="admin-select" required>
                             <option value="Residential">Residential</option>
@@ -161,23 +153,9 @@
                         </select>
                     </div>
 
-                    <div class="admin-form-group">
-                        <label for="p-status">Status *</label>
-                        <select id="p-status" class="admin-select" required>
-                            <option value="Completed">Completed</option>
-                            <option value="Ongoing">Ongoing</option>
-                            <option value="Upcoming">Upcoming</option>
-                        </select>
-                    </div>
-
                     <div class="admin-form-group form-group-full">
                         <label for="p-location">Location *</label>
                         <input type="text" id="p-location" class="admin-input" required placeholder="e.g. Thrissur, Kerala">
-                    </div>
-
-                    <div class="admin-form-group form-group-full">
-                        <label for="p-description">Description *</label>
-                        <textarea id="p-description" class="admin-textarea" rows="4" required placeholder="Detailed overview of the project architecture and layout..."></textarea>
                     </div>
 
                     <div class="admin-form-group form-group-full">

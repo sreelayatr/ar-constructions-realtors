@@ -16,9 +16,12 @@ function debounceProjectSearch() {
 }
 
 async function loadProjects() {
-    const category = document.getElementById('category-filter').value;
-    const status = document.getElementById('status-filter').value;
-    const search = document.getElementById('project-search').value;
+    const categoryEl = document.getElementById('category-filter');
+    const category = categoryEl ? categoryEl.value : 'all';
+    const statusEl = document.getElementById('status-filter');
+    const status = statusEl ? statusEl.value : 'all';
+    const searchEl = document.getElementById('project-search');
+    const search = searchEl ? searchEl.value : '';
 
     let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
     if (search.trim()) {
@@ -47,7 +50,7 @@ function renderProjectsTable(projects) {
     if (projects.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
                     No projects found in database.
                 </td>
             </tr>
@@ -57,7 +60,6 @@ function renderProjectsTable(projects) {
 
     tbody.innerHTML = projects.map(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80';
-        const badgeClass = p.status === 'Completed' ? 'badge-completed' : (p.status === 'Ongoing' ? 'badge-ongoing' : 'badge-upcoming');
 
         return `
             <tr>
@@ -67,7 +69,6 @@ function renderProjectsTable(projects) {
                 <td><strong>${escapeHtml(p.title)}</strong></td>
                 <td><span style="font-size: 0.85rem; color: var(--text-secondary);">${escapeHtml(p.category)}</span></td>
                 <td>${escapeHtml(p.location)}</td>
-                <td><span class="badge ${badgeClass}">${escapeHtml(p.status)}</span></td>
                 <td>${formatDate(p.createdAt)}</td>
                 <td>
                     <div class="action-btns">
@@ -101,9 +102,7 @@ async function openEditProjectModal(id) {
             document.getElementById('project-id').value = p._id;
             document.getElementById('p-title').value = p.title || '';
             document.getElementById('p-category').value = p.category || 'Residential';
-            document.getElementById('p-status').value = p.status || 'Completed';
             document.getElementById('p-location').value = p.location || '';
-            document.getElementById('p-description').value = p.description || '';
             document.getElementById('p-images').value = (p.images || []).join('\n');
 
             document.getElementById('modal-project-title').textContent = 'Edit Project';
@@ -125,9 +124,9 @@ async function handleProjectSave(e) {
     const id = document.getElementById('project-id').value;
     const title = document.getElementById('p-title').value.trim();
     const category = document.getElementById('p-category').value;
-    const status = document.getElementById('p-status').value;
     const location = document.getElementById('p-location').value.trim();
-    const description = document.getElementById('p-description').value.trim();
+    const description = location || title;
+    const status = 'Completed';
     const imagesRaw = document.getElementById('p-images').value;
 
     const images = imagesRaw.split(/[\n,]/).map(img => img.trim()).filter(img => img.length > 0);

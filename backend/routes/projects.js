@@ -117,10 +117,10 @@ router.post('/', requireAuth, async (req, res) => {
     try {
         const { title, category, location, description, status, images } = req.body;
 
-        if (!title || !location || !description) {
+        if (!title || !location) {
             return res.status(400).json({
                 success: false,
-                message: 'Title, location, and description are required'
+                message: 'Title and location are required'
             });
         }
 
@@ -134,7 +134,7 @@ router.post('/', requireAuth, async (req, res) => {
                 title: String(title).trim(),
                 category: category || 'Residential',
                 location: String(location).trim(),
-                description: String(description).trim(),
+                description: description ? String(description).trim() : '',
                 status: status || 'Completed',
                 images: imageArray,
                 createdAt: new Date()
