@@ -108,6 +108,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
+       PREVENT RELOAD ON CURRENT-PAGE NAV LINKS
+       ========================================== */
+
+    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+    const currentPage = window.location.href.split('?')[0].split('#')[0];
+
+    allNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const linkHref = link.href.split('?')[0].split('#')[0];
+            if (linkHref === currentPage) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    /* ==========================================
        MOBILE CARD FLIP & TAP OUTSIDE TO HIDE (PHONE ONLY)
        ========================================== */
 
