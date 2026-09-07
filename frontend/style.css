@@ -549,11 +549,12 @@ button, input, textarea {
 }
 
 .email-text {
-    font-size: 0.9rem;
-    white-space: normal;
-    word-break: break-all;
+    font-size: clamp(0.6rem, 1.05vw, 0.78rem);
+    white-space: nowrap;
     width: 100%;
     text-align: center;
+    padding: 10px 10px;
+    letter-spacing: -0.01em;
 }
 
 .address-text {
@@ -1343,6 +1344,7 @@ button, input, textarea {
         font-size: clamp(0.72rem, 3.4vw, 0.85rem);
         padding: 10px 8px;
         gap: 6px;
+        white-space: nowrap;
     }
     
     .form-card {
