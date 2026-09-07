@@ -550,7 +550,10 @@ button, input, textarea {
 
 .email-text {
     font-size: 0.9rem;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-all;
+    width: 100%;
+    text-align: center;
 }
 
 .address-text {
@@ -1340,7 +1343,6 @@ button, input, textarea {
         font-size: clamp(0.72rem, 3.4vw, 0.85rem);
         padding: 10px 8px;
         gap: 6px;
-        white-space: nowrap;
     }
     
     .form-card {
