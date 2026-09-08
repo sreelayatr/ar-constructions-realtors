@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const { requireAuth } = require('../middleware/auth');
+const { generateToken } = require('../utils/token');
 
 // Rate limit login attempts: max 10 requests per 15 minutes window
 const loginLimiter = rateLimit({
@@ -72,15 +73,23 @@ router.post('/login', loginLimiter, async (req, res) => {
             });
         }
 
-        // Establish session
+        // Establish session (for environments supporting cookies)
         req.session.userId = authenticatedUser.id;
         req.session.userEmail = authenticatedUser.email;
         req.session.userRole = authenticatedUser.role;
 
+        // Generate token (for mobile phones and browsers blocking cross-site cookies)
+        const token = generateToken({
+            userId: authenticatedUser.id,
+            userEmail: authenticatedUser.email,
+            userRole: authenticatedUser.role
+        });
+
         return res.json({
             success: true,
             message: 'Authentication successful',
-            user: authenticatedUser
+            user: authenticatedUser,
+            token
         });
     } catch (error) {
         console.error('Login Error:', error.message);

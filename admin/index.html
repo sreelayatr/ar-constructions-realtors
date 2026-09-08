@@ -87,6 +87,12 @@
                 const data = await res.json();
 
                 if (data.success) {
+                    if (data.token) {
+                        localStorage.setItem('ar_admin_token', data.token);
+                    }
+                    if (data.user) {
+                        localStorage.setItem('ar_admin_user', JSON.stringify(data.user));
+                    }
                     btnText.textContent = 'Success! Redirecting...';
                     window.location.href = 'dashboard.html';
                 } else {

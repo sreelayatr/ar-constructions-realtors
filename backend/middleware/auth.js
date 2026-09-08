@@ -1,9 +1,33 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const { verifyToken } = require('../utils/token');
 
 const requireAuth = async (req, res, next) => {
     try {
-        if (!req.session || !req.session.userId) {
+        let userId = null;
+        let userEmail = null;
+        let userRole = null;
+
+        // 1. Check Authorization header (Bearer Token - works on mobile with 3rd-party cookie blocking)
+        const authHeader = req.headers.authorization || req.headers.Authorization;
+        if (authHeader && typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+            const token = authHeader.substring(7).trim();
+            const decoded = verifyToken(token);
+            if (decoded) {
+                userId = decoded.userId;
+                userEmail = decoded.userEmail;
+                userRole = decoded.userRole;
+            }
+        }
+
+        // 2. Fallback to session cookie (for desktop browsers)
+        if (!userId && req.session && req.session.userId) {
+            userId = req.session.userId;
+            userEmail = req.session.userEmail;
+            userRole = req.session.userRole;
+        }
+
+        if (!userId) {
             return res.status(401).json({
                 success: false,
                 message: 'Unauthorized: Session expired or invalid'
@@ -11,11 +35,11 @@ const requireAuth = async (req, res, next) => {
         }
 
         // Check fallback session user (when database is disconnected or setup mode)
-        if (req.session.userId === 'admin-fallback-id') {
+        if (userId === 'admin-fallback-id') {
             req.user = {
                 _id: 'admin-fallback-id',
-                email: req.session.userEmail || process.env.ADMIN_EMAIL || 'admin@arconstructionsandrealtors.com',
-                role: 'admin',
+                email: userEmail || process.env.ADMIN_EMAIL || 'admin@arconstructionsandrealtors.com',
+                role: userRole || 'admin',
                 createdAt: new Date()
             };
             return next();
@@ -23,9 +47,9 @@ const requireAuth = async (req, res, next) => {
 
         // Database connected: Query Mongoose User
         if (mongoose.connection.readyState === 1) {
-            const user = await User.findById(req.session.userId);
+            const user = await User.findById(userId);
             if (!user) {
-                req.session.destroy(() => {});
+                if (req.session) req.session.destroy(() => {});
                 return res.status(401).json({
                     success: false,
                     message: 'Unauthorized: Account not found'
@@ -37,9 +61,9 @@ const requireAuth = async (req, res, next) => {
 
         // Fallback user if database temporarily unavailable
         req.user = {
-            _id: req.session.userId,
-            email: req.session.userEmail || process.env.ADMIN_EMAIL || 'admin@arconstructionsandrealtors.com',
-            role: 'admin',
+            _id: userId,
+            email: userEmail || process.env.ADMIN_EMAIL || 'admin@arconstructionsandrealtors.com',
+            role: userRole || 'admin',
             createdAt: new Date()
         };
         next();

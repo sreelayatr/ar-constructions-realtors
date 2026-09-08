@@ -8,10 +8,49 @@ const API_BASE_URL = (window.location.hostname === 'localhost' || window.locatio
 
 const API_BASE = `${API_BASE_URL}/api`;
 
+// ==========================================================================
+// AUTOMATIC BEARER TOKEN INTERCEPTOR (For Mobile 3rd-Party Cookie Blocking)
+// ==========================================================================
+const _originalFetch = window.fetch;
+window.fetch = async function (resource, init = {}) {
+    let url = '';
+    if (typeof resource === 'string') {
+        url = resource;
+    } else if (resource && resource.url) {
+        url = resource.url;
+    }
+
+    // Attach token & credentials to any call going to our backend API
+    if (url.includes(API_BASE_URL) || url.startsWith('/api') || url.includes('/api/')) {
+        init = { ...init };
+        const token = localStorage.getItem('ar_admin_token');
+
+        let headers = {};
+        if (init.headers instanceof Headers) {
+            init.headers.forEach((v, k) => { headers[k] = v; });
+        } else if (Array.isArray(init.headers)) {
+            init.headers.forEach(([k, v]) => { headers[k] = v; });
+        } else if (init.headers) {
+            headers = { ...init.headers };
+        }
+
+        if (token && !headers['Authorization'] && !headers['authorization']) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        init.headers = headers;
+        init.credentials = 'include';
+    }
+
+    return _originalFetch.call(this, resource, init);
+};
+
 // Initialize Global Socket.IO Real-time Connection
 let socket = null;
 if (typeof io !== 'undefined') {
-    socket = API_BASE_URL ? io(API_BASE_URL, { withCredentials: true }) : io();
+    const token = localStorage.getItem('ar_admin_token');
+    socket = API_BASE_URL 
+        ? io(API_BASE_URL, { withCredentials: true, auth: { token } }) 
+        : io({ auth: { token } });
     socket.on('connect', () => {
         console.log('⚡ Socket.IO real-time connection active:', socket.id);
     });
@@ -60,31 +99,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupMobileSidebar();
     
     const isLoginPage = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/admin/') || window.location.pathname.endsWith('/admin');
+    const token = localStorage.getItem('ar_admin_token');
+    const cachedUser = localStorage.getItem('ar_admin_user');
+
+    if (cachedUser) {
+        try {
+            updateUserInfo(JSON.parse(cachedUser));
+        } catch (e) {}
+    }
     
     try {
         const res = await fetch(`${API_BASE}/auth/me`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
+            method: 'GET'
         });
 
         const data = await res.json();
 
         if (data.success && data.user) {
+            localStorage.setItem('ar_admin_user', JSON.stringify(data.user));
             if (isLoginPage) {
                 window.location.href = 'dashboard.html';
                 return;
             }
             updateUserInfo(data.user);
         } else {
+            // Invalid credentials or session expired
+            localStorage.removeItem('ar_admin_token');
+            localStorage.removeItem('ar_admin_user');
             if (!isLoginPage) {
                 window.location.href = 'index.html';
             }
         }
     } catch (err) {
         console.error('Auth Check Error:', err);
+        // If there's a temporary connection/cold-start error, don't immediately kick user out if token exists
         if (!isLoginPage) {
-            window.location.href = 'index.html';
+            if (!token) {
+                localStorage.removeItem('ar_admin_token');
+                localStorage.removeItem('ar_admin_user');
+                window.location.href = 'index.html';
+            }
         }
     }
 });
@@ -126,19 +180,15 @@ function updateUserInfo(user) {
 // Logout Handler
 async function handleLogout() {
     try {
-        const res = await fetch(`${API_BASE}/auth/logout`, {
+        await fetch(`${API_BASE}/auth/logout`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
+            headers: { 'Content-Type': 'application/json' }
         });
-        const data = await res.json();
-        if (data.success) {
-            window.location.href = 'index.html';
-        } else {
-            showToast('Logout failed. Please try again.', 'error');
-        }
     } catch (err) {
         console.error('Logout error:', err);
+    } finally {
+        localStorage.removeItem('ar_admin_token');
+        localStorage.removeItem('ar_admin_user');
         window.location.href = 'index.html';
     }
 }
