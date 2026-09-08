@@ -25,10 +25,10 @@ router.post('/', async (req, res) => {
     try {
         const { name, email, phone, subject, message, source } = req.body;
 
-        if (!name || !email || !message) {
+        if (!name || !email || !phone) {
             return res.status(400).json({
                 success: false,
-                message: 'Name, email, and message are required'
+                message: 'Name, email, and phone number are required'
             });
         }
 

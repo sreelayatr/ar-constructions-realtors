@@ -266,6 +266,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const isValidEmail =
             email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+        const isValidPhone = phone => {
+            const digits = phone.replace(/\D/g, '');
+            return digits.length >= 10 && /^[0-9+\s\-()]+$/.test(phone.trim());
+        };
+
         const validateField = (input, ok, group) => {
 
             group.classList.toggle('invalid', !ok);
@@ -286,6 +291,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailInput,
                 isValidEmail(emailInput.value.trim()),
                 emailInput.closest('.form-group')
+            )
+        );
+
+        phoneInput?.addEventListener('input', () =>
+            validateField(
+                phoneInput,
+                isValidPhone(phoneInput.value.trim()),
+                phoneInput.closest('.form-group')
             )
         );
 
@@ -360,6 +373,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailInput.closest('.form-group')
             );
 
+            const okPhone = phoneInput
+                ? validateField(
+                      phoneInput,
+                      isValidPhone(phoneInput.value.trim()),
+                      phoneInput.closest('.form-group')
+                  )
+                : true;
+
             const okService = serviceSelect
                 ? validateField(
                       serviceSelect,
@@ -368,7 +389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   )
                 : true;
 
-            if (!(okName && okEmail && okService))
+            if (!(okName && okEmail && okPhone && okService))
                 return;
 
             submitBtn.disabled = true;
@@ -381,14 +402,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 name: nameInput.value.trim(),
                 email: emailInput.value.trim(),
-                phone: phoneInput?.value.trim() || '',
+                phone: phoneInput ? phoneInput.value.trim() : '',
                 service: serviceSelect?.value || '',
                 subject:
                     serviceSelect?.value
                         ? `Service: ${serviceSelect.value}`
                         : subjectInput?.value.trim() ||
                           'General Inquiry',
-                message: messageInput?.value.trim() || '',
+                message: messageInput?.value.trim() || `Inquiry regarding ${serviceSelect?.value || 'services'}`,
                 source: 'website-contact-form'
 
             };
