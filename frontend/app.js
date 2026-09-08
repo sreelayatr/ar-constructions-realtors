@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'http://localhost:9100'
         : 'https://ar-constructions-realtors.onrender.com';
 
+    // ==========================================================
+    // BACKGROUND WAKE-UP PING (prevents Render cold-start delay)
+    // Fires silently on every page so the backend is warm by the
+    // time the user reaches the Projects page.
+    // ==========================================================
+    if (!window.location.pathname.includes('projects.html')) {
+        fetch(`${API_BASE_URL}/api/projects`).catch(() => {});
+    }
+
     /* ==========================================
        STICKY HEADER TRANSITION
        ========================================== */
@@ -578,16 +587,88 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsGrid = document.querySelector('.projects-grid');
     if (projectsGrid) {
 
-        // ── Helper: build skeleton placeholders ────────────────────
-        const SKELETON_COUNT = 6;
+        // ── Cache helpers ──────────────────────────────────────────
+        const CACHE_KEY     = 'ar_projects_cache';
+        const CACHE_TTL_MS  = 10 * 60 * 1000;   // 10 minutes
 
+        const readCache = () => {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (!raw) return null;
+                const { ts, data } = JSON.parse(raw);
+                if (Date.now() - ts > CACHE_TTL_MS) return null;   // expired
+                return data;
+            } catch { return null; }
+        };
+
+        const writeCache = (data) => {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+            } catch {}
+        };
+
+        // ── Render a list of project objects into the grid ─────────
+        const attachCardListeners = () => {
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.project-card').forEach(c => {
+                        if (c !== card) c.classList.remove('active');
+                    });
+                    card.classList.toggle('active');
+                });
+            });
+        };
+
+        const renderProjects = (data) => {
+            if (!data || data.length === 0) {
+                projectsGrid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:60px 20px;">
+                        <p style="font-size:1.1rem;letter-spacing:0.5px;">No projects available yet.</p>
+                    </div>`;
+                return;
+            }
+
+            projectsGrid.innerHTML = data.map(p => {
+                const imgUrl = (p.images && p.images.length > 0 && p.images[0])
+                    ? p.images[0]
+                    : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
+
+                const displayTitle = p.title
+                    ? p.title
+                    : (p.location
+                        ? `${p.category || 'Project'} (${p.location})`
+                        : (p.category || 'Project'));
+
+                const clientText = p.location
+                    ? `${p.category || 'Residential'} • ${p.location}`
+                    : (p.description || p.category || 'Custom Project');
+
+                return `
+                    <div class="project-card animate-up reveal-active" tabindex="0">
+                        <img class="project-img" src="${imgUrl}"
+                             onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                             loading="eager"
+                             decoding="async"
+                             alt="${displayTitle}">
+                        <div class="project-overlay">
+                            <h3 class="project-title">${displayTitle}</h3>
+                            <p class="project-client">${clientText}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            attachCardListeners();
+        };
+
+        // ── Skeleton placeholders (first visit only) ───────────────
         const showSkeletons = () => {
-            projectsGrid.innerHTML = Array.from({ length: SKELETON_COUNT })
+            projectsGrid.innerHTML = Array.from({ length: 6 })
                 .map(() => '<div class="project-skeleton"></div>')
                 .join('');
         };
 
-        // ── Helper: show a retry message on error ──────────────────
+        // ── Retry / error message ──────────────────────────────────
         const showError = () => {
             projectsGrid.innerHTML = `
                 <div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:60px 20px;">
@@ -598,86 +679,49 @@ document.addEventListener('DOMContentLoaded', () => {
                         background:transparent;
                         border:1px solid var(--color-accent-gold-light,#c9a84c);
                         color:var(--color-accent-gold-light,#c9a84c);
-                        padding:10px 28px;
-                        border-radius:4px;
-                        cursor:pointer;
-                        font-size:0.9rem;
-                        letter-spacing:1px;
-                        transition:background 0.3s;
+                        padding:10px 28px;border-radius:4px;cursor:pointer;
+                        font-size:0.9rem;letter-spacing:1px;transition:background 0.3s;
                     ">Retry</button>
-                </div>
-            `;
+                </div>`;
             document.getElementById('retry-projects-btn')
-                ?.addEventListener('click', fetchProjects);
+                ?.addEventListener('click', loadProjects);
         };
 
-        // ── Main fetch ─────────────────────────────────────────────
-        const fetchProjects = async () => {
-            showSkeletons();   // ← show placeholders instantly
+        // ── Fetch fresh data from API & update cache ───────────────
+        const fetchFresh = async (silent = false) => {
             try {
                 const response = await fetch(`${API_BASE_URL}/api/projects`);
-                const result = await response.json();
+                const result   = await response.json();
 
                 if (response.ok && result.success && Array.isArray(result.data)) {
-                    if (result.data.length === 0) {
-                        projectsGrid.innerHTML = `
-                            <div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);padding:60px 20px;">
-                                <p style="font-size:1.1rem;letter-spacing:0.5px;">No projects available yet.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    projectsGrid.innerHTML = result.data.map(p => {
-                        const imgUrl = (p.images && p.images.length > 0 && p.images[0])
-                            ? p.images[0]
-                            : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
-
-                        const displayTitle = p.title
-                            ? p.title
-                            : (p.location
-                                ? `${p.category || 'Project'} (${p.location})`
-                                : (p.category || 'Project'));
-
-                        const clientText = p.location
-                            ? `${p.category || 'Residential'} • ${p.location}`
-                            : (p.description || p.category || 'Custom Project');
-
-                        return `
-                            <div class="project-card animate-up reveal-active" tabindex="0">
-                                <img class="project-img" src="${imgUrl}"
-                                     onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                                     loading="lazy"
-                                     alt="${displayTitle}">
-                                <div class="project-overlay">
-                                    <h3 class="project-title">${displayTitle}</h3>
-                                    <p class="project-client">${clientText}</p>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-
-                    // Re-attach click listeners for newly created cards
-                    document.querySelectorAll('.project-card').forEach(card => {
-                        card.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            document.querySelectorAll('.project-card').forEach(c => {
-                                if (c !== card) c.classList.remove('active');
-                            });
-                            card.classList.toggle('active');
-                        });
-                    });
-
+                    writeCache(result.data);
+                    if (!silent) renderProjects(result.data);       // first-time visitor
+                    else         renderProjects(result.data);       // silently refresh view
                 } else {
-                    showError();
+                    if (!silent) showError();
                 }
             } catch (err) {
                 console.error('Error fetching projects:', err);
-                showError();
+                if (!silent) showError();
             }
         };
 
-        fetchProjects();
+        // ── Main entry: stale-while-revalidate ─────────────────────
+        const loadProjects = () => {
+            const cached = readCache();
+
+            if (cached) {
+                // ✅ Cached data → show INSTANTLY, then refresh in background
+                renderProjects(cached);
+                fetchFresh(true);       // silent background refresh
+            } else {
+                // 🆕 First visit → show skeletons, wait for API
+                showSkeletons();
+                fetchFresh(false);
+            }
+        };
+
+        loadProjects();
     }
 
 
