@@ -41,6 +41,12 @@
 
 html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
 }
 
 body {
@@ -49,6 +55,9 @@ body {
     color: var(--color-text-light);
     line-height: 1.6;
     overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    touch-action: manipulation;
 }
 
 a {
@@ -226,10 +235,9 @@ button, input, textarea {
 /* Mobile Nav Overlay Backdrop */
 .mobile-nav-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.65);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -684,7 +692,7 @@ button, input, textarea {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     color: var(--color-text-light);
-    font-size: 0.95rem;
+    font-size: 16px;
     transition: var(--transition-fast);
     outline: none;
 }
@@ -1973,6 +1981,7 @@ button, input, textarea {
     background-color: #05080f;
     position: relative;
     border-top: 1px solid rgba(255, 255, 255, 0.02);
+    overflow: hidden;
 }
 
 .projects-bg-text {
