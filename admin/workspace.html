@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content=width=device-width, initial-scale=1.0>
+    <title>Workspace Preview & Content – AR Constructions & Realtors Admin</title>
+    <link rel=preconnect href=https://fonts.googleapis.com>
+    <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+    <link href=https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap rel=stylesheet>
+    <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
+    <link rel=stylesheet href=admin.css>
+    <link rel=stylesheet href=../frontend/style.css>
+    <link rel=icon type=image/png href=assets/ar-logo.png>
+    <style>
+        /* Admin layout overrides so frontend styles don't break sidebar */
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        .admin-main {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #090d16;
+        }
+        .preview-bar {
+            background: rgba(20, 20, 24, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 70px;
+            z-index: 85;
+            backdrop-filter: blur(10px);
+        }
+        .preview-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(197, 160, 89, 0.15);
+            color: var(--primary-gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .public-page-frame {
+            position: relative;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        /* Keep main-header relative inside admin frame preview */
+        .public-page-frame .main-header {
+            position: relative;
+            top: 0;
+            background: rgba(9, 13, 22, 0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class=admin-layout>
+        
+        <!-- Sidebar Navigation -->
+        <aside class=admin-sidebar id=admin-sidebar>
+            <div class=sidebar-header>
+                <img src=assets/ar-logo.png alt=AR Logo class=sidebar-logo onerror=this.src='../frontend/images/ar-logo.png'>
+                <div>
+                    <h2 class=sidebar-title>AR CONSTRUCTIONS</h2>
+                    <span class=sidebar-subtitle>& REALTORS</span>
+                </div>
+            </div>
+
+            <nav class=sidebar-nav>
+                <a href=dashboard.html class=nav-item>
+                    <i class=fa-solid fa-chart-line></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href=bookings.html class=nav-item>
+                    <i class=fa-solid fa-calendar-check></i>
+                    <span>Bookings</span>
+                </a>
+                <a href=workspace.html class=nav-item active>
+                    <i class=fa-solid fa-house-laptop></i>
+                    <span>Workspace</span>
+                </a>
+                <a href=about.html class=nav-item>
+                    <i class=fa-solid fa-circle-info></i>
+                    <span>About Us</span>
+                </a>
+                <a href=projects.html class=nav-item>
+                    <i class=fa-solid fa-building-user></i>
+                    <span>Projects</span>
+                </a>
+                <a href=services.html class=nav-item>
+                    <i class=fa-solid fa-screwdriver-wrench></i>
+                    <span>Services</span>
+                </a>
+                <a href=settings.html class=nav-item>
+                    <i class=fa-solid fa-sliders></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class=sidebar-footer>
+                <button class=logout-btn onclick=handleLogout()>
+                    <i class=fa-solid fa-arrow-right-from-bracket></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class=admin-main>
+            <!-- Topbar -->
+            <header class=admin-topbar>
+                <div class=topbar-left>
+                    <button class=mobile-menu-btn id=mobile-menu-btn aria-label=Toggle menu>
+                        <i class=fa-solid fa-bars></i>
+                    </button>
+                    <h1 class=page-title>Workspace (Home) – Admin View</h1>
+                </div>
+
+                <div class=user-profile>
+                    <div class=user-avatar id=user-initial>A</div>
+                    <div class=user-info>
+                        <span class=user-name id=user-email>Administrator</span>
+                        <span class=user-role>Super Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Preview action banner -->
+            <div class=preview-bar>
+                <div class=preview-badge>
+                    <i class=fa-solid fa-eye></i> Live Public Replicated View
+                </div>
+                <div style=display: flex; gap: 12px; align-items: center;>
+                    <a href=../frontend/index.html target=_blank class=btn-gold style=font-size: 0.82rem; padding: 6px 14px; text-decoration: none;>
+                        <i class=fa-solid fa-arrow-up-right-from-square></i> Open Public Site
+                    </a>
+                </div>
+            </div>
+
+            <!-- Embedded Public Workspace Content As-It-Is -->
+            <div class=public-page-frame>
+                <!-- Public Header Replicated -->
+                <header class=main-header>
+                    <div class=header-container>
+                        <a href=workspace.html class=logo-link>
+                            <img src=../frontend/images/ar-logo.png alt=AR Logo class=header-logo>
+                            <span class=logo-text-fallback>AR Constructions & Realtors</span>
+                        </a>
+                        <nav class=nav-menu>
+                            <ul class=nav-list>
+                                <li><a href=workspace.html class=nav-link active>Workspace</a></li>
+                                <li><a href=about.html class=nav-link>About Us</a></li>
+                                <li><a href=projects.html class=nav-link>Projects</a></li>
+                                <li><a href=services.html class=nav-link>Services</a></li>
+                                <li><a href=bookings.html class=nav-link>Bookings (Admin)</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+
+                <!-- Hero Slider Section -->
+                <section class=slider-section style=height: 65vh; min-height: 480px;>
+                    <div class=slider-container>
+                        <div class=slide active>
+                            <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg onerror=this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1920&q=80' alt=Bespoke Living Spaces>
+                            <div class=slide-overlay></div>
+                            <div class=slide-content>
+                                <h2 class=slide-title>Crafting Exquisite Spaces</h2>
+                                <p class=slide-subtitle>Unique, Classy, and Versatile Interior Architecture</p>
+                            </div>
+                        </div>
+                        <div class=slide>
+                            <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg onerror=this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80' alt=Bespoke Residential Work>
+                            <div class=slide-overlay></div>
+                            <div class=slide-content>
+                                <h2 class=slide-title>Bespoke Home Solutions</h2>
+                                <p class=slide-subtitle>Transforming Dreams Into Elegant Environments</p>
+                            </div>
+                        </div>
+                        <div class=slide>
+                            <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg onerror=this.src='https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1920&q=80' alt=Luxury Details>
+                            <div class=slide-overlay></div>
+                            <div class=slide-content>
+                                <h2 class=slide-title>Luxury is in the Details</h2>
+                                <p class=slide-subtitle>Complete Design Packages Tailored for Homeowners</p>
+                            </div>
+                        </div>
+                        <div class=slide>
+                            <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg onerror=this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80' alt=Affordable Elegance>
+                            <div class=slide-overlay></div>
+                            <div class=slide-content>
+                                <h2 class=slide-title>Affordable Elegance</h2>
+                                <p class=slide-subtitle>Delivering Exquisite Results with Professional Precision</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=slider-arrows>
+                        <button class=slider-arrow prev aria-label=Previous slide><i class=fa-solid fa-chevron-left></i></button>
+                        <button class=slider-arrow next aria-label=Next slide><i class=fa-solid fa-chevron-right></i></button>
+                    </div>
+                    <div class=slider-dots>
+                        <span class=slider-dot active></span>
+                        <span class=slider-dot></span>
+                        <span class=slider-dot></span>
+                        <span class=slider-dot></span>
+                    </div>
+                </section>
+
+                <!-- Home Hero Split Block -->
+                <section class=home-intro-section style=padding: 70px 0;>
+                    <div class=section-container>
+                        <div class=home-hero-split>
+                            <div class=home-hero-content>
+                                <h2>WELCOME TO AR CONSTRUCTIONS & REALTORS</h2>
+                                <p>We craft bespoke living spaces that reflect grace, elegance, and supreme comfort. Delivering end-to-end luxury architectural designs, interior craftsmanship, and premium renovations across Kerala and Karnataka.</p>
+                            </div>
+                            <div class=home-hero-image>
+                                <img src=../frontend/images/index_apart.jpg onerror=this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80' alt=AR Design>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Grid Section -->
+                <section class=services-section>
+                    <div class=section-container>
+                        <div class=services-header animate-fade reveal-active>
+                            <h2>Comprehensive Solutions</h2>
+                            <p>From initial blueprint to the final flourish, we manage every facet of your property creation.</p>
+                        </div>
+                        <div class=services-grid>
+                            <div class=service-card animate-up reveal-active>
+                                <div class=service-icon-wrap><i class=fa-solid fa-compass-drafting></i></div>
+                                <h3 class=service-title>Architectural Planning</h3>
+                                <p class=service-desc>Precision structural schematics, 3D renderings, and compliant council blueprints tailored to your terrain.</p>
+                            </div>
+                            <div class=service-card animate-up reveal-active>
+                                <div class=service-icon-wrap><i class=fa-solid fa-couch></i></div>
+                                <h3 class=service-title>Interior Design</h3>
+                                <p class=service-desc>Harmonious ambient palettes, customized modular woodwork, bespoke ceilings, and curated luxury textures.</p>
+                            </div>
+                            <div class=service-card animate-up reveal-active>
+                                <div class=service-icon-wrap><i class=fa-solid fa-trowel-bricks></i></div>
+                                <h3 class=service-title>Construction & Build</h3>
+                                <p class=service-desc>Turnkey residential and commercial construction managed with rigorous on-site quality benchmarks.</p>
+                            </div>
+                            <div class=service-card animate-up reveal-active>
+                                <div class=service-icon-wrap><i class=fa-solid fa-wand-magic-sparkles></i></div>
+                                <h3 class=service-title>Renovation & Styling</h3>
+                                <p class=service-desc>Revitalizing existing structures into contemporary masterworks with seamless transitions and upgrades.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src=admin.js></script>
+    <script>
+        // Initialize hero slider in admin view
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        const prevBtn = document.querySelector('.slider-arrow.prev');
+        const nextBtn = document.querySelector('.slider-arrow.next');
+
+        if (slides.length) {
+            let current = 0;
+            const showSlide = (n) => {
+                slides.forEach(s => s.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                current = (n + slides.length) % slides.length;
+                slides[current].classList.add('active');
+                dots[current]?.classList.add('active');
+            };
+            let timer = setInterval(() => showSlide(current + 1), 4000);
+            const reset = () => { clearInterval(timer); timer = setInterval(() => showSlide(current + 1), 4000); };
+            prevBtn?.addEventListener('click', () => { showSlide(current - 1); reset(); });
+            nextBtn?.addEventListener('click', () => { showSlide(current + 1); reset(); });
+            dots.forEach((dot, idx) => dot.addEventListener('click', () => { showSlide(idx); reset(); }));
+        }
+    </script>
+</body>
+</html>

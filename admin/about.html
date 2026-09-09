@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content=width=device-width, initial-scale=1.0>
+    <title>About Us Preview & Content – AR Constructions & Realtors Admin</title>
+    <link rel=preconnect href=https://fonts.googleapis.com>
+    <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+    <link href=https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap rel=stylesheet>
+    <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
+    <link rel=stylesheet href=admin.css>
+    <link rel=stylesheet href=../frontend/style.css>
+    <link rel=icon type=image/png href=assets/ar-logo.png>
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        .admin-main {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #090d16;
+        }
+        .preview-bar {
+            background: rgba(20, 20, 24, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 70px;
+            z-index: 85;
+            backdrop-filter: blur(10px);
+        }
+        .preview-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(197, 160, 89, 0.15);
+            color: var(--primary-gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .public-page-frame {
+            position: relative;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        .public-page-frame .main-header {
+            position: relative;
+            top: 0;
+            background: rgba(9, 13, 22, 0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class=admin-layout>
+        
+        <!-- Sidebar Navigation -->
+        <aside class=admin-sidebar id=admin-sidebar>
+            <div class=sidebar-header>
+                <img src=assets/ar-logo.png alt=AR Logo class=sidebar-logo onerror=this.src='../frontend/images/ar-logo.png'>
+                <div>
+                    <h2 class=sidebar-title>AR CONSTRUCTIONS</h2>
+                    <span class=sidebar-subtitle>& REALTORS</span>
+                </div>
+            </div>
+
+            <nav class=sidebar-nav>
+                <a href=dashboard.html class=nav-item>
+                    <i class=fa-solid fa-chart-line></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href=bookings.html class=nav-item>
+                    <i class=fa-solid fa-calendar-check></i>
+                    <span>Bookings</span>
+                </a>
+                <a href=workspace.html class=nav-item>
+                    <i class=fa-solid fa-house-laptop></i>
+                    <span>Workspace</span>
+                </a>
+                <a href=about.html class=nav-item active>
+                    <i class=fa-solid fa-circle-info></i>
+                    <span>About Us</span>
+                </a>
+                <a href=projects.html class=nav-item>
+                    <i class=fa-solid fa-building-user></i>
+                    <span>Projects</span>
+                </a>
+                <a href=services.html class=nav-item>
+                    <i class=fa-solid fa-screwdriver-wrench></i>
+                    <span>Services</span>
+                </a>
+                <a href=settings.html class=nav-item>
+                    <i class=fa-solid fa-sliders></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class=sidebar-footer>
+                <button class=logout-btn onclick=handleLogout()>
+                    <i class=fa-solid fa-arrow-right-from-bracket></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class=admin-main>
+            <!-- Topbar -->
+            <header class=admin-topbar>
+                <div class=topbar-left>
+                    <button class=mobile-menu-btn id=mobile-menu-btn aria-label=Toggle menu>
+                        <i class=fa-solid fa-bars></i>
+                    </button>
+                    <h1 class=page-title>About Us – Admin View</h1>
+                </div>
+
+                <div class=user-profile>
+                    <div class=user-avatar id=user-initial>A</div>
+                    <div class=user-info>
+                        <span class=user-name id=user-email>Administrator</span>
+                        <span class=user-role>Super Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Preview action banner -->
+            <div class=preview-bar>
+                <div class=preview-badge>
+                    <i class=fa-solid fa-eye></i> Live Public Replicated View
+                </div>
+                <div style=display: flex; gap: 12px; align-items: center;>
+                    <a href=../frontend/about.html target=_blank class=btn-gold style=font-size: 0.82rem; padding: 6px 14px; text-decoration: none;>
+                        <i class=fa-solid fa-arrow-up-right-from-square></i> Open Public Site
+                    </a>
+                </div>
+            </div>
+
+            <!-- Embedded Public About Content As-It-Is -->
+            <div class=public-page-frame>
+                <!-- Public Header Replicated -->
+                <header class=main-header>
+                    <div class=header-container>
+                        <a href=workspace.html class=logo-link>
+                            <img src=../frontend/images/ar-logo.png alt=AR Logo class=header-logo>
+                            <span class=logo-text-fallback>AR Constructions & Realtors</span>
+                        </a>
+                        <nav class=nav-menu>
+                            <ul class=nav-list>
+                                <li><a href=workspace.html class=nav-link>Workspace</a></li>
+                                <li><a href=about.html class=nav-link active>About Us</a></li>
+                                <li><a href=projects.html class=nav-link>Projects</a></li>
+                                <li><a href=services.html class=nav-link>Services</a></li>
+                                <li><a href=bookings.html class=nav-link>Bookings (Admin)</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </header>
+
+                <!-- About Cover Hero Section -->
+                <section class=about-hero-cover animate-fade reveal-active style=height: 380px;>
+                    <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg class=hero-bg alt=About AR Constructions & Realtors>
+                    <div class=hero-overlay></div>
+                    <div class=hero-content>
+                        <div class=about-breadcrumbs>
+                            <a href=workspace.html>Home</a> | <span>About us</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Get To Know Us offset block section -->
+                <section class=about-intro-offset-section style=padding: 70px 0;>
+                    <div class=section-container>
+                        <div class=about-know-us-split>
+                            <div class=about-know-us-img-col animate-left reveal-active>
+                                <div class=about-know-us-img>
+                                    <img src=../frontend/images/about_knowus.jpg onerror=this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80' alt=AR seating and wallpaper planning>
+                                </div>
+                            </div>
+                            <div class=about-know-us-box animate-right reveal-active>
+                                <h2>Get To Know Us</h2>
+                                <h3 class=sub>AR Constructions & Realtors is a premier building, painting, interior, renovation, and demolition contractor in Bangalore.</h3>
+                                <p>
+                                    Our cohesive proposals over the years have brought eclectic designs and sturdy structural engineering to real life environments. We deliver cost-effective, innovative, and high-quality construction solutions tailored to our clients' budget and vision.
+                                </p>
+                                <div class=about-values-row>
+                                    <div class=about-value-card animate-up reveal-active>
+                                        <div class=value-icon><i class=fa-solid fa-hand-peace></i></div>
+                                        <h4>Client<br>satisfaction</h4>
+                                    </div>
+                                    <div class=about-value-card animate-up reveal-active>
+                                        <div class=value-icon><i class=fa-solid fa-cube></i></div>
+                                        <h4>Innovative<br>Approach</h4>
+                                    </div>
+                                    <div class=about-value-card animate-up reveal-active>
+                                        <div class=value-icon><i class=fa-solid fa-shield-halved></i></div>
+                                        <h4>Cost<br>Effective</h4>
+                                    </div>
+                                    <div class=about-value-card animate-up reveal-active>
+                                        <div class=value-icon><i class=fa-solid fa-calendar-check></i></div>
+                                        <h4>Timely<br>Delivery</h4>
+                                    </div>
+                                    <div class=about-value-card animate-up reveal-active>
+                                        <div class=value-icon><i class=fa-solid fa-leaf></i></div>
+                                        <h4>Sustainable<br>Solutions</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Core Values 3-column section -->
+                <section class=about-values-section style=padding: 70px 0; background-color: #05080f;>
+                    <div class=section-container>
+                        <div class=services-header animate-fade reveal-active>
+                            <h2>Our Core Pillars</h2>
+                            <p>Delivering distinct structural excellence through integrity, precision, and craftsmanship.</p>
+                        </div>
+                        <div class=values-grid>
+                            <div class=value-card animate-up reveal-active>
+                                <div class=value-icon-wrap><i class=fa-solid fa-medal></i></div>
+                                <h3 class=value-title>Bespoke Excellence</h3>
+                                <p class=value-desc>Customized solutions carefully constructed to resonate with individual lifestyles and architectural grandeur.</p>
+                            </div>
+                            <div class=value-card animate-up reveal-active>
+                                <div class=value-icon-wrap><i class=fa-solid fa-handshake></i></div>
+                                <h3 class=value-title>Transparency & Trust</h3>
+                                <p class=value-desc>Clear communication, authentic budget timelines, and premium quality sourcing with zero hidden clauses.</p>
+                            </div>
+                            <div class=value-card animate-up reveal-active>
+                                <div class=value-icon-wrap><i class=fa-solid fa-people-roof></i></div>
+                                <h3 class=value-title>Customer-Centric</h3>
+                                <p class=value-desc>Dedicated supervision and complete post-delivery warranty guarantees across all our projects.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src=admin.js></script>
+</body>
+</html>
