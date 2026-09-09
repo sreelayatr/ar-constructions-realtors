@@ -729,16 +729,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ── Main entry: stale-while-revalidate ─────────────────────
         const loadProjects = () => {
+            // Immediately activate interactions on pre-rendered or existing cards
+            attachCardListeners();
+
             const cached = readCache();
 
             if (cached) {
-                // ✅ Cached data → show INSTANTLY, then refresh in background
+                // ✅ Cached data → render and keep interactive
                 renderProjects(cached);
                 fetchFresh(true);       // silent background refresh
             } else {
-                // 🆕 First visit → show skeletons, wait for API
-                showSkeletons();
-                fetchFresh(false);
+                // If pre-rendered HTML cards already exist in DOM, keep them visible!
+                // Only show skeletons if grid is completely empty
+                const existingCards = projectsGrid.querySelectorAll('.project-card');
+                if (existingCards.length === 0) {
+                    showSkeletons();
+                    fetchFresh(false);
+                } else {
+                    // Fetch fresh in background without replacing the visible cards with skeletons
+                    fetchFresh(true);
+                }
             }
         };
 

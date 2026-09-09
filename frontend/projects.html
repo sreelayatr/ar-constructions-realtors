@@ -12,8 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css?v=202609021620">
+    <!-- Cloudinary & CDN Preconnect -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
+    <link rel="dns-prefetch" href="https://res.cloudinary.com">
+    <link rel="preconnect" href="https://ar-constructions-realtors.onrender.com" crossorigin>
+    <link rel="dns-prefetch" href="https://ar-constructions-realtors.onrender.com">
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/ar-logo.png">`n    <link rel="shortcut icon" type="image/png" href="images/ar-logo.png">`n    <link rel="apple-touch-icon" href="images/ar-logo.png">
+    <link rel="icon" type="image/png" href="images/ar-logo.png">
+    <link rel="shortcut icon" type="image/png" href="images/ar-logo.png">
+    <link rel="apple-touch-icon" href="images/ar-logo.png">
 </head>
 <body>
 
@@ -82,7 +89,88 @@
             </div>
 
             <div class="projects-grid" id="projects-grid">
-                <!-- Projects dynamically loaded from Admin Dashboard via API -->
+                <!-- Pre-rendered default projects for instant zero-delay loading -->
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788711132/f249f284-72b1-431c-b58c-421852e789b1.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Residential (Bangalore, Karnataka)">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Residential (Bangalore, Karnataka)</h3>
+                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788712420/87d999b5-e7c0-4a57-a8b8-88184b174601.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Modern Layout">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Modern Layout</h3>
+                        <p class="project-client">Residential • Kerala</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788717169/bdbafd6c-9936-4380-8315-ae818c20c535.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Living Area">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Living Area</h3>
+                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788644703/Screenshot_2026-09-06_031433.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Courtyard">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Courtyard</h3>
+                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788647720/Screenshot_2026-09-06_040458.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Waiting Room">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Waiting Room</h3>
+                        <p class="project-client">Residential • Kerala</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788709069/Screenshot_2026-09-06_210724.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Dr. RAJANI'S CLINIC COMMERCIAL PROJECT">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Dr. RAJANI'S CLINIC COMMERCIAL PROJECT</h3>
+                        <p class="project-client">Residential • JP NAGAR, BANGALORE</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788710261/Screenshot_2026-09-06_212716.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Rainbow Residency Luxury Villa">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Rainbow Residency Luxury Villa</h3>
+                        <p class="project-client">Residential • Sarjapur, Bangalore</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788711046/89b33f0e-e171-459b-8f74-a9a2388ce06e.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="Modern Kitchen & Utility">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Modern Kitchen & Utility</h3>
+                        <p class="project-client">Residential • karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788708392/Screenshot_2026-09-06_205556.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async" alt="COMMERCIAL PROJECT LRC - Conference Room">
+                    <div class="project-overlay">
+                        <h3 class="project-title">COMMERCIAL PROJECT LRC - Conference Room</h3>
+                        <p class="project-client">Residential • Hyderabad</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
