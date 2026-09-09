@@ -28,6 +28,7 @@ const authRoutes = require("./routes/auth");
 const bookingRoutes = require("./routes/bookings");
 const projectRoutes = require("./routes/projects");
 const dashboardRoutes = require("./routes/dashboard");
+const settingsRoutes = require("./routes/settings");
 
 // ============================================================
 // APP INITIALIZATION
@@ -219,6 +220,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/settings", settingsRoutes);
 
 // ============================================================
 // STATIC DIRECTORIES

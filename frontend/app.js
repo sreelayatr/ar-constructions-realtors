@@ -753,6 +753,26 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         loadProjects();
+
+        // ── Dynamic Projects Hero Banner Sync ────────────────────────
+        const heroCoverImg = document.querySelector('.projects-hero-cover img.hero-bg');
+        if (heroCoverImg) {
+            const HERO_CACHE_KEY = 'ar_projects_hero_image';
+            const cachedHero = localStorage.getItem(HERO_CACHE_KEY);
+            if (cachedHero) {
+                heroCoverImg.src = cachedHero;
+            }
+
+            fetch(`${API_BASE_URL}/api/settings/projects_hero_image`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.success && res.value) {
+                        heroCoverImg.src = res.value;
+                        localStorage.setItem(HERO_CACHE_KEY, res.value);
+                    }
+                })
+                .catch(() => {});
+        }
     }
 
 

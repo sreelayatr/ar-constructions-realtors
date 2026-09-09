@@ -5,6 +5,7 @@
 let searchTimeout = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    loadHeroBanner();
     loadProjects();
 });
 
@@ -198,3 +199,81 @@ async function executeDeleteProject(id) {
         showToast('Server error while deleting project', 'error');
     }
 }
+
+/* ==========================================================================
+   PROJECTS COVER / HERO BANNER MANAGEMENT
+   ========================================================================== */
+
+const DEFAULT_HERO_BANNER = 'https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png';
+
+function previewHeroBanner() {
+    const input = document.getElementById('hero-banner-url');
+    const preview = document.getElementById('hero-banner-preview');
+    if (!preview) return;
+    const url = input && input.value.trim() ? input.value.trim() : DEFAULT_HERO_BANNER;
+    preview.src = url;
+}
+
+async function loadHeroBanner() {
+    const input = document.getElementById('hero-banner-url');
+    const preview = document.getElementById('hero-banner-preview');
+    if (!input) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/settings/projects_hero_image`);
+        const data = await res.json();
+
+        if (data && data.success && data.value) {
+            input.value = data.value;
+            if (preview) preview.src = data.value;
+        } else {
+            input.value = DEFAULT_HERO_BANNER;
+            if (preview) preview.src = DEFAULT_HERO_BANNER;
+        }
+    } catch (err) {
+        console.warn('Could not fetch projects_hero_image setting:', err);
+        input.value = DEFAULT_HERO_BANNER;
+        if (preview) preview.src = DEFAULT_HERO_BANNER;
+    }
+}
+
+async function handleHeroBannerSave(e) {
+    e.preventDefault();
+    const input = document.getElementById('hero-banner-url');
+    const btn = document.getElementById('save-hero-banner-btn');
+    const preview = document.getElementById('hero-banner-preview');
+    const value = input ? input.value.trim() : '';
+
+    if (!value) {
+        showToast('Please enter an image URL', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+
+    try {
+        const res = await fetch(`${API_BASE}/settings/projects_hero_image`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ value })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            showToast('Projects Hero Cover picture updated successfully!', 'success');
+            if (preview) preview.src = value;
+        } else {
+            showToast(data.message || 'Failed to update hero picture', 'error');
+        }
+    } catch (err) {
+        console.error('Error saving hero picture:', err);
+        showToast('Server error while saving hero picture', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Update Picture</span>';
+    }
+}
+
