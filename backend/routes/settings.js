@@ -6,7 +6,11 @@ const { requireAuth } = require('../middleware/auth');
 
 // Default fallback images and settings
 const defaultSettings = {
-    projects_hero_image: 'https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png'
+    projects_hero_image: 'https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png',
+    workspace_slide_1_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg',
+    workspace_slide_2_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
+    workspace_slide_3_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
+    workspace_slide_4_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg'
 };
 
 // In-memory store fallback when DB is disconnected
