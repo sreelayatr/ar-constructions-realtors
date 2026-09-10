@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Images - AR Constructions &amp; Realtors Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/ar-logo.png" alt="AR Logo" class="sidebar-logo" onerror="this.src='../frontend/images/ar-logo.png'">
+                <div>
+                    <h2 class="sidebar-title">AR CONSTRUCTIONS</h2>
+                    <span class="sidebar-subtitle">&amp; REALTORS</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a>
+                <a href="bookings.html" class="nav-item"><i class="fa-solid fa-calendar-check"></i><span>Bookings</span></a>
+                <a href="projects.html" class="nav-item"><i class="fa-solid fa-building-user"></i><span>Projects</span></a>
+                <a href="page-images.html" class="nav-item active"><i class="fa-solid fa-images"></i><span>Page Images</span></a>
+                <a href="settings.html" class="nav-item"><i class="fa-solid fa-sliders"></i><span>Settings</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></button>
+            </div>
+        </aside>
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Website Page Images</h1>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-initial">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-email">Administrator</span>
+                        <span class="user-role">Super Admin</span>
+                    </div>
+                </div>
+            </header>
+            <div class="admin-content" id="page-images-content"></div>
+        </main>
+    </div>
+    <script src="admin.js"></script>
+    <script src="page-images.js"></script>
+</body>
+</html>
