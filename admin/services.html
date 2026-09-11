@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <meta charset=UTF-8>
-    <meta name=viewport content=width=device-width, initial-scale=1.0>
-    <title>Services Preview & Content – AR Constructions & Realtors Admin</title>
-    <link rel=preconnect href=https://fonts.googleapis.com>
-    <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-    <link href=https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap rel=stylesheet>
-    <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
-    <link rel=stylesheet href=admin.css>
-    <link rel=stylesheet href=../frontend/style.css>
-    <link rel=icon type=image/png href=assets/ar-logo.png>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Images Management – AR Constructions &amp; Realtors Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
     <style>
         body {
             background-color: var(--bg-dark);
@@ -21,83 +20,174 @@
             min-height: 100vh;
             background: #090d16;
         }
+        .service-img-card {
+            background: rgba(18, 24, 38, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: border-color 0.2s;
+        }
+        .service-img-card:hover {
+            border-color: var(--primary-gold);
+        }
+        .service-thumb-wrap {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+        .service-thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .service-card-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(9, 13, 22, 0.85);
+            color: var(--primary-gold);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
-    <div class=admin-layout>
+    <div class="admin-layout">
         
         <!-- Sidebar Navigation -->
-        <aside class=admin-sidebar id=admin-sidebar>
-            <div class=sidebar-header>
-                <img src=assets/ar-logo.png alt=AR Logo class=sidebar-logo onerror=this.src='../frontend/images/ar-logo.png'>
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/ar-logo.png" alt="AR Logo" class="sidebar-logo" onerror="this.src='../frontend/images/ar-logo.png'">
                 <div>
-                    <h2 class=sidebar-title>AR CONSTRUCTIONS</h2>
-                    <span class=sidebar-subtitle>& REALTORS</span>
+                    <h2 class="sidebar-title">AR CONSTRUCTIONS</h2>
+                    <span class="sidebar-subtitle">&amp; REALTORS</span>
                 </div>
             </div>
 
-            <nav class=sidebar-nav>
-                <a href=dashboard.html class=nav-item>
-                    <i class=fa-solid fa-chart-line></i>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href=bookings.html class=nav-item>
-                    <i class=fa-solid fa-calendar-check></i>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-calendar-check"></i>
                     <span>Bookings</span>
                 </a>
-                <a href=workspace.html class=nav-item>
-                    <i class=fa-solid fa-house-laptop></i>
+                <a href="workspace.html" class="nav-item">
+                    <i class="fa-solid fa-images"></i>
                     <span>Workspace</span>
                 </a>
-                <a href=about.html class=nav-item>
-                    <i class=fa-solid fa-circle-info></i>
+                <a href="about.html" class="nav-item">
+                    <i class="fa-solid fa-circle-info"></i>
                     <span>About Us</span>
                 </a>
-                <a href=projects.html class=nav-item>
-                    <i class=fa-solid fa-building-user></i>
+                <a href="projects.html" class="nav-item">
+                    <i class="fa-solid fa-building-user"></i>
                     <span>Projects</span>
                 </a>
-                <a href=services.html class=nav-item active>
-                    <i class=fa-solid fa-screwdriver-wrench></i>
+                <a href="services.html" class="nav-item active">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
                     <span>Services</span>
                 </a>
-                <a href=settings.html class=nav-item>
-                    <i class=fa-solid fa-sliders></i>
+                <a href="settings.html" class="nav-item">
+                    <i class="fa-solid fa-sliders"></i>
                     <span>Settings</span>
                 </a>
             </nav>
 
-            <div class=sidebar-footer>
-                <button class=logout-btn onclick=handleLogout()>
-                    <i class=fa-solid fa-arrow-right-from-bracket></i>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     <span>Logout</span>
                 </button>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class=admin-main>
+        <main class="admin-main">
             <!-- Topbar -->
-            <header class=admin-topbar>
-                <div class=topbar-left>
-                    <button class=mobile-menu-btn id=mobile-menu-btn aria-label=Toggle menu>
-                        <i class=fa-solid fa-bars></i>
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h1 class=page-title>Services – Admin View</h1>
+                    <h1 class="page-title">Services Images Management</h1>
                 </div>
 
-                <div class=user-profile>
-                    <div class=user-avatar id=user-initial>A</div>
-                    <div class=user-info>
-                        <span class=user-name id=user-email>Administrator</span>
-                        <span class=user-role>Super Admin</span>
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-initial">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-email">Administrator</span>
+                        <span class="user-role">Super Admin</span>
                     </div>
                 </div>
             </header>
 
+            <!-- Admin Editor Form Controls -->
+            <div class="admin-content" style="padding: 24px;">
+                
+                <div class="card-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-screwdriver-wrench" style="color: var(--primary-gold); margin-right: 8px;"></i> Services Showcase Pictures (2 Images)</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the 2 feature images displayed under the "Our Services" section on the public website.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 16px;">
+                        
+                        <!-- Service Showcase Image 1 -->
+                        <div class="service-img-card">
+                            <div class="service-thumb-wrap">
+                                <span class="service-card-badge">Showcase Image 1 (Top)</span>
+                                <img id="preview-services_showcase_image_1" src="../frontend/images/showcase-interior-1.jpg" alt="Services Showcase 1" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=683&h=1024&q=80'">
+                            </div>
+                            
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-services_showcase_image_1">Image 1 URL</label>
+                                <input type="url" id="input-services_showcase_image_1" class="admin-input" placeholder="https://..." oninput="handleLivePreview('services_showcase_image_1')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-services_showcase_image_1" style="width: 100%;" onclick="saveServicesImage('services_showcase_image_1', 'Showcase Image 1')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Image 1</span>
+                            </button>
+                        </div>
+
+                        <!-- Service Showcase Image 2 -->
+                        <div class="service-img-card">
+                            <div class="service-thumb-wrap">
+                                <span class="service-card-badge">Showcase Image 2 (Bottom)</span>
+                                <img id="preview-services_showcase_image_2" src="../frontend/images/showcase-interior-2.jpg" alt="Services Showcase 2" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=683&h=1024&q=80'">
+                            </div>
+                            
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-services_showcase_image_2">Image 2 URL</label>
+                                <input type="url" id="input-services_showcase_image_2" class="admin-input" placeholder="https://..." oninput="handleLivePreview('services_showcase_image_2')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-services_showcase_image_2" style="width: 100%;" onclick="saveServicesImage('services_showcase_image_2', 'Showcase Image 2')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Image 2</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </main>
     </div>
 
-    <script src=admin.js></script>
+    <script src="admin.js"></script>
+    <script src="services.js"></script>
 </body>
 </html>

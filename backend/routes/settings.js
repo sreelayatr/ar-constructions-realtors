@@ -25,7 +25,11 @@ const defaultSettings = {
     about_gallery_image_6: 'images/about_swing.jpg',
     about_gallery_image_7: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0059.jpg',
     about_gallery_image_8: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0057.jpg',
-    about_gallery_image_9: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0056.jpg'
+    about_gallery_image_9: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0056.jpg',
+
+    // Services Page Settings
+    services_showcase_image_1: 'images/showcase-interior-1.jpg',
+    services_showcase_image_2: 'images/showcase-interior-2.jpg'
 };
 
 // In-memory store fallback when DB is disconnected

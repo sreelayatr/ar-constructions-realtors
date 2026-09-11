@@ -840,6 +840,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateAboutImageInDOM(key, value);
                     localStorage.setItem(`ar_${key}`, value);
                 }
+                if (servicesKeys.includes(key) && value) {
+                    updateServicesImageInDOM(key, value);
+                    localStorage.setItem(`ar_${key}`, value);
+                }
                 if (key === 'projects_hero_image') {
                     const img = document.querySelector('.projects-hero-cover img.hero-bg');
                     if (img && value) {
@@ -891,6 +895,41 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => {
                 if (res && res.success && res.value) {
                     updateAboutImageInDOM(key, res.value);
+                    localStorage.setItem(cacheKey, res.value);
+                }
+            })
+            .catch(() => {});
+    });
+
+    /* ==========================================
+       SERVICES IMAGES SYNC (2 Showcase Images under Our Services)
+       ========================================== */
+    const updateServicesImageInDOM = (key, url) => {
+        if (!url) return;
+        const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
+        const showcaseImgs = document.querySelectorAll('.lower-showcase-image-col img');
+        if (key === 'services_showcase_image_1' && showcaseImgs[0]) {
+            showcaseImgs[0].src = cleanUrl;
+        } else if (key === 'services_showcase_image_2' && showcaseImgs[1]) {
+            showcaseImgs[1].src = cleanUrl;
+        }
+    };
+
+    const servicesKeys = [
+        'services_showcase_image_1',
+        'services_showcase_image_2'
+    ];
+
+    servicesKeys.forEach(key => {
+        const cacheKey = `ar_${key}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) updateServicesImageInDOM(key, cached);
+
+        fetch(`${API_BASE_URL}/api/settings/${key}`)
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success && res.value) {
+                    updateServicesImageInDOM(key, res.value);
                     localStorage.setItem(cacheKey, res.value);
                 }
             })
