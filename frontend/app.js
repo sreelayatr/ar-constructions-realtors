@@ -786,18 +786,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateWorkspaceImageInDOM = (key, url) => {
         if (!url) return;
+        const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
         const slideMatch = key.match(/^workspace_slide_(\d+)_image$/);
         if (slideMatch && heroSlides.length) {
             const slideNum = parseInt(slideMatch[1], 10);
             const slide = heroSlides[slideNum - 1];
             if (slide) {
                 const img = slide.querySelector('img');
-                if (img) img.src = url;
+                if (img) img.src = cleanUrl;
             }
         } else if (key === 'workspace_intro_image' && introImgEl) {
-            introImgEl.src = url;
+            introImgEl.src = cleanUrl;
         } else if (key === 'workspace_apart_image' && apartImgEl) {
-            apartImgEl.src = url;
+            apartImgEl.src = cleanUrl;
         }
     };
 

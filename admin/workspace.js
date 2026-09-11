@@ -7,14 +7,29 @@ const DEFAULT_WORKSPACE_IMAGES = {
     '2': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
     '3': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
     '4': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
-    'intro': 'images/index_hero.jpg',
-    'apart': 'images/index_apart.jpg'
+    'intro': '../frontend/images/index_hero.jpg',
+    'apart': '../frontend/images/index_apart.jpg'
 };
 
 function getSettingKey(id) {
     if (id === 'intro') return 'workspace_intro_image';
     if (id === 'apart') return 'workspace_apart_image';
     return `workspace_slide_${id}_image`;
+}
+
+// Convert relative frontend paths (e.g. images/index_hero.jpg) to admin context (../frontend/images/index_hero.jpg)
+function getAdminImageSrc(url) {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('../')) {
+        return url;
+    }
+    if (url.startsWith('images/')) {
+        return '../frontend/' + url;
+    }
+    if (url.startsWith('/images/')) {
+        return '../frontend' + url;
+    }
+    return url;
 }
 
 // Utility: set status message under a card
@@ -34,8 +49,8 @@ function previewSlide(id) {
     }
     const preview = document.getElementById(`slide-preview-${id}`);
     if (preview) {
-        preview.src = url;
-        preview.onerror = () => setSlideStatus(id, 'Could not load image. Check the URL.', 'error');
+        preview.src = getAdminImageSrc(url);
+        preview.onerror = () => setSlideStatus(id, 'Could not load image. Check the URL or file path.', 'error');
         preview.onload = () => setSlideStatus(id, 'Image loaded successfully.', 'success');
     }
 }
@@ -97,7 +112,7 @@ async function saveSlide(id) {
         if (data.success) {
             // Update preview to confirm
             const preview = document.getElementById(`slide-preview-${id}`);
-            if (preview) preview.src = url;
+            if (preview) preview.src = getAdminImageSrc(url);
 
             // Bust localStorage cache so frontend picks up the new image
             localStorage.removeItem(`ar_${key}`);
@@ -140,12 +155,18 @@ async function loadWorkspaceSlides() {
             const preview = document.getElementById(`slide-preview-${id}`);
 
             if (input) input.value = currentUrl;
-            if (preview) preview.src = currentUrl;
+            if (preview) {
+                preview.src = getAdminImageSrc(currentUrl);
+                preview.onerror = () => {
+                    if (id === 'intro') preview.src = '../frontend/images/index_hero.jpg';
+                    if (id === 'apart') preview.src = '../frontend/images/index_apart.jpg';
+                };
+            }
         } catch (err) {
             console.warn(`Could not load setting for ${id}:`, err.message);
             const defaultVal = DEFAULT_WORKSPACE_IMAGES[id];
             const preview = document.getElementById(`slide-preview-${id}`);
-            if (preview) preview.src = defaultVal;
+            if (preview) preview.src = getAdminImageSrc(defaultVal);
         }
     }
 }
