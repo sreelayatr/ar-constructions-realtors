@@ -199,7 +199,7 @@
             <div class="admin-content">
                 <p class="workspace-header-desc">
                     <i class="fa-solid fa-circle-info" style="color:#c9a96e;margin-right:6px;"></i>
-                    Manage all public images shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL or choose a file from your device, preview it, and click <strong>Save Image</strong>. Changes update live instantly across the site.
+                    Manage all public images shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL and click <strong>Save Image</strong>. Changes update live instantly across the site.
                 </p>
 
                 <!-- Section 1: Hero Slider Images -->
@@ -221,14 +221,7 @@
                         <img class="slide-preview" id="slide-preview-1" src="" alt="Slide 1 Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-1" placeholder="Paste image URL here…">
-                                <label for="slide-file-1" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-1" accept="image/*" style="display:none;" onchange="handleFileSelect(1)">
-                                <button class="btn-preview-slide" onclick="previewSlide(1)">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-1" placeholder="Paste image URL here…" oninput="previewSlide(1)">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(1)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 1
@@ -249,14 +242,7 @@
                         <img class="slide-preview" id="slide-preview-2" src="" alt="Slide 2 Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-2" placeholder="Paste image URL here…">
-                                <label for="slide-file-2" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-2" accept="image/*" style="display:none;" onchange="handleFileSelect(2)">
-                                <button class="btn-preview-slide" onclick="previewSlide(2)">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-2" placeholder="Paste image URL here…" oninput="previewSlide(2)">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(2)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 2
@@ -277,14 +263,7 @@
                         <img class="slide-preview" id="slide-preview-3" src="" alt="Slide 3 Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-3" placeholder="Paste image URL here…">
-                                <label for="slide-file-3" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-3" accept="image/*" style="display:none;" onchange="handleFileSelect(3)">
-                                <button class="btn-preview-slide" onclick="previewSlide(3)">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-3" placeholder="Paste image URL here…" oninput="previewSlide(3)">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(3)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 3
@@ -305,14 +284,7 @@
                         <img class="slide-preview" id="slide-preview-4" src="" alt="Slide 4 Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-4" placeholder="Paste image URL here…">
-                                <label for="slide-file-4" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-4" accept="image/*" style="display:none;" onchange="handleFileSelect(4)">
-                                <button class="btn-preview-slide" onclick="previewSlide(4)">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-4" placeholder="Paste image URL here…" oninput="previewSlide(4)">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(4)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 4
@@ -342,14 +314,7 @@
                         <img class="slide-preview" id="slide-preview-intro" src="" alt="Home Intro Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-intro" placeholder="Paste image URL here…">
-                                <label for="slide-file-intro" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-intro" accept="image/*" style="display:none;" onchange="handleFileSelect('intro')">
-                                <button class="btn-preview-slide" onclick="previewSlide('intro')">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-intro" placeholder="Paste image URL here…" oninput="previewSlide('intro')">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide('intro')">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Intro Picture
@@ -370,14 +335,7 @@
                         <img class="slide-preview" id="slide-preview-apart" src="" alt="What Set Us Apart Preview">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-apart" placeholder="Paste image URL here…">
-                                <label for="slide-file-apart" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-apart" accept="image/*" style="display:none;" onchange="handleFileSelect('apart')">
-                                <button class="btn-preview-slide" onclick="previewSlide('apart')">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
+                                <input type="url" id="slide-url-apart" placeholder="Paste image URL here…" oninput="previewSlide('apart')">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide('apart')">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Section Picture
