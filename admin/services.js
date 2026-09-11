@@ -6,7 +6,9 @@
 
 const SERVICES_SETTINGS_KEYS = [
     'services_showcase_image_1',
-    'services_showcase_image_2'
+    'services_showcase_image_2',
+    'services_quote_image_1',
+    'services_quote_image_2'
 ];
 
 document.addEventListener('DOMContentLoaded', () => {

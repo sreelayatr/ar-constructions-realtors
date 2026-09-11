@@ -29,7 +29,9 @@ const defaultSettings = {
 
     // Services Page Settings
     services_showcase_image_1: 'images/showcase-interior-1.jpg',
-    services_showcase_image_2: 'images/showcase-interior-2.jpg'
+    services_showcase_image_2: 'images/showcase-interior-2.jpg',
+    services_quote_image_1: 'https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto7-2.jpg',
+    services_quote_image_2: 'https://spaceliftstudio.com/wp-content/uploads/2020/03/24.jpg'
 };
 
 // In-memory store fallback when DB is disconnected

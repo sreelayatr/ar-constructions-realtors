@@ -136,16 +136,16 @@
             <!-- Admin Editor Form Controls -->
             <div class="admin-content" style="padding: 24px;">
                 
-                <div class="card-section">
+                <!-- Section 1: Services Showcase Pictures -->
+                <div class="card-section" style="margin-bottom: 24px;">
                     <div class="section-header">
                         <div>
                             <h2 class="section-title"><i class="fa-solid fa-screwdriver-wrench" style="color: var(--primary-gold); margin-right: 8px;"></i> Services Showcase Pictures (2 Images)</h2>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the 2 feature images displayed under the "Our Services" section on the public website.</p>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the 2 feature images displayed on the right column of the "Our Services" section.</p>
                         </div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 16px;">
-                        
                         <!-- Service Showcase Image 1 -->
                         <div class="service-img-card">
                             <div class="service-thumb-wrap">
@@ -179,7 +179,52 @@
                                 <i class="fa-solid fa-floppy-disk"></i> <span>Update Image 2</span>
                             </button>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Section 2: Mission Quote Showcase Pictures -->
+                <div class="card-section">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-quote-left" style="color: var(--primary-gold); margin-right: 8px;"></i> Our Mission Quote Section Pictures (2 Images)</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the left &amp; right side images surrounding the "OUR MISSION IS DESIGN &amp; DEVELOP THE BEST FOR YOU" quote block.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 16px;">
+                        <!-- Quote Image 1 (Left) -->
+                        <div class="service-img-card">
+                            <div class="service-thumb-wrap">
+                                <span class="service-card-badge">Quote Image 1 (Left Side)</span>
+                                <img id="preview-services_quote_image_1" src="https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto7-2.jpg" alt="Quote Image 1" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80'">
+                            </div>
+                            
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-services_quote_image_1">Left Quote Image URL</label>
+                                <input type="url" id="input-services_quote_image_1" class="admin-input" placeholder="https://..." oninput="handleLivePreview('services_quote_image_1')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-services_quote_image_1" style="width: 100%;" onclick="saveServicesImage('services_quote_image_1', 'Left Quote Image')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Left Quote Image</span>
+                            </button>
+                        </div>
+
+                        <!-- Quote Image 2 (Right) -->
+                        <div class="service-img-card">
+                            <div class="service-thumb-wrap">
+                                <span class="service-card-badge">Quote Image 2 (Right Side)</span>
+                                <img id="preview-services_quote_image_2" src="https://spaceliftstudio.com/wp-content/uploads/2020/03/24.jpg" alt="Quote Image 2" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80'">
+                            </div>
+                            
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-services_quote_image_2">Right Quote Image URL</label>
+                                <input type="url" id="input-services_quote_image_2" class="admin-input" placeholder="https://..." oninput="handleLivePreview('services_quote_image_2')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-services_quote_image_2" style="width: 100%;" onclick="saveServicesImage('services_quote_image_2', 'Right Quote Image')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Right Quote Image</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 

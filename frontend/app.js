@@ -902,22 +902,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================
-       SERVICES IMAGES SYNC (2 Showcase Images under Our Services)
+       SERVICES IMAGES SYNC (Showcase & Mission Quote Section Images)
        ========================================== */
     const updateServicesImageInDOM = (key, url) => {
         if (!url) return;
         const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
         const showcaseImgs = document.querySelectorAll('.lower-showcase-image-col img');
+        const quoteImgs = document.querySelectorAll('.quote-image-panel img');
         if (key === 'services_showcase_image_1' && showcaseImgs[0]) {
             showcaseImgs[0].src = cleanUrl;
         } else if (key === 'services_showcase_image_2' && showcaseImgs[1]) {
             showcaseImgs[1].src = cleanUrl;
+        } else if (key === 'services_quote_image_1' && quoteImgs[0]) {
+            quoteImgs[0].src = cleanUrl;
+        } else if (key === 'services_quote_image_2' && quoteImgs[1]) {
+            quoteImgs[1].src = cleanUrl;
         }
     };
 
     const servicesKeys = [
         'services_showcase_image_1',
-        'services_showcase_image_2'
+        'services_showcase_image_2',
+        'services_quote_image_1',
+        'services_quote_image_2'
     ];
 
     servicesKeys.forEach(key => {
