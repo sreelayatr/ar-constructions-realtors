@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang=en>
 <head>
     <meta charset=UTF-8>
@@ -20,40 +20,6 @@
             margin-left: 260px;
             min-height: 100vh;
             background: #090d16;
-        }
-        .preview-bar {
-            background: rgba(20, 20, 24, 0.95);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 70px;
-            z-index: 85;
-            backdrop-filter: blur(10px);
-        }
-        .preview-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(197, 160, 89, 0.15);
-            color: var(--primary-gold);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 600;
-        }
-        .public-page-frame {
-            position: relative;
-            width: 100%;
-            overflow-x: hidden;
-        }
-        .public-page-frame .main-header {
-            position: relative;
-            top: 0;
-            background: rgba(9, 13, 22, 0.98);
         }
     </style>
 </head>
@@ -129,102 +95,6 @@
                 </div>
             </header>
 
-            <!-- Preview action banner -->
-            <div class=preview-bar>
-                <div class=preview-badge>
-                    <i class=fa-solid fa-eye></i> Live Public Replicated View
-                </div>
-                <div style=display: flex; gap: 12px; align-items: center;>
-                    <a href=../frontend/services.html target=_blank class=btn-gold style=font-size: 0.82rem; padding: 6px 14px; text-decoration: none;>
-                        <i class=fa-solid fa-arrow-up-right-from-square></i> Open Public Site
-                    </a>
-                </div>
-            </div>
-
-            <!-- Embedded Public Services Content As-It-Is -->
-            <div class=public-page-frame>
-                <!-- Public Header Replicated -->
-                <header class=main-header>
-                    <div class=header-container>
-                        <a href=workspace.html class=logo-link>
-                            <img src=../frontend/images/ar-logo.png alt=AR Logo class=header-logo>
-                            <span class=logo-text-fallback>AR Constructions & Realtors</span>
-                        </a>
-                        <nav class=nav-menu>
-                            <ul class=nav-list>
-                                <li><a href=workspace.html class=nav-link>Workspace</a></li>
-                                <li><a href=about.html class=nav-link>About Us</a></li>
-                                <li><a href=projects.html class=nav-link>Projects</a></li>
-                                <li><a href=services.html class=nav-link active>Services</a></li>
-                                <li><a href=bookings.html class=nav-link>Bookings (Admin)</a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </header>
-
-                <!-- Hero Section -->
-                <section class=hero-section style=height: 320px;>
-                    <div class=hero-bg-overlay></div>
-                    <div class=hero-container>
-                        <h1 class=hero-title animate-up reveal-active>Our Services</h1>
-                        <nav class=breadcrumb-nav animate-up reveal-active aria-label=Breadcrumb>
-                            <ol class=breadcrumb-list>
-                                <li><a href=workspace.html>Home</a></li>
-                                <li class=separator><i class=fa-solid fa-chevron-right></i></li>
-                                <li class=active>Services</li>
-                            </ol>
-                        </nav>
-                    </div>
-                </section>
-
-                <!-- Services Grid Section -->
-                <section class=services-main-section style=padding: 70px 0;>
-                    <div class=section-container>
-                        <div class=services-lower-split>
-                            <!-- Left: 6 services grid (2 columns) -->
-                            <div class=lower-services-grid>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-building></i></div>
-                                    <h3>BUILDING CONTRACTOR</h3>
-                                    <p>Complete end-to-end residential and commercial building construction services. Architectural planning, structural engineering, quality material procurement, and site execution with uncompromising engineering standards.</p>
-                                </div>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-paint-roller></i></div>
-                                    <h3>PAINTING CONTRACTOR</h3>
-                                    <p>Comprehensive interior and exterior painting services. Surface preparation, waterproofing primers, texture coats, and luxury finishes utilizing premium weather-shield emulsions.</p>
-                                </div>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-couch></i></div>
-                                    <h3>INTERIOR CONTRACTOR</h3>
-                                    <p>Tailored luxury living spaces. Modular kitchens, customized TV units, bespoke wardrobes, false ceiling integration, lighting fixtures, and spatial decor curation.</p>
-                                </div>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-hammer></i></div>
-                                    <h3>RENOVATION CONTRACTOR</h3>
-                                    <p>Transforming outdated structures into modern masterpieces. Space re-engineering, structural reinforcement, tile upgrades, electrical modernizations, and plumbing revamps.</p>
-                                </div>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-trowel-bricks></i></div>
-                                    <h3>MASON CONTRACTOR</h3>
-                                    <p>Robust foundational brickwork, plastering, stone claddings, structural casting, and compound walls executed with precision craftsmanship.</p>
-                                </div>
-                                <div class=service-block-card animate-up reveal-active>
-                                    <div class=service-icon-circle><i class=fa-solid fa-trowel></i></div>
-                                    <h3>DEMOLITION CONTRACTOR</h3>
-                                    <p>Safe, compliant, and controlled structural demolition with debris clearing, site reclamation, and eco-friendly waste management.</p>
-                                </div>
-                            </div>
-
-                            <!-- Right: Showcase Image -->
-                            <div class=lower-showcase-image-col animate-fade reveal-active>
-                                <div class=lower-showcase-image-wrapper>
-                                    <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg onerror=this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' alt=AR Design>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
         </main>
     </div>
 

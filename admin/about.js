@@ -55,25 +55,7 @@ function handleLivePreview(key) {
 }
 
 function updateLivePublicView(key, url) {
-    if (!url) return;
-    const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
-
-    if (key === 'about_hero_image') {
-        const liveHero = document.querySelector('.public-page-frame .about-hero-cover img.hero-bg');
-        if (liveHero) liveHero.src = cleanUrl;
-    } else if (key === 'about_knowus_image') {
-        const liveKnowUs = document.querySelector('.public-page-frame .about-know-us-img img');
-        if (liveKnowUs) liveKnowUs.src = cleanUrl;
-    } else {
-        const galleryMatch = key.match(/^about_gallery_image_(\d+)$/);
-        if (galleryMatch) {
-            const idx = parseInt(galleryMatch[1], 10) - 1;
-            const liveGalleryImgs = document.querySelectorAll('.public-page-frame .about-slider-track .about-slide img');
-            if (liveGalleryImgs && liveGalleryImgs[idx]) {
-                liveGalleryImgs[idx].src = cleanUrl;
-            }
-        }
-    }
+    // No-op: Live public preview frame removed from admin UI
 }
 
 async function saveAboutImage(key, labelName) {
