@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace – AR Constructions & Realtors Admin</title>
+    <title>Workspace Images Editor – AR Constructions & Realtors Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,9 +13,9 @@
     <style>
         .workspace-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 24px;
-            margin-top: 8px;
+            margin-top: 12px;
         }
         .slide-card {
             background: #fff;
@@ -29,7 +29,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 18px 20px 14px;
+            padding: 16px 18px;
             border-bottom: 1px solid #f0f0f0;
         }
         .slide-badge {
@@ -39,7 +39,7 @@
             background: linear-gradient(135deg, #8b7355, #c9a96e);
             color: #fff;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -65,14 +65,14 @@
             background: #f5f5f5;
         }
         .slide-card-body {
-            padding: 18px 20px 20px;
+            padding: 16px 18px 18px;
         }
         .slide-url-group {
             display: flex;
             gap: 8px;
-            align-items: flex-start;
+            align-items: center;
         }
-        .slide-url-group input {
+        .slide-url-group input[type="url"] {
             flex: 1;
             padding: 10px 12px;
             border: 1.5px solid #e5e7eb;
@@ -83,28 +83,31 @@
             transition: border-color 0.2s;
             outline: none;
         }
-        .slide-url-group input:focus { border-color: #c9a96e; background: #fff; }
-        .btn-preview-slide {
-            padding: 10px 14px;
+        .slide-url-group input[type="url"]:focus { border-color: #c9a96e; background: #fff; }
+        .btn-file-upload {
+            padding: 10px 12px;
             background: #f3f4f6;
             border: 1.5px solid #e5e7eb;
             border-radius: 8px;
             cursor: pointer;
-            color: #6b7280;
+            color: #4b5563;
             font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s;
             white-space: nowrap;
         }
-        .btn-preview-slide:hover { background: #e5e7eb; color: #374151; }
+        .btn-file-upload:hover { background: #e5e7eb; color: #111827; }
         .btn-save-slide {
             width: 100%;
             margin-top: 12px;
-            padding: 11px 16px;
+            padding: 10px 16px;
             background: linear-gradient(135deg, #8b7355, #c9a96e);
             color: #fff;
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -125,10 +128,26 @@
         .slide-status.success { color: #16a34a; }
         .slide-status.error { color: #dc2626; }
         .workspace-header-desc {
-            color: #6b7280;
+            color: #9ca3af;
             font-size: 14px;
             margin-bottom: 24px;
             line-height: 1.6;
+        }
+        .section-title-bar {
+            font-family: 'Cinzel', serif;
+            font-size: 17px;
+            color: #ffffff;
+            margin: 32px 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+        }
+        .section-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -184,7 +203,7 @@
                     <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h1 class="page-title">Workspace Page Images</h1>
+                    <h1 class="page-title">Workspace Image Management</h1>
                 </div>
                 <div class="user-profile">
                     <div class="user-avatar" id="user-initial">A</div>
@@ -199,151 +218,310 @@
             <div class="admin-content">
                 <p class="workspace-header-desc">
                     <i class="fa-solid fa-circle-info" style="color:#c9a96e;margin-right:6px;"></i>
-                    Manage all public images shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL and click <strong>Save Image</strong>. Changes update live instantly across the site.
+                    Manage the <strong>1 Hero Section Picture</strong>, <strong>1 "Get To Know Us" Picture</strong>, and the <strong>9 Showcase Gallery Images</strong>. You can paste an image URL or upload a file directly from your computer. Click <strong>Save</strong> to publish updates live across the site.
                 </p>
 
-                <!-- Section 1: Hero Slider Images -->
-                <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#ffffff; margin: 16px 0 16px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-images" style="color:#c9a96e;"></i> Hero Banner Slider Images
-                </h2>
+                <!-- SECTION 1: 1 HERO SECTION PICTURE -->
+                <div class="section-title-bar">
+                    <div class="section-title-left">
+                        <i class="fa-solid fa-image" style="color:#c9a96e;"></i> 1. Hero Section Picture
+                    </div>
+                </div>
 
-                <div class="workspace-grid" id="workspace-grid" style="margin-bottom: 36px;">
+                <div class="workspace-grid" style="grid-template-columns: minmax(360px, 600px);">
+                    <div class="slide-card" id="slide-card-about_hero">
+                        <div class="slide-card-header">
+                            <div class="slide-badge" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <h3>Hero Cover Picture</h3>
+                                <p>Main top cover banner displayed across About Us & Showcase pages</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-about_hero" src="" alt="Hero Section Preview">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-about_hero" placeholder="Paste image URL or upload file…" oninput="previewSlide('about_hero')">
+                                <label class="btn-file-upload" title="Choose file from computer">
+                                    <i class="fa-solid fa-upload"></i> Upload
+                                    <input type="file" id="slide-file-about_hero" accept="image/*" style="display:none;" onchange="handleFileSelect('about_hero')">
+                                </label>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('about_hero')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Hero Picture
+                            </button>
+                            <div class="slide-status" id="slide-status-about_hero"></div>
+                        </div>
+                    </div>
+                </div>
 
-                    <!-- Slide 1 -->
-                    <div class="slide-card" id="slide-card-1">
+                <!-- SECTION 2: 1 GET TO KNOW US PICTURE -->
+                <div class="section-title-bar">
+                    <div class="section-title-left">
+                        <i class="fa-solid fa-circle-info" style="color:#c9a96e;"></i> 2. "Get To Know Us" Section Picture
+                    </div>
+                </div>
+
+                <div class="workspace-grid" style="grid-template-columns: minmax(360px, 600px);">
+                    <div class="slide-card" id="slide-card-about_knowus">
+                        <div class="slide-card-header">
+                            <div class="slide-badge" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-user-group"></i></div>
+                            <div>
+                                <h3>"Get To Know Us" Picture</h3>
+                                <p>Featured portrait image alongside the Get To Know Us description</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-about_knowus" src="" alt="Get To Know Us Preview">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-about_knowus" placeholder="Paste image URL or upload file…" oninput="previewSlide('about_knowus')">
+                                <label class="btn-file-upload" title="Choose file from computer">
+                                    <i class="fa-solid fa-upload"></i> Upload
+                                    <input type="file" id="slide-file-about_knowus" accept="image/*" style="display:none;" onchange="handleFileSelect('about_knowus')">
+                                </label>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('about_knowus')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save "Get To Know Us" Picture
+                            </button>
+                            <div class="slide-status" id="slide-status-about_knowus"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: THESE 9 SHOWCASE GALLERY IMAGES -->
+                <div class="section-title-bar">
+                    <div class="section-title-left">
+                        <i class="fa-solid fa-border-all" style="color:#c9a96e;"></i> 3. Showcase Gallery Images (9 Images)
+                    </div>
+                    <button class="btn-file-upload" style="background:#c9a96e; color:#fff; border:none; padding:6px 14px; font-weight:600;" onclick="saveAllGalleryImages()">
+                        <i class="fa-solid fa-floppy-disk"></i> Save All 9 Images
+                    </button>
+                </div>
+
+                <div class="workspace-grid">
+                    <!-- Image 1 -->
+                    <div class="slide-card" id="slide-card-about_gallery_1">
                         <div class="slide-card-header">
                             <div class="slide-badge">1</div>
                             <div>
-                                <h3>Slide 1 — Crafting Exquisite Spaces</h3>
-                                <p>Unique, Classy, and Versatile Interior Architecture</p>
+                                <h3>Gallery Image 1</h3>
+                                <p>Slide 1 — Item 1 (Bedroom / Interior Showcase)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-1" src="" alt="Slide 1 Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_1" src="" alt="Gallery Image 1">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-1" placeholder="Paste image URL here…" oninput="previewSlide(1)">
+                                <input type="url" id="slide-url-about_gallery_1" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_1')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_1" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_1')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide(1)">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Slide 1
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_1')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 1
                             </button>
-                            <div class="slide-status" id="slide-status-1"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_1"></div>
                         </div>
                     </div>
 
-                    <!-- Slide 2 -->
-                    <div class="slide-card" id="slide-card-2">
+                    <!-- Image 2 -->
+                    <div class="slide-card" id="slide-card-about_gallery_2">
                         <div class="slide-card-header">
                             <div class="slide-badge">2</div>
                             <div>
-                                <h3>Slide 2 — Bespoke Home Solutions</h3>
-                                <p>Transforming Dreams Into Elegant Environments</p>
+                                <h3>Gallery Image 2</h3>
+                                <p>Slide 1 — Item 2 (Bathroom / Vanity Showcase)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-2" src="" alt="Slide 2 Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_2" src="" alt="Gallery Image 2">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-2" placeholder="Paste image URL here…" oninput="previewSlide(2)">
+                                <input type="url" id="slide-url-about_gallery_2" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_2')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_2" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_2')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide(2)">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Slide 2
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_2')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 2
                             </button>
-                            <div class="slide-status" id="slide-status-2"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_2"></div>
                         </div>
                     </div>
 
-                    <!-- Slide 3 -->
-                    <div class="slide-card" id="slide-card-3">
+                    <!-- Image 3 -->
+                    <div class="slide-card" id="slide-card-about_gallery_3">
                         <div class="slide-card-header">
                             <div class="slide-badge">3</div>
                             <div>
-                                <h3>Slide 3 — Luxury is in the Details</h3>
-                                <p>Complete Design Packages Tailored for Homeowners</p>
+                                <h3>Gallery Image 3</h3>
+                                <p>Slide 1 — Item 3 (Kitchen Interior Showcase)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-3" src="" alt="Slide 3 Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_3" src="" alt="Gallery Image 3">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-3" placeholder="Paste image URL here…" oninput="previewSlide(3)">
+                                <input type="url" id="slide-url-about_gallery_3" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_3')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_3" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_3')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide(3)">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Slide 3
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_3')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 3
                             </button>
-                            <div class="slide-status" id="slide-status-3"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_3"></div>
                         </div>
                     </div>
 
-                    <!-- Slide 4 -->
-                    <div class="slide-card" id="slide-card-4">
+                    <!-- Image 4 -->
+                    <div class="slide-card" id="slide-card-about_gallery_4">
                         <div class="slide-card-header">
                             <div class="slide-badge">4</div>
                             <div>
-                                <h3>Slide 4 — Affordable Elegance</h3>
-                                <p>Delivering Exquisite Results with Professional Precision</p>
+                                <h3>Gallery Image 4</h3>
+                                <p>Slide 2 — Item 1 (Living Room Sofa Layout)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-4" src="" alt="Slide 4 Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_4" src="" alt="Gallery Image 4">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-4" placeholder="Paste image URL here…" oninput="previewSlide(4)">
+                                <input type="url" id="slide-url-about_gallery_4" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_4')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_4" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_4')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide(4)">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Slide 4
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_4')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 4
                             </button>
-                            <div class="slide-status" id="slide-status-4"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_4"></div>
                         </div>
                     </div>
 
-                </div>
-
-                <!-- Section 2: Page Section Images (Under Hero Slider) -->
-                <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#ffffff; margin: 24px 0 16px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-image" style="color:#c9a96e;"></i> Main Page Section Pictures
-                </h2>
-
-                <div class="workspace-grid">
-
-                    <!-- Home Intro Image -->
-                    <div class="slide-card" id="slide-card-intro">
+                    <!-- Image 5 -->
+                    <div class="slide-card" id="slide-card-about_gallery_5">
                         <div class="slide-card-header">
-                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-house"></i></div>
+                            <div class="slide-badge">5</div>
                             <div>
-                                <h3>Home Intro Section Picture</h3>
-                                <p>AR Constructions & Realtors — Dream Home Design Section</p>
+                                <h3>Gallery Image 5</h3>
+                                <p>Slide 2 — Item 2 (Modular Cabinet Setups)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-intro" src="" alt="Home Intro Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_5" src="" alt="Gallery Image 5">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-intro" placeholder="Paste image URL here…" oninput="previewSlide('intro')">
+                                <input type="url" id="slide-url-about_gallery_5" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_5')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_5" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_5')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide('intro')">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Intro Picture
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_5')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 5
                             </button>
-                            <div class="slide-status" id="slide-status-intro"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_5"></div>
                         </div>
                     </div>
 
-                    <!-- What Set Us Apart Image -->
-                    <div class="slide-card" id="slide-card-apart">
+                    <!-- Image 6 -->
+                    <div class="slide-card" id="slide-card-about_gallery_6">
                         <div class="slide-card-header">
-                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-star"></i></div>
+                            <div class="slide-badge">6</div>
                             <div>
-                                <h3>"What Set Us Apart" Picture</h3>
-                                <p>Feature Image for What Set Us Apart Section</p>
+                                <h3>Gallery Image 6</h3>
+                                <p>Slide 2 — Item 3 (Wooden Hanging Swing)</p>
                             </div>
                         </div>
-                        <img class="slide-preview" id="slide-preview-apart" src="" alt="What Set Us Apart Preview">
+                        <img class="slide-preview" id="slide-preview-about_gallery_6" src="" alt="Gallery Image 6">
                         <div class="slide-card-body">
                             <div class="slide-url-group">
-                                <input type="url" id="slide-url-apart" placeholder="Paste image URL here…" oninput="previewSlide('apart')">
+                                <input type="url" id="slide-url-about_gallery_6" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_6')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_6" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_6')">
+                                </label>
                             </div>
-                            <button class="btn-save-slide" onclick="saveSlide('apart')">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Section Picture
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_6')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 6
                             </button>
-                            <div class="slide-status" id="slide-status-apart"></div>
+                            <div class="slide-status" id="slide-status-about_gallery_6"></div>
                         </div>
                     </div>
 
+                    <!-- Image 7 -->
+                    <div class="slide-card" id="slide-card-about_gallery_7">
+                        <div class="slide-card-header">
+                            <div class="slide-badge">7</div>
+                            <div>
+                                <h3>Gallery Image 7</h3>
+                                <p>Slide 3 — Item 1 (Bedroom Desk & Layout)</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-about_gallery_7" src="" alt="Gallery Image 7">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-about_gallery_7" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_7')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_7" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_7')">
+                                </label>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_7')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 7
+                            </button>
+                            <div class="slide-status" id="slide-status-about_gallery_7"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image 8 -->
+                    <div class="slide-card" id="slide-card-about_gallery_8">
+                        <div class="slide-card-header">
+                            <div class="slide-badge">8</div>
+                            <div>
+                                <h3>Gallery Image 8</h3>
+                                <p>Slide 3 — Item 2 (Kitchen & Dining View)</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-about_gallery_8" src="" alt="Gallery Image 8">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-about_gallery_8" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_8')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_8" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_8')">
+                                </label>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_8')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 8
+                            </button>
+                            <div class="slide-status" id="slide-status-about_gallery_8"></div>
+                        </div>
+                    </div>
+
+                    <!-- Image 9 -->
+                    <div class="slide-card" id="slide-card-about_gallery_9">
+                        <div class="slide-card-header">
+                            <div class="slide-badge">9</div>
+                            <div>
+                                <h3>Gallery Image 9</h3>
+                                <p>Slide 3 — Item 3 (Dining Room Round Table)</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-about_gallery_9" src="" alt="Gallery Image 9">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-about_gallery_9" placeholder="Paste URL or upload…" oninput="previewSlide('about_gallery_9')">
+                                <label class="btn-file-upload">
+                                    <i class="fa-solid fa-upload"></i>
+                                    <input type="file" id="slide-file-about_gallery_9" accept="image/*" style="display:none;" onchange="handleFileSelect('about_gallery_9')">
+                                </label>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('about_gallery_9')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Image 9
+                            </button>
+                            <div class="slide-status" id="slide-status-about_gallery_9"></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
