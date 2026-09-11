@@ -117,7 +117,7 @@ function createBookingRowHtml(b, isNew = false) {
                     <button class="icon-btn" title="View Details" onclick="viewBookingDetails('${b._id}')">
                         <i class="fa-solid fa-eye"></i>
                     </button>
-                    <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" class="icon-btn" title="Email Client">
+                    <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="icon-btn" title="Email Client">
                         <i class="fa-regular fa-envelope"></i>
                     </a>
                     ${phoneClean ? `
@@ -186,7 +186,7 @@ async function viewBookingDetails(id) {
             content.innerHTML = `
                 <div style="display: grid; gap: 14px; margin-top: 10px;">
                     <div><strong>Customer Name:</strong> ${escapeHtml(b.name)}</div>
-                    <div><strong>Email:</strong> ${escapeHtml(b.email)}</div>
+                    <div><strong>Email:</strong> <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" style="color: var(--primary-gold); text-decoration: none;">${escapeHtml(b.email)} <i class="fa-solid fa-envelope" style="font-size: 0.8rem; margin-left: 4px;"></i></a></div>
                     <div><strong>Phone:</strong> ${escapeHtml(b.phone || 'N/A')}</div>
                     <div><strong>Subject:</strong> ${escapeHtml(b.subject || 'N/A')}</div>
                     <div><strong>Status:</strong> <span class="badge badge-${b.status}">${escapeHtml(b.status)}</span></div>
@@ -195,6 +195,11 @@ async function viewBookingDetails(id) {
                     <hr style="border-color: var(--border-color); margin: 10px 0;">
                     <div><strong>Message Content:</strong></div>
                     <div style="background: var(--bg-input); padding: 14px; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem; color: var(--text-secondary); border: 1px solid var(--border-color);">${escapeHtml(b.message)}</div>
+                    <div style="margin-top: 10px;">
+                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 8px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fa-regular fa-envelope"></i> Send Email to Client
+                        </a>
+                    </div>
                 </div>
             `;
             document.getElementById('detail-modal').classList.add('active');
