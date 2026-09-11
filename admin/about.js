@@ -23,7 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadAboutImages() {
+    // 1. Immediately restore cached settings from localStorage for zero flickering on reload
     for (const key of ABOUT_SETTINGS_KEYS) {
+        const cached = localStorage.getItem(`ar_${key}`);
+        if (cached) {
+            const inputEl = document.getElementById(`input-${key}`);
+            const previewEl = document.getElementById(`preview-${key}`);
+            if (inputEl) inputEl.value = cached;
+            if (previewEl) previewEl.src = cached;
+        }
+    }
+
+    // 2. Fetch fresh settings from backend in parallel
+    await Promise.all(ABOUT_SETTINGS_KEYS.map(async (key) => {
         try {
             const res = await fetch(`${API_BASE}/settings/${key}`, { credentials: 'include' });
             const data = await res.json();
@@ -34,14 +46,12 @@ async function loadAboutImages() {
 
                 if (inputEl) inputEl.value = val;
                 if (previewEl) previewEl.src = val;
-
-                // Sync live public replicated view on page
-                updateLivePublicView(key, val);
+                localStorage.setItem(`ar_${key}`, val);
             }
         } catch (err) {
             console.error(`Error loading setting for ${key}:`, err);
         }
-    }
+    }));
 }
 
 function handleLivePreview(key) {

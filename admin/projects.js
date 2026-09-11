@@ -224,6 +224,12 @@ async function loadHeroBanner() {
     const preview = document.getElementById('hero-banner-preview');
     if (!input) return;
 
+    const cached = localStorage.getItem('ar_projects_hero_image');
+    if (cached) {
+        input.value = cached;
+        if (preview) preview.src = cached;
+    }
+
     try {
         const res = await fetch(`${API_BASE}/settings/projects_hero_image`);
         const data = await res.json();
@@ -231,14 +237,17 @@ async function loadHeroBanner() {
         if (data && data.success && data.value) {
             input.value = data.value;
             if (preview) preview.src = data.value;
-        } else {
+            localStorage.setItem('ar_projects_hero_image', data.value);
+        } else if (!cached) {
             input.value = DEFAULT_HERO_BANNER;
             if (preview) preview.src = DEFAULT_HERO_BANNER;
         }
     } catch (err) {
         console.warn('Could not fetch projects_hero_image setting:', err);
-        input.value = DEFAULT_HERO_BANNER;
-        if (preview) preview.src = DEFAULT_HERO_BANNER;
+        if (!cached) {
+            input.value = DEFAULT_HERO_BANNER;
+            if (preview) preview.src = DEFAULT_HERO_BANNER;
+        }
     }
 }
 
@@ -270,6 +279,7 @@ async function handleHeroBannerSave(e) {
         if (data.success) {
             showToast('Projects Hero Cover picture updated successfully!', 'success');
             if (preview) preview.src = value;
+            localStorage.setItem('ar_projects_hero_image', value);
         } else {
             showToast(data.message || 'Failed to update hero picture', 'error');
         }
