@@ -777,58 +777,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /* ==========================================
-       WORKSPACE HERO SLIDE IMAGE SYNC
+    /* ==========================================
+       WORKSPACE IMAGES SYNC (Hero Slides & Sections)
        ========================================== */
     const heroSlides = document.querySelectorAll('.slider-section .slide');
-    if (heroSlides.length) {
-        const applySlideImage = (slideIndex, url) => {
-            const slide = heroSlides[slideIndex - 1];
-            if (!slide) return;
-            const img = slide.querySelector('img');
-            if (img) img.src = url;
-        };
+    const introImgEl = document.getElementById('home-intro-img') || document.querySelector('.home-hero-img-wrapper img');
+    const apartImgEl = document.getElementById('home-apart-img') || document.querySelector('.apart-img-col img');
 
-        for (let i = 1; i <= 4; i++) {
-            const key = `workspace_slide_${i}_image`;
-            const cacheKey = `ar_${key}`;
-
-            // Apply cached image immediately (zero-delay)
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) applySlideImage(i, cached);
-
-            // Fetch fresh value from API silently in background
-            fetch(`${API_BASE_URL}/api/settings/${key}`)
-                .then(r => r.json())
-                .then(res => {
-                    if (res && res.success && res.value) {
-                        applySlideImage(i, res.value);
-                        localStorage.setItem(cacheKey, res.value);
-                    }
-                })
-                .catch(() => {});
+    const updateWorkspaceImageInDOM = (key, url) => {
+        if (!url) return;
+        const slideMatch = key.match(/^workspace_slide_(\d+)_image$/);
+        if (slideMatch && heroSlides.length) {
+            const slideNum = parseInt(slideMatch[1], 10);
+            const slide = heroSlides[slideNum - 1];
+            if (slide) {
+                const img = slide.querySelector('img');
+                if (img) img.src = url;
+            }
+        } else if (key === 'workspace_intro_image' && introImgEl) {
+            introImgEl.src = url;
+        } else if (key === 'workspace_apart_image' && apartImgEl) {
+            apartImgEl.src = url;
         }
+    };
 
-        // Real-time update via Socket.IO when admin saves a new slide image
-        if (typeof io !== 'undefined') {
-            try {
-                const socket = io(API_BASE_URL, { transports: ['websocket', 'polling'] });
-                socket.on('site_setting_updated', ({ key, value }) => {
-                    const match = key.match(/^workspace_slide_(\d+)_image$/);
-                    if (match && value) {
-                        const slideNum = parseInt(match[1], 10);
-                        applySlideImage(slideNum, value);
-                        localStorage.setItem(`ar_${key}`, value);
+    const workspaceKeys = [
+        'workspace_slide_1_image',
+        'workspace_slide_2_image',
+        'workspace_slide_3_image',
+        'workspace_slide_4_image',
+        'workspace_intro_image',
+        'workspace_apart_image'
+    ];
+
+    workspaceKeys.forEach(key => {
+        const cacheKey = `ar_${key}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) updateWorkspaceImageInDOM(key, cached);
+
+        fetch(`${API_BASE_URL}/api/settings/${key}`)
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success && res.value) {
+                    updateWorkspaceImageInDOM(key, res.value);
+                    localStorage.setItem(cacheKey, res.value);
+                }
+            })
+            .catch(() => {});
+    });
+
+    // Real-time update via Socket.IO when admin saves a new setting
+    if (typeof io !== 'undefined') {
+        try {
+            const socket = io(API_BASE_URL, { transports: ['websocket', 'polling'] });
+            socket.on('site_setting_updated', ({ key, value }) => {
+                if (workspaceKeys.includes(key) && value) {
+                    updateWorkspaceImageInDOM(key, value);
+                    localStorage.setItem(`ar_${key}`, value);
+                }
+                if (key === 'projects_hero_image') {
+                    const img = document.querySelector('.projects-hero-cover img.hero-bg');
+                    if (img && value) {
+                        img.src = value;
+                        localStorage.setItem('ar_projects_hero_image', value);
                     }
-                    if (key === 'projects_hero_image') {
-                        const img = document.querySelector('.projects-hero-cover img.hero-bg');
-                        if (img && value) {
-                            img.src = value;
-                            localStorage.setItem('ar_projects_hero_image', value);
-                        }
-                    }
-                });
-            } catch (e) { /* Socket.IO not available on this page */ }
-        }
+                }
+            });
+        } catch (e) { /* Socket.IO not available on this page */ }
     }
 
 

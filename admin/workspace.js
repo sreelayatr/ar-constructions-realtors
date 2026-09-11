@@ -1,110 +1,151 @@
 /* ============================================================
-   workspace.js – Admin: Edit hero slider images on index.html
+   workspace.js – Admin: Edit images on the public Workspace page
    ============================================================ */
 
-const DEFAULT_SLIDE_IMAGES = [
-    null, // index 0 unused (slides are 1-indexed)
-    'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg',
-    'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
-    'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
-    'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg'
-];
+const DEFAULT_WORKSPACE_IMAGES = {
+    '1': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg',
+    '2': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
+    '3': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
+    '4': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
+    'intro': 'images/index_hero.jpg',
+    'apart': 'images/index_apart.jpg'
+};
 
-// Utility: set status message under a slide card
-function setSlideStatus(slideNum, message, type) {
-    const el = document.getElementById(`slide-status-${slideNum}`);
+function getSettingKey(id) {
+    if (id === 'intro') return 'workspace_intro_image';
+    if (id === 'apart') return 'workspace_apart_image';
+    return `workspace_slide_${id}_image`;
+}
+
+// Utility: set status message under a card
+function setSlideStatus(id, message, type) {
+    const el = document.getElementById(`slide-status-${id}`);
     if (!el) return;
     el.textContent = message;
     el.className = `slide-status ${type || ''}`;
 }
 
 // Preview: update the <img> preview from the input URL
-function previewSlide(slideNum) {
-    const url = document.getElementById(`slide-url-${slideNum}`)?.value.trim();
+function previewSlide(id) {
+    const url = document.getElementById(`slide-url-${id}`)?.value.trim();
     if (!url) {
-        setSlideStatus(slideNum, 'Please enter an image URL first.', 'error');
+        setSlideStatus(id, 'Please enter an image URL or choose a file first.', 'error');
         return;
     }
-    const preview = document.getElementById(`slide-preview-${slideNum}`);
+    const preview = document.getElementById(`slide-preview-${id}`);
     if (preview) {
         preview.src = url;
-        preview.onerror = () => setSlideStatus(slideNum, 'Could not load image. Check the URL.', 'error');
-        preview.onload = () => setSlideStatus(slideNum, 'Image loaded successfully.', 'success');
+        preview.onerror = () => setSlideStatus(id, 'Could not load image. Check the URL.', 'error');
+        preview.onload = () => setSlideStatus(id, 'Image loaded successfully.', 'success');
     }
 }
 
-// Save: POST new URL to /api/settings/workspace_slide_N_image
-async function saveSlide(slideNum) {
-    const url = document.getElementById(`slide-url-${slideNum}`)?.value.trim();
-    if (!url) {
-        setSlideStatus(slideNum, 'Please enter a valid image URL.', 'error');
+// Handle file upload from computer
+function handleFileSelect(id) {
+    const fileInput = document.getElementById(`slide-file-${id}`);
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) return;
+
+    const file = fileInput.files[0];
+    if (!file.type.startsWith('image/')) {
+        setSlideStatus(id, 'Please select a valid image file.', 'error');
         return;
     }
 
-    const btn = document.querySelector(`#slide-card-${slideNum} .btn-save-slide`);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        const urlInput = document.getElementById(`slide-url-${id}`);
+        const preview = document.getElementById(`slide-preview-${id}`);
+
+        if (urlInput) urlInput.value = dataUrl;
+        if (preview) preview.src = dataUrl;
+
+        setSlideStatus(id, 'File selected! Click Save to publish changes live.', 'success');
+    };
+    reader.onerror = () => setSlideStatus(id, 'Error reading local file.', 'error');
+    reader.readAsDataURL(file);
+}
+
+// Save: POST image URL/data to settings API
+async function saveSlide(id) {
+    const url = document.getElementById(`slide-url-${id}`)?.value.trim();
+    if (!url) {
+        setSlideStatus(id, 'Please enter a valid image URL or upload a file.', 'error');
+        return;
+    }
+
+    const card = document.getElementById(`slide-card-${id}`);
+    const btn = card ? card.querySelector('.btn-save-slide') : null;
+    const originalBtnHtml = btn ? btn.innerHTML : '';
+
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
     }
-    setSlideStatus(slideNum, '', '');
+    setSlideStatus(id, '', '');
 
     try {
-        const key = `workspace_slide_${slideNum}_image`;
+        const key = getSettingKey(id);
         const res = await fetch(`${API_BASE}/settings/${key}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ value: url })
         });
         const data = await res.json();
 
         if (data.success) {
             // Update preview to confirm
-            const preview = document.getElementById(`slide-preview-${slideNum}`);
+            const preview = document.getElementById(`slide-preview-${id}`);
             if (preview) preview.src = url;
 
             // Bust localStorage cache so frontend picks up the new image
-            localStorage.removeItem(`ar_workspace_slide_${slideNum}_image`);
+            localStorage.removeItem(`ar_${key}`);
 
-            setSlideStatus(slideNum, '✓ Slide image saved! Changes are live on the website.', 'success');
+            setSlideStatus(id, '✓ Image saved! Changes are live on the website.', 'success');
             if (typeof showToast === 'function') {
-                showToast(`Slide ${slideNum} updated successfully.`, 'success');
+                showToast(`Image updated successfully.`, 'success');
             }
         } else {
             throw new Error(data.message || 'Save failed');
         }
     } catch (err) {
         console.error('saveSlide error:', err);
-        setSlideStatus(slideNum, `Error: ${err.message}`, 'error');
+        setSlideStatus(id, `Error: ${err.message}`, 'error');
         if (typeof showToast === 'function') {
-            showToast(`Failed to save slide ${slideNum}.`, 'error');
+            showToast(`Failed to save image.`, 'error');
         }
     } finally {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Slide ${slideNum}`;
+            btn.innerHTML = originalBtnHtml;
         }
     }
 }
 
-// Load: fetch current image for each slide from settings API
+// Load: fetch current image for each workspace section/slide from settings API
 async function loadWorkspaceSlides() {
-    for (let i = 1; i <= 4; i++) {
+    const ids = ['1', '2', '3', '4', 'intro', 'apart'];
+
+    for (const id of ids) {
         try {
-            const key = `workspace_slide_${i}_image`;
+            const key = getSettingKey(id);
             const res = await fetch(`${API_BASE}/settings/${key}`);
             const data = await res.json();
 
-            const currentUrl = (data.success && data.value) ? data.value : DEFAULT_SLIDE_IMAGES[i];
+            const defaultVal = DEFAULT_WORKSPACE_IMAGES[id];
+            const currentUrl = (data.success && data.value) ? data.value : defaultVal;
 
-            const input = document.getElementById(`slide-url-${i}`);
-            const preview = document.getElementById(`slide-preview-${i}`);
+            const input = document.getElementById(`slide-url-${id}`);
+            const preview = document.getElementById(`slide-preview-${id}`);
 
             if (input) input.value = currentUrl;
             if (preview) preview.src = currentUrl;
         } catch (err) {
-            console.warn(`Could not load slide ${i} setting:`, err.message);
-            const preview = document.getElementById(`slide-preview-${i}`);
-            if (preview) preview.src = DEFAULT_SLIDE_IMAGES[i];
+            console.warn(`Could not load setting for ${id}:`, err.message);
+            const defaultVal = DEFAULT_WORKSPACE_IMAGES[id];
+            const preview = document.getElementById(`slide-preview-${id}`);
+            if (preview) preview.src = defaultVal;
         }
     }
 }
