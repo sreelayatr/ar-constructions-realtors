@@ -836,6 +836,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateWorkspaceImageInDOM(key, value);
                     localStorage.setItem(`ar_${key}`, value);
                 }
+                if (aboutKeys.includes(key) && value) {
+                    updateAboutImageInDOM(key, value);
+                    localStorage.setItem(`ar_${key}`, value);
+                }
                 if (key === 'projects_hero_image') {
                     const img = document.querySelector('.projects-hero-cover img.hero-bg');
                     if (img && value) {
@@ -846,6 +850,52 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (e) { /* Socket.IO not available on this page */ }
     }
+
+    /* ==========================================
+       ABOUT US IMAGES SYNC (Hero, Get To Know Us, 9 Gallery Images)
+       ========================================== */
+    const updateAboutImageInDOM = (key, url) => {
+        if (!url) return;
+        const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
+        if (key === 'about_hero_image') {
+            const heroImg = document.querySelector('.about-hero-cover img.hero-bg');
+            if (heroImg) heroImg.src = cleanUrl;
+        } else if (key === 'about_knowus_image') {
+            const knowUsImg = document.querySelector('.about-know-us-img img');
+            if (knowUsImg) knowUsImg.src = cleanUrl;
+        } else {
+            const galleryMatch = key.match(/^about_gallery_image_(\d+)$/);
+            if (galleryMatch) {
+                const idx = parseInt(galleryMatch[1], 10) - 1;
+                const galleryImgs = document.querySelectorAll('.about-slider-track .about-slide img');
+                if (galleryImgs && galleryImgs[idx]) {
+                    galleryImgs[idx].src = cleanUrl;
+                }
+            }
+        }
+    };
+
+    const aboutKeys = [
+        'about_hero_image',
+        'about_knowus_image',
+        ...Array.from({ length: 9 }, (_, i) => `about_gallery_image_${i + 1}`)
+    ];
+
+    aboutKeys.forEach(key => {
+        const cacheKey = `ar_${key}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) updateAboutImageInDOM(key, cached);
+
+        fetch(`${API_BASE_URL}/api/settings/${key}`)
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success && res.value) {
+                    updateAboutImageInDOM(key, res.value);
+                    localStorage.setItem(cacheKey, res.value);
+                }
+            })
+            .catch(() => {});
+    });
 
 
 });

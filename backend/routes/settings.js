@@ -12,7 +12,20 @@ const defaultSettings = {
     workspace_slide_3_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
     workspace_slide_4_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
     workspace_intro_image: 'images/index_hero.png',
-    workspace_apart_image: 'images/index_apart.png'
+    workspace_apart_image: 'images/index_apart.png',
+
+    // About Us Page Settings
+    about_hero_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg',
+    about_knowus_image: 'images/about_knowus.jpg',
+    about_gallery_image_1: 'images/about_bedroom.jpg',
+    about_gallery_image_2: 'images/about_vanity.jpg',
+    about_gallery_image_3: 'images/about_kitchen.jpg',
+    about_gallery_image_4: 'images/about_sofa.jpg',
+    about_gallery_image_5: 'images/about_cabinet.jpg',
+    about_gallery_image_6: 'images/about_swing.jpg',
+    about_gallery_image_7: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0059.jpg',
+    about_gallery_image_8: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0057.jpg',
+    about_gallery_image_9: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0056.jpg'
 };
 
 // In-memory store fallback when DB is disconnected

@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
-<html lang=en>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset=UTF-8>
-    <meta name=viewport content=width=device-width, initial-scale=1.0>
-    <title>About Us Preview & Content – AR Constructions & Realtors Admin</title>
-    <link rel=preconnect href=https://fonts.googleapis.com>
-    <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-    <link href=https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap rel=stylesheet>
-    <link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
-    <link rel=stylesheet href=admin.css>
-    <link rel=stylesheet href=../frontend/style.css>
-    <link rel=icon type=image/png href=assets/ar-logo.png>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us Images Management – AR Constructions & Realtors Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="../frontend/style.css">
+    <link rel="icon" type="image/png" href="assets/ar-logo.png">
     <style>
         body {
             background-color: var(--bg-dark);
@@ -55,158 +55,406 @@
             top: 0;
             background: rgba(9, 13, 22, 0.98);
         }
+        .gallery-card {
+            background: rgba(18, 24, 38, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .gallery-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+        .gallery-thumb-wrap {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+        .gallery-thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gallery-card-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(9, 13, 22, 0.85);
+            color: var(--primary-gold);
+            border: 1px solid rgba(197, 160, 89, 0.4);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
-    <div class=admin-layout>
+    <div class="admin-layout">
         
         <!-- Sidebar Navigation -->
-        <aside class=admin-sidebar id=admin-sidebar>
-            <div class=sidebar-header>
-                <img src=assets/ar-logo.png alt=AR Logo class=sidebar-logo onerror=this.src='../frontend/images/ar-logo.png'>
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/ar-logo.png" alt="AR Logo" class="sidebar-logo" onerror="this.src='../frontend/images/ar-logo.png'">
                 <div>
-                    <h2 class=sidebar-title>AR CONSTRUCTIONS</h2>
-                    <span class=sidebar-subtitle>& REALTORS</span>
+                    <h2 class="sidebar-title">AR CONSTRUCTIONS</h2>
+                    <span class="sidebar-subtitle">&amp; REALTORS</span>
                 </div>
             </div>
 
-            <nav class=sidebar-nav>
-                <a href=dashboard.html class=nav-item>
-                    <i class=fa-solid fa-chart-line></i>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href=bookings.html class=nav-item>
-                    <i class=fa-solid fa-calendar-check></i>
+                <a href="bookings.html" class="nav-item">
+                    <i class="fa-solid fa-calendar-check"></i>
                     <span>Bookings</span>
                 </a>
-                <a href=workspace.html class=nav-item>
-                    <i class=fa-solid fa-house-laptop></i>
+                <a href="workspace.html" class="nav-item">
+                    <i class="fa-solid fa-images"></i>
                     <span>Workspace</span>
                 </a>
-                <a href=about.html class=nav-item active>
-                    <i class=fa-solid fa-circle-info></i>
+                <a href="about.html" class="nav-item active">
+                    <i class="fa-solid fa-circle-info"></i>
                     <span>About Us</span>
                 </a>
-                <a href=projects.html class=nav-item>
-                    <i class=fa-solid fa-building-user></i>
+                <a href="projects.html" class="nav-item">
+                    <i class="fa-solid fa-building-user"></i>
                     <span>Projects</span>
                 </a>
-                <a href=services.html class=nav-item>
-                    <i class=fa-solid fa-screwdriver-wrench></i>
-                    <span>Services</span>
-                </a>
-                <a href=settings.html class=nav-item>
-                    <i class=fa-solid fa-sliders></i>
+                <a href="settings.html" class="nav-item">
+                    <i class="fa-solid fa-sliders"></i>
                     <span>Settings</span>
                 </a>
             </nav>
 
-            <div class=sidebar-footer>
-                <button class=logout-btn onclick=handleLogout()>
-                    <i class=fa-solid fa-arrow-right-from-bracket></i>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     <span>Logout</span>
                 </button>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class=admin-main>
+        <main class="admin-main">
             <!-- Topbar -->
-            <header class=admin-topbar>
-                <div class=topbar-left>
-                    <button class=mobile-menu-btn id=mobile-menu-btn aria-label=Toggle menu>
-                        <i class=fa-solid fa-bars></i>
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                        <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h1 class=page-title>About Us – Admin View</h1>
+                    <h1 class="page-title">About Us Images Management</h1>
                 </div>
 
-                <div class=user-profile>
-                    <div class=user-avatar id=user-initial>A</div>
-                    <div class=user-info>
-                        <span class=user-name id=user-email>Administrator</span>
-                        <span class=user-role>Super Admin</span>
+                <div class="user-profile">
+                    <div class="user-avatar" id="user-initial">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="user-email">Administrator</span>
+                        <span class="user-role">Super Admin</span>
                     </div>
                 </div>
             </header>
 
-            <!-- Preview action banner -->
-            <div class=preview-bar>
-                <div class=preview-badge>
-                    <i class=fa-solid fa-eye></i> Live Public Replicated View
+            <!-- Admin Editor Form Controls -->
+            <div class="admin-content" style="padding: 24px;">
+                
+                <!-- Section 1: Hero & Get To Know Us Pictures -->
+                <div class="card-section" style="margin-bottom: 24px;">
+                    <div class="section-header">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-image" style="color: var(--primary-gold); margin-right: 8px;"></i> Main Hero &amp; Feature Pictures</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the Hero Cover banner image and the Get To Know Us section image.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                        <!-- 1. Hero Cover Image -->
+                        <div style="background: rgba(18, 24, 38, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 18px;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <span class="slide-badge" style="background: var(--primary-gold); color: #000; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">1</span>
+                                <div>
+                                    <h3 style="font-family: var(--font-heading); font-size: 0.95rem; color: #fff; margin: 0;">Hero Cover Picture</h3>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Top header banner image on the public About Us page</p>
+                                </div>
+                            </div>
+                            
+                            <div style="position: relative; width: 100%; height: 160px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); background: #000; margin-bottom: 12px;">
+                                <img id="preview-about_hero_image" src="https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg" alt="Hero Cover Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'">
+                            </div>
+
+                            <div class="admin-form-group" style="margin-bottom: 12px;">
+                                <label for="input-about_hero_image">Image URL</label>
+                                <input type="url" id="input-about_hero_image" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_hero_image')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-about_hero_image" style="width: 100%;" onclick="saveAboutImage('about_hero_image', 'Hero Cover Picture')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Hero Picture</span>
+                            </button>
+                        </div>
+
+                        <!-- 2. Get To Know Us Image -->
+                        <div style="background: rgba(18, 24, 38, 0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 18px;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <span class="slide-badge" style="background: var(--primary-gold); color: #000; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">2</span>
+                                <div>
+                                    <h3 style="font-family: var(--font-heading); font-size: 0.95rem; color: #fff; margin: 0;">Get To Know Us Picture</h3>
+                                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Feature picture alongside company introduction section</p>
+                                </div>
+                            </div>
+                            
+                            <div style="position: relative; width: 100%; height: 160px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); background: #000; margin-bottom: 12px;">
+                                <img id="preview-about_knowus_image" src="../frontend/images/about_knowus.jpg" alt="Get To Know Us Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80'">
+                            </div>
+
+                            <div class="admin-form-group" style="margin-bottom: 12px;">
+                                <label for="input-about_knowus_image">Image URL</label>
+                                <input type="url" id="input-about_knowus_image" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_knowus_image')">
+                            </div>
+
+                            <button type="button" class="btn-gold" id="btn-about_knowus_image" style="width: 100%;" onclick="saveAboutImage('about_knowus_image', 'Get To Know Us Picture')">
+                                <i class="fa-solid fa-floppy-disk"></i> <span>Update Get To Know Us Picture</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div style=display: flex; gap: 12px; align-items: center;>
-                    <a href=../frontend/about.html target=_blank class=btn-gold style=font-size: 0.82rem; padding: 6px 14px; text-decoration: none;>
-                        <i class=fa-solid fa-arrow-up-right-from-square></i> Open Public Site
+
+                <!-- Section 2: Projects Showcase Gallery (9 Images) -->
+                <div class="card-section">
+                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--primary-gold); margin-right: 8px;"></i> Projects Showcase Gallery (9 Images)</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Manage the 9 showcase images displayed across the 3 slider cards on the About Us page.</p>
+                        </div>
+                        <button class="btn-gold" id="save-all-gallery-btn" onclick="saveAllGalleryImages()">
+                            <i class="fa-solid fa-floppy-disk"></i> <span>Save All 9 Gallery Images</span>
+                        </button>
+                    </div>
+
+                    <!-- 9 Gallery Cards Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px;">
+                        
+                        <!-- Slide 1 (Images 1-3) -->
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 1 • Image 1</span>
+                                <img id="preview-about_gallery_image_1" src="../frontend/images/about_bedroom.jpg" alt="Gallery Image 1" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_1">Gallery Image 1 URL</label>
+                                <input type="url" id="input-about_gallery_image_1" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_1')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_1" onclick="saveAboutImage('about_gallery_image_1', 'Gallery Image 1')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 1
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 1 • Image 2</span>
+                                <img id="preview-about_gallery_image_2" src="../frontend/images/about_vanity.jpg" alt="Gallery Image 2" onerror="this.src='https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_2">Gallery Image 2 URL</label>
+                                <input type="url" id="input-about_gallery_image_2" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_2')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_2" onclick="saveAboutImage('about_gallery_image_2', 'Gallery Image 2')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 2
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 1 • Image 3</span>
+                                <img id="preview-about_gallery_image_3" src="../frontend/images/about_kitchen.jpg" alt="Gallery Image 3" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_3">Gallery Image 3 URL</label>
+                                <input type="url" id="input-about_gallery_image_3" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_3')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_3" onclick="saveAboutImage('about_gallery_image_3', 'Gallery Image 3')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 3
+                            </button>
+                        </div>
+
+                        <!-- Slide 2 (Images 4-6) -->
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 2 • Image 4</span>
+                                <img id="preview-about_gallery_image_4" src="../frontend/images/about_sofa.jpg" alt="Gallery Image 4" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_4">Gallery Image 4 URL</label>
+                                <input type="url" id="input-about_gallery_image_4" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_4')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_4" onclick="saveAboutImage('about_gallery_image_4', 'Gallery Image 4')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 4
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 2 • Image 5</span>
+                                <img id="preview-about_gallery_image_5" src="../frontend/images/about_cabinet.jpg" alt="Gallery Image 5" onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_5">Gallery Image 5 URL</label>
+                                <input type="url" id="input-about_gallery_image_5" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_5')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_5" onclick="saveAboutImage('about_gallery_image_5', 'Gallery Image 5')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 5
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 2 • Image 6</span>
+                                <img id="preview-about_gallery_image_6" src="../frontend/images/about_swing.jpg" alt="Gallery Image 6" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_6">Gallery Image 6 URL</label>
+                                <input type="url" id="input-about_gallery_image_6" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_6')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_6" onclick="saveAboutImage('about_gallery_image_6', 'Gallery Image 6')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 6
+                            </button>
+                        </div>
+
+                        <!-- Slide 3 (Images 7-9) -->
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 3 • Image 7</span>
+                                <img id="preview-about_gallery_image_7" src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0059.jpg" alt="Gallery Image 7" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_7">Gallery Image 7 URL</label>
+                                <input type="url" id="input-about_gallery_image_7" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_7')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_7" onclick="saveAboutImage('about_gallery_image_7', 'Gallery Image 7')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 7
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 3 • Image 8</span>
+                                <img id="preview-about_gallery_image_8" src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0057.jpg" alt="Gallery Image 8" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_8">Gallery Image 8 URL</label>
+                                <input type="url" id="input-about_gallery_image_8" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_8')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_8" onclick="saveAboutImage('about_gallery_image_8', 'Gallery Image 8')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 8
+                            </button>
+                        </div>
+
+                        <div class="gallery-card">
+                            <div class="gallery-thumb-wrap">
+                                <span class="gallery-card-badge">Slide 3 • Image 9</span>
+                                <img id="preview-about_gallery_image_9" src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0056.jpg" alt="Gallery Image 9" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&h=400&q=80'">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="input-about_gallery_image_9">Gallery Image 9 URL</label>
+                                <input type="url" id="input-about_gallery_image_9" class="admin-input" placeholder="https://..." oninput="handleLivePreview('about_gallery_image_9')">
+                            </div>
+                            <button type="button" class="btn-gold" id="btn-about_gallery_image_9" onclick="saveAboutImage('about_gallery_image_9', 'Gallery Image 9')">
+                                <i class="fa-solid fa-floppy-disk"></i> Update Image 9
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Preview Action Banner -->
+            <div class="preview-bar">
+                <div class="preview-badge">
+                    <i class="fa-solid fa-eye"></i> Live Public Replicated View
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <a href="../frontend/about.html" target="_blank" class="btn-gold" style="font-size: 0.82rem; padding: 6px 14px; text-decoration: none;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Public Site
                     </a>
                 </div>
             </div>
 
-            <!-- Embedded Public About Content As-It-Is -->
-            <div class=public-page-frame>
+            <!-- Embedded Public About Content As-It-Is for Instant Verification -->
+            <div class="public-page-frame">
                 <!-- Public Header Replicated -->
-                <header class=main-header>
-                    <div class=header-container>
-                        <a href=workspace.html class=logo-link>
-                            <img src=../frontend/images/ar-logo.png alt=AR Logo class=header-logo>
-                            <span class=logo-text-fallback>AR Constructions & Realtors</span>
+                <header class="main-header">
+                    <div class="header-container">
+                        <a href="workspace.html" class="logo-link">
+                            <img src="../frontend/images/ar-logo.png" alt="AR Logo" class="header-logo">
+                            <span class="logo-text-fallback">AR Constructions &amp; Realtors</span>
                         </a>
-                        <nav class=nav-menu>
-                            <ul class=nav-list>
-                                <li><a href=workspace.html class=nav-link>Workspace</a></li>
-                                <li><a href=about.html class=nav-link active>About Us</a></li>
-                                <li><a href=projects.html class=nav-link>Projects</a></li>
-                                <li><a href=services.html class=nav-link>Services</a></li>
-                                <li><a href=bookings.html class=nav-link>Bookings (Admin)</a></li>
+                        <nav class="nav-menu">
+                            <ul class="nav-list">
+                                <li><a href="workspace.html" class="nav-link">Workspace</a></li>
+                                <li><a href="about.html" class="nav-link active">About Us</a></li>
+                                <li><a href="projects.html" class="nav-link">Projects</a></li>
+                                <li><a href="services.html" class="nav-link">Services</a></li>
+                                <li><a href="bookings.html" class="nav-link">Bookings (Admin)</a></li>
                             </ul>
                         </nav>
                     </div>
                 </header>
 
                 <!-- About Cover Hero Section -->
-                <section class=about-hero-cover animate-fade reveal-active style=height: 380px;>
-                    <img src=https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg class=hero-bg alt=About AR Constructions & Realtors>
-                    <div class=hero-overlay></div>
-                    <div class=hero-content>
-                        <div class=about-breadcrumbs>
-                            <a href=workspace.html>Home</a> | <span>About us</span>
+                <section class="about-hero-cover animate-fade reveal-active" style="height: 380px;">
+                    <img src="https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg" class="hero-bg" alt="About AR Constructions &amp; Realtors">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content">
+                        <div class="about-breadcrumbs">
+                            <a href="workspace.html">Home</a> | <span>About us</span>
                         </div>
                     </div>
                 </section>
 
-                <!-- Get To Know Us offset block section -->
-                <section class=about-intro-offset-section style=padding: 70px 0;>
-                    <div class=section-container>
-                        <div class=about-know-us-split>
-                            <div class=about-know-us-img-col animate-left reveal-active>
-                                <div class=about-know-us-img>
-                                    <img src=../frontend/images/about_knowus.jpg onerror=this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80' alt=AR seating and wallpaper planning>
+                <!-- Get To Know Us Section -->
+                <section class="about-intro-offset-section" style="padding: 70px 0;">
+                    <div class="section-container">
+                        <div class="about-know-us-split">
+                            <div class="about-know-us-img-col animate-left reveal-active">
+                                <div class="about-know-us-img">
+                                    <img src="../frontend/images/about_knowus.jpg" onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80'" alt="AR seating and wallpaper planning">
                                 </div>
                             </div>
-                            <div class=about-know-us-box animate-right reveal-active>
+                            <div class="about-know-us-box animate-right reveal-active">
                                 <h2>Get To Know Us</h2>
-                                <h3 class=sub>AR Constructions & Realtors is a premier building, painting, interior, renovation, and demolition contractor in Bangalore.</h3>
+                                <h3 class="sub">AR Constructions &amp; Realtors is a premier building, painting, interior, renovation, and demolition contractor in Bangalore.</h3>
                                 <p>
                                     Our cohesive proposals over the years have brought eclectic designs and sturdy structural engineering to real life environments. We deliver cost-effective, innovative, and high-quality construction solutions tailored to our clients' budget and vision.
                                 </p>
-                                <div class=about-values-row>
-                                    <div class=about-value-card animate-up reveal-active>
-                                        <div class=value-icon><i class=fa-solid fa-hand-peace></i></div>
+                                <div class="about-values-row">
+                                    <div class="about-value-card animate-up reveal-active">
+                                        <div class="value-icon"><i class="fa-solid fa-hand-peace"></i></div>
                                         <h4>Client<br>satisfaction</h4>
                                     </div>
-                                    <div class=about-value-card animate-up reveal-active>
-                                        <div class=value-icon><i class=fa-solid fa-cube></i></div>
+                                    <div class="about-value-card animate-up reveal-active">
+                                        <div class="value-icon"><i class="fa-solid fa-cube"></i></div>
                                         <h4>Innovative<br>Approach</h4>
                                     </div>
-                                    <div class=about-value-card animate-up reveal-active>
-                                        <div class=value-icon><i class=fa-solid fa-shield-halved></i></div>
+                                    <div class="about-value-card animate-up reveal-active">
+                                        <div class="value-icon"><i class="fa-solid fa-shield-halved"></i></div>
                                         <h4>Cost<br>Effective</h4>
                                     </div>
-                                    <div class=about-value-card animate-up reveal-active>
-                                        <div class=value-icon><i class=fa-solid fa-calendar-check></i></div>
+                                    <div class="about-value-card animate-up reveal-active">
+                                        <div class="value-icon"><i class="fa-solid fa-calendar-check"></i></div>
                                         <h4>Timely<br>Delivery</h4>
                                     </div>
-                                    <div class=about-value-card animate-up reveal-active>
-                                        <div class=value-icon><i class=fa-solid fa-leaf></i></div>
+                                    <div class="about-value-card animate-up reveal-active">
+                                        <div class="value-icon"><i class="fa-solid fa-leaf"></i></div>
                                         <h4>Sustainable<br>Solutions</h4>
                                     </div>
                                 </div>
@@ -215,28 +463,31 @@
                     </div>
                 </section>
 
-                <!-- Core Values 3-column section -->
-                <section class=about-values-section style=padding: 70px 0; background-color: #05080f;>
-                    <div class=section-container>
-                        <div class=services-header animate-fade reveal-active>
-                            <h2>Our Core Pillars</h2>
-                            <p>Delivering distinct structural excellence through integrity, precision, and craftsmanship.</p>
-                        </div>
-                        <div class=values-grid>
-                            <div class=value-card animate-up reveal-active>
-                                <div class=value-icon-wrap><i class=fa-solid fa-medal></i></div>
-                                <h3 class=value-title>Bespoke Excellence</h3>
-                                <p class=value-desc>Customized solutions carefully constructed to resonate with individual lifestyles and architectural grandeur.</p>
+                <!-- Projects Watermark Slider (9 Images) -->
+                <section class="about-projects-slider-section animate-fade">
+                    <div class="slider-watermark">PROJECTS</div>
+                    <div class="about-slider-container">
+                        <button class="about-slider-arrow prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button class="about-slider-arrow next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+
+                        <div class="about-slider-track">
+                            <!-- Slide 1 -->
+                            <div class="about-slide">
+                                <img src="../frontend/images/about_bedroom.jpg" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 1">
+                                <img src="../frontend/images/about_vanity.jpg" onerror="this.src='https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 2">
+                                <img src="../frontend/images/about_kitchen.jpg" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 3">
                             </div>
-                            <div class=value-card animate-up reveal-active>
-                                <div class=value-icon-wrap><i class=fa-solid fa-handshake></i></div>
-                                <h3 class=value-title>Transparency & Trust</h3>
-                                <p class=value-desc>Clear communication, authentic budget timelines, and premium quality sourcing with zero hidden clauses.</p>
+                            <!-- Slide 2 -->
+                            <div class="about-slide">
+                                <img src="../frontend/images/about_sofa.jpg" onerror="this.src='https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 4">
+                                <img src="../frontend/images/about_cabinet.jpg" onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 5">
+                                <img src="../frontend/images/about_swing.jpg" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 6">
                             </div>
-                            <div class=value-card animate-up reveal-active>
-                                <div class=value-icon-wrap><i class=fa-solid fa-people-roof></i></div>
-                                <h3 class=value-title>Customer-Centric</h3>
-                                <p class=value-desc>Dedicated supervision and complete post-delivery warranty guarantees across all our projects.</p>
+                            <!-- Slide 3 -->
+                            <div class="about-slide">
+                                <img src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0059.jpg" onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 7">
+                                <img src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0057.jpg" onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 8">
+                                <img src="https://spaceliftstudio.com/wp-content/uploads/2024/10/IMG-20241014-WA0056.jpg" onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&h=400&q=80'" alt="Gallery Image 9">
                             </div>
                         </div>
                     </div>
@@ -245,6 +496,7 @@
         </main>
     </div>
 
-    <script src=admin.js></script>
+    <script src="admin.js"></script>
+    <script src="about.js"></script>
 </body>
 </html>
