@@ -134,6 +134,11 @@ async function handleProjectSave(e) {
 
     const images = imagesRaw.split(/[\n,]/).map(img => img.trim()).filter(img => img.length > 0);
 
+    if (images.length === 0) {
+        showToast('Please provide at least one Image URL', 'error');
+        return;
+    }
+
     const payload = { title, category, status, location, description, images };
     const method = id ? 'PATCH' : 'POST';
     const url = id ? `${API_BASE}/projects/${id}` : `${API_BASE}/projects`;

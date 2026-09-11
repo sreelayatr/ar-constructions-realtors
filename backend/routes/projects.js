@@ -86,25 +86,33 @@ router.post('/', requireAuth, async (req, res) => {
     try {
         const { title, category, location, description, status, images } = req.body;
 
-        if (!location) {
+        if (!category) {
             return res.status(400).json({
                 success: false,
-                message: 'Location is required'
+                message: 'Category is required'
             });
         }
-
-        const resolvedTitle = title ? String(title).trim() : (location ? `${category || 'Project'} (${String(location).trim()})` : 'Untitled Project');
 
         const imageArray = Array.isArray(images) 
             ? images.filter(img => typeof img === 'string' && img.trim() !== '')
             : (images ? [String(images).trim()] : []);
+
+        if (imageArray.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'At least one image URL is required'
+            });
+        }
+
+        const resolvedLocation = location ? String(location).trim() : '';
+        const resolvedTitle = title ? String(title).trim() : (resolvedLocation ? `${category || 'Project'} (${resolvedLocation})` : (category || 'Untitled Project'));
 
         if (mongoose.connection.readyState !== 1) {
             const newProj = {
                 _id: 'temp-' + Date.now(),
                 title: resolvedTitle,
                 category: category || 'Residential',
-                location: String(location).trim(),
+                location: resolvedLocation,
                 description: description ? String(description).trim() : '',
                 status: status || 'Completed',
                 images: imageArray,
@@ -116,7 +124,7 @@ router.post('/', requireAuth, async (req, res) => {
         const project = new Project({
             title: resolvedTitle,
             category: category || 'Residential',
-            location: String(location).trim(),
+            location: resolvedLocation,
             description: description ? String(description).trim() : '',
             status: status || 'Completed',
             images: imageArray
@@ -149,14 +157,29 @@ router.patch('/:id', requireAuth, async (req, res) => {
 
         const updateData = {};
         if (title !== undefined) updateData.title = String(title).trim();
-        if (category !== undefined) updateData.category = category;
+        if (category !== undefined) {
+            if (!category) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Category is required'
+                });
+            }
+            updateData.category = category;
+        }
         if (location !== undefined) updateData.location = String(location).trim();
         if (description !== undefined) updateData.description = String(description).trim();
         if (status !== undefined) updateData.status = status;
         if (images !== undefined) {
-            updateData.images = Array.isArray(images) 
+            const imageArray = Array.isArray(images) 
                 ? images.filter(img => typeof img === 'string' && img.trim() !== '')
                 : (images ? [String(images).trim()] : []);
+            if (imageArray.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'At least one image URL is required'
+                });
+            }
+            updateData.images = imageArray;
         }
 
         const project = await Project.findByIdAndUpdate(

@@ -9,13 +9,14 @@ const projectSchema = new mongoose.Schema({
     },
     category: {
         type: String,
+        required: [true, 'Category is required'],
         enum: ['Residential', 'Commercial', 'Interior', 'Renovation'],
         default: 'Residential',
         index: true
     },
     location: {
         type: String,
-        required: [true, 'Location is required'],
+        default: '',
         trim: true
     },
     description: {
@@ -29,10 +30,18 @@ const projectSchema = new mongoose.Schema({
         default: 'Completed',
         index: true
     },
-    images: [{
-        type: String,
-        trim: true
-    }]
+    images: {
+        type: [{
+            type: String,
+            trim: true
+        }],
+        validate: [
+            function(val) {
+                return Array.isArray(val) && val.length > 0;
+            },
+            'At least one image URL is required'
+        ]
+    }
 }, {
     timestamps: true
 });
