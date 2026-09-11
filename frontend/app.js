@@ -778,20 +778,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ==========================================
     /* ==========================================
-       WORKSPACE & ABOUT IMAGES SYNC
+       WORKSPACE IMAGES SYNC (Hero Slides & Sections)
        ========================================== */
     const heroSlides = document.querySelectorAll('.slider-section .slide');
     const introImgEl = document.getElementById('home-intro-img') || document.querySelector('.home-hero-img-wrapper img');
     const apartImgEl = document.getElementById('home-apart-img') || document.querySelector('.apart-img-col img');
-    const aboutHeroImg = document.getElementById('about-hero-img') || document.querySelector('.about-hero-cover img.hero-bg');
-    const aboutKnowusImg = document.getElementById('about-knowus-img') || document.querySelector('.about-know-us-img img');
 
     const updateWorkspaceImageInDOM = (key, url) => {
         if (!url) return;
         const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
         const slideMatch = key.match(/^workspace_slide_(\d+)_image$/);
-        const galleryMatch = key.match(/^about_gallery_(\d+)_image$/);
-
         if (slideMatch && heroSlides.length) {
             const slideNum = parseInt(slideMatch[1], 10);
             const slide = heroSlides[slideNum - 1];
@@ -803,14 +799,6 @@ document.addEventListener('DOMContentLoaded', () => {
             introImgEl.src = cleanUrl;
         } else if (key === 'workspace_apart_image' && apartImgEl) {
             apartImgEl.src = cleanUrl;
-        } else if (key === 'about_hero_image' && aboutHeroImg) {
-            aboutHeroImg.src = cleanUrl;
-        } else if (key === 'about_knowus_image' && aboutKnowusImg) {
-            aboutKnowusImg.src = cleanUrl;
-        } else if (galleryMatch) {
-            const num = galleryMatch[1];
-            const img = document.getElementById(`about-gallery-img-${num}`);
-            if (img) img.src = cleanUrl;
         }
     };
 
@@ -820,18 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'workspace_slide_3_image',
         'workspace_slide_4_image',
         'workspace_intro_image',
-        'workspace_apart_image',
-        'about_hero_image',
-        'about_knowus_image',
-        'about_gallery_1_image',
-        'about_gallery_2_image',
-        'about_gallery_3_image',
-        'about_gallery_4_image',
-        'about_gallery_5_image',
-        'about_gallery_6_image',
-        'about_gallery_7_image',
-        'about_gallery_8_image',
-        'about_gallery_9_image'
+        'workspace_apart_image'
     ];
 
     workspaceKeys.forEach(key => {
