@@ -202,77 +202,12 @@
                     Manage all public images shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL or choose a file from your device, preview it, and click <strong>Save Image</strong>. Changes update live instantly across the site.
                 </p>
 
-                <!-- Section: Page Section Images -->
-                <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#1a1a2e; margin: 24px 0 16px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-image" style="color:#c9a96e;"></i> Main Page Section Pictures
-                </h2>
-
-                <div class="workspace-grid" style="margin-bottom: 36px;">
-
-                    <!-- Home Intro Image -->
-                    <div class="slide-card" id="slide-card-intro">
-                        <div class="slide-card-header">
-                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-house"></i></div>
-                            <div>
-                                <h3>Home Intro Section Picture</h3>
-                                <p>AR Constructions & Realtors — Dream Home Design Section</p>
-                            </div>
-                        </div>
-                        <img class="slide-preview" id="slide-preview-intro" src="" alt="Home Intro Preview">
-                        <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-intro" placeholder="Paste image URL here…">
-                                <label for="slide-file-intro" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-intro" accept="image/*" style="display:none;" onchange="handleFileSelect('intro')">
-                                <button class="btn-preview-slide" onclick="previewSlide('intro')">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
-                            </div>
-                            <button class="btn-save-slide" onclick="saveSlide('intro')">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Intro Picture
-                            </button>
-                            <div class="slide-status" id="slide-status-intro"></div>
-                        </div>
-                    </div>
-
-                    <!-- What Set Us Apart Image -->
-                    <div class="slide-card" id="slide-card-apart">
-                        <div class="slide-card-header">
-                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-star"></i></div>
-                            <div>
-                                <h3>"What Set Us Apart" Picture</h3>
-                                <p>Feature Image for What Set Us Apart Section</p>
-                            </div>
-                        </div>
-                        <img class="slide-preview" id="slide-preview-apart" src="" alt="What Set Us Apart Preview">
-                        <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-apart" placeholder="Paste image URL here…">
-                                <label for="slide-file-apart" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
-                                    <i class="fa-solid fa-upload"></i> Browse
-                                </label>
-                                <input type="file" id="slide-file-apart" accept="image/*" style="display:none;" onchange="handleFileSelect('apart')">
-                                <button class="btn-preview-slide" onclick="previewSlide('apart')">
-                                    <i class="fa-solid fa-eye"></i> Preview
-                                </button>
-                            </div>
-                            <button class="btn-save-slide" onclick="saveSlide('apart')">
-                                <i class="fa-solid fa-floppy-disk"></i> Save Section Picture
-                            </button>
-                            <div class="slide-status" id="slide-status-apart"></div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Section: Hero Slider Images -->
+                <!-- Section 1: Hero Slider Images -->
                 <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#1a1a2e; margin: 16px 0 16px; display:flex; align-items:center; gap:8px;">
                     <i class="fa-solid fa-images" style="color:#c9a96e;"></i> Hero Banner Slider Images
                 </h2>
 
-                <div class="workspace-grid" id="workspace-grid">
+                <div class="workspace-grid" id="workspace-grid" style="margin-bottom: 36px;">
 
                     <!-- Slide 1 -->
                     <div class="slide-card" id="slide-card-1">
@@ -387,6 +322,72 @@
                     </div>
 
                 </div>
+
+                <!-- Section 2: Page Section Images (Under Hero Slider) -->
+                <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#1a1a2e; margin: 24px 0 16px; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-image" style="color:#c9a96e;"></i> Main Page Section Pictures
+                </h2>
+
+                <div class="workspace-grid">
+
+                    <!-- Home Intro Image -->
+                    <div class="slide-card" id="slide-card-intro">
+                        <div class="slide-card-header">
+                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-house"></i></div>
+                            <div>
+                                <h3>Home Intro Section Picture</h3>
+                                <p>AR Constructions & Realtors — Dream Home Design Section</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-intro" src="" alt="Home Intro Preview">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-intro" placeholder="Paste image URL here…">
+                                <label for="slide-file-intro" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
+                                    <i class="fa-solid fa-upload"></i> Browse
+                                </label>
+                                <input type="file" id="slide-file-intro" accept="image/*" style="display:none;" onchange="handleFileSelect('intro')">
+                                <button class="btn-preview-slide" onclick="previewSlide('intro')">
+                                    <i class="fa-solid fa-eye"></i> Preview
+                                </button>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('intro')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Intro Picture
+                            </button>
+                            <div class="slide-status" id="slide-status-intro"></div>
+                        </div>
+                    </div>
+
+                    <!-- What Set Us Apart Image -->
+                    <div class="slide-card" id="slide-card-apart">
+                        <div class="slide-card-header">
+                            <div class="slide-badge" style="background: linear-gradient(135deg, #1a1a2e, #4a4e69);"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <h3>"What Set Us Apart" Picture</h3>
+                                <p>Feature Image for What Set Us Apart Section</p>
+                            </div>
+                        </div>
+                        <img class="slide-preview" id="slide-preview-apart" src="" alt="What Set Us Apart Preview">
+                        <div class="slide-card-body">
+                            <div class="slide-url-group">
+                                <input type="url" id="slide-url-apart" placeholder="Paste image URL here…">
+                                <label for="slide-file-apart" class="btn-preview-slide" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Upload image from computer">
+                                    <i class="fa-solid fa-upload"></i> Browse
+                                </label>
+                                <input type="file" id="slide-file-apart" accept="image/*" style="display:none;" onchange="handleFileSelect('apart')">
+                                <button class="btn-preview-slide" onclick="previewSlide('apart')">
+                                    <i class="fa-solid fa-eye"></i> Preview
+                                </button>
+                            </div>
+                            <button class="btn-save-slide" onclick="saveSlide('apart')">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Section Picture
+                            </button>
+                            <div class="slide-status" id="slide-status-apart"></div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </main>
     </div>
