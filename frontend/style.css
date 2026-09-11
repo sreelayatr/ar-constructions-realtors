@@ -1515,7 +1515,7 @@ button, input, textarea {
     font-weight: 700;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #ffffff;
+    color: var(--color-text-light);
     margin-bottom: 20px;
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
     opacity: 0;
@@ -1528,7 +1528,7 @@ button, input, textarea {
     font-size: 1.25rem;
     font-weight: 300;
     letter-spacing: 1.5px;
-    color: #ffffff;
+    color: var(--color-accent-gold-light);
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.6s;
@@ -2081,14 +2081,14 @@ button, input, textarea {
     font-family: var(--font-heading);
     font-size: 1.25rem;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--color-text-light);
     margin-bottom: 4px;
     letter-spacing: 1px;
 }
 
 .project-client {
     font-size: 0.8rem;
-    color: #ffffff;
+    color: var(--color-accent-gold-light);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -2471,33 +2471,6 @@ button, input, textarea {
     display: block;
 }
 
-.home-hero-logo-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(9, 13, 22, 0.75);
-    padding: 10px 18px;
-    border-radius: 6px;
-    backdrop-filter: blur(4px);
-    z-index: 5;
-}
-
-.home-hero-logo-overlay img {
-    height: 30px;
-    width: auto;
-}
-
-.home-hero-logo-overlay span {
-    color: #ffffff;
-    font-family: var(--font-heading);
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
 .home-hero-text {
     padding: 20px 10px;
 }
@@ -2505,14 +2478,14 @@ button, input, textarea {
 .home-hero-text p {
     font-size: 1.05rem;
     line-height: 1.8;
-    color: #ffffff;
+    color: var(--color-text-muted);
     margin-bottom: 24px;
 }
 
 .home-hero-text p.italic-emphasis {
     font-style: italic;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--color-text-light);
 }
 
 /* ==========================================
@@ -2760,7 +2733,7 @@ button, input, textarea {
 .apart-text-box h2 {
     font-family: var(--font-heading);
     font-size: 1.8rem;
-    color: #ffffff;
+    color: var(--color-text-light);
     margin-bottom: 12px;
 }
 
@@ -2774,7 +2747,7 @@ button, input, textarea {
 .apart-text-box p {
     font-size: 0.95rem;
     line-height: 1.8;
-    color: #ffffff;
+    color: var(--color-text-muted);
 }
 
 /* ==========================================
