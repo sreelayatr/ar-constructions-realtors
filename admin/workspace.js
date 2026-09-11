@@ -7,8 +7,8 @@ const DEFAULT_WORKSPACE_IMAGES = {
     '2': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
     '3': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
     '4': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
-    'intro': '../frontend/images/index_hero.jpg',
-    'apart': '../frontend/images/index_apart.jpg'
+    'intro': 'images/index_hero.png',
+    'apart': 'images/index_apart.png'
 };
 
 function getSettingKey(id) {
@@ -51,7 +51,7 @@ function setSlideStatus(id, message, type) {
     el.className = `slide-status ${type || ''}`;
 }
 
-// Set preview image with automatic error fallback
+// Set preview image with automatic fallback to local website images
 function setPreviewImage(id, url) {
     const preview = document.getElementById(`slide-preview-${id}`);
     if (!preview) return;
@@ -59,9 +59,9 @@ function setPreviewImage(id, url) {
     preview.src = getAdminImageSrc(url);
     preview.onerror = () => {
         if (id === 'intro') {
-            preview.src = 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=800&q=80';
+            preview.src = '../frontend/images/index_hero.png';
         } else if (id === 'apart') {
-            preview.src = 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80';
+            preview.src = '../frontend/images/index_apart.png';
         } else if (id === '1') {
             preview.src = 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg';
         } else if (id === '2') {

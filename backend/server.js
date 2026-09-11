@@ -250,6 +250,9 @@ app.use((req, res, next) => {
 // Admin website
 app.use("/admin", express.static(adminPath));
 
+// Frontend static alias (allows relative ../frontend/ image paths to resolve cleanly over HTTP)
+app.use("/frontend", express.static(frontendPath));
+
 // Public website
 app.use("/", express.static(frontendPath));
 

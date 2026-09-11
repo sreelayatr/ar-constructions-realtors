@@ -11,8 +11,8 @@ const defaultSettings = {
     workspace_slide_2_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
     workspace_slide_3_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
     workspace_slide_4_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
-    workspace_intro_image: '../frontend/images/index_hero.jpg',
-    workspace_apart_image: '../frontend/images/index_apart.jpg'
+    workspace_intro_image: 'images/index_hero.png',
+    workspace_apart_image: 'images/index_apart.png'
 };
 
 // In-memory store fallback when DB is disconnected
