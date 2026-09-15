@@ -3,6 +3,7 @@
    ========================================================================== */
 
 let searchTimeout = null;
+let cachedProjects = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     loadHeroBanner();
@@ -34,7 +35,8 @@ async function loadProjects() {
         const data = await res.json();
 
         if (data.success) {
-            renderProjectsTable(data.data || []);
+            cachedProjects = data.data || [];
+            renderProjectsTable(cachedProjects);
         } else {
             showToast('Failed to load projects', 'error');
         }
@@ -95,26 +97,37 @@ function openAddProjectModal() {
 }
 
 async function openEditProjectModal(id) {
+    // Check in-memory cached projects first for zero delay
+    const p = cachedProjects.find(item => item._id === id);
+    if (p) {
+        populateAndOpenEditModal(p);
+        return;
+    }
+
+    // Fallback: Fetch from server if not found in memory
     try {
         const res = await fetch(`${API_BASE}/projects/${id}`, { credentials: 'include' });
         const data = await res.json();
 
         if (data.success && data.data) {
-            const p = data.data;
-            document.getElementById('project-id').value = p._id;
-            document.getElementById('p-title').value = p.title || '';
-            document.getElementById('p-category').value = p.category || 'Residential';
-            document.getElementById('p-location').value = p.location || '';
-            document.getElementById('p-images').value = (p.images || []).join('\n');
-
-            document.getElementById('modal-project-title').textContent = 'Edit Project';
-            document.getElementById('project-modal').classList.add('active');
+            populateAndOpenEditModal(data.data);
         } else {
             showToast('Project details not found', 'error');
         }
     } catch (err) {
         showToast('Error loading project details', 'error');
     }
+}
+
+function populateAndOpenEditModal(p) {
+    document.getElementById('project-id').value = p._id || '';
+    document.getElementById('p-title').value = p.title || '';
+    document.getElementById('p-category').value = p.category || 'Residential';
+    document.getElementById('p-location').value = p.location || '';
+    document.getElementById('p-images').value = (p.images || []).join('\n');
+
+    document.getElementById('modal-project-title').textContent = 'Edit Project';
+    document.getElementById('project-modal').classList.add('active');
 }
 
 function closeProjectModal() {
