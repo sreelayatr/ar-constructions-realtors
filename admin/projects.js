@@ -11,38 +11,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function debounceProjectSearch() {
+    filterProjectsLocally();
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
         loadProjects();
     }, 350);
 }
 
-async function loadProjects() {
+function handleCategoryChange() {
+    filterProjectsLocally();
+    loadProjects();
+}
+
+function filterProjectsLocally() {
     const categoryEl = document.getElementById('category-filter');
     const category = categoryEl ? categoryEl.value : 'all';
     const statusEl = document.getElementById('status-filter');
     const status = statusEl ? statusEl.value : 'all';
     const searchEl = document.getElementById('project-search');
-    const search = searchEl ? searchEl.value : '';
+    const search = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
-    let url = `${API_BASE}/projects?category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
-    if (search.trim()) {
-        url += `&search=${encodeURIComponent(search.trim())}`;
+    let filtered = cachedProjects;
+
+    if (category && category !== 'all') {
+        filtered = filtered.filter(p => (p.category || '').toLowerCase() === category.toLowerCase());
+    }
+
+    if (status && status !== 'all') {
+        filtered = filtered.filter(p => (p.status || '').toLowerCase() === status.toLowerCase());
+    }
+
+    if (search) {
+        filtered = filtered.filter(p => {
+            const title = (p.title || '').toLowerCase();
+            const loc = (p.location || '').toLowerCase();
+            const desc = (p.description || '').toLowerCase();
+            const cat = (p.category || '').toLowerCase();
+            return title.includes(search) || loc.includes(search) || desc.includes(search) || cat.includes(search);
+        });
+    }
+
+    renderProjectsTable(filtered);
+}
+
+async function loadProjects() {
+    if (cachedProjects.length > 0) {
+        filterProjectsLocally();
     }
 
     try {
-        const res = await fetch(url, { credentials: 'include' });
+        const res = await fetch(`${API_BASE}/projects`, { credentials: 'include' });
         const data = await res.json();
 
         if (data.success) {
             cachedProjects = data.data || [];
-            renderProjectsTable(cachedProjects);
-        } else {
+            filterProjectsLocally();
+        } else if (cachedProjects.length === 0) {
             showToast('Failed to load projects', 'error');
         }
     } catch (err) {
         console.error('Error loading projects:', err);
-        showToast('Server error while loading projects', 'error');
+        if (cachedProjects.length === 0) {
+            showToast('Server error while loading projects', 'error');
+        }
     }
 }
 
