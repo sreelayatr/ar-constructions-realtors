@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ar-constructions-realtors.vercel.app/sitemap.xml
+Sitemap: https://arconstructionsandrealtors.com/sitemap.xml
