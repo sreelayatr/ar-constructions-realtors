@@ -332,7 +332,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.stopPropagation();
                     const val = item.getAttribute('data-value');
                     selectedText.textContent = item.textContent;
-                    serviceSelect.value = val;
+
+                    if (val) {
+                        serviceSelect.value = val;
+                    }
+
+                    // Fallback: if value didn't match option exactly, find matching option by value or text
+                    if (!serviceSelect.value && val) {
+                        const matchingOption = Array.from(serviceSelect.options).find(opt =>
+                            opt.value === val ||
+                            opt.value.toLowerCase().includes(val.toLowerCase()) ||
+                            val.toLowerCase().includes(opt.value.toLowerCase())
+                        );
+                        if (matchingOption) {
+                            serviceSelect.value = matchingOption.value;
+                        }
+                    }
 
                     items.forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
@@ -340,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     customDropdown.classList.remove('active');
                     syncDropdownState();
                     validateField(serviceSelect, serviceSelect.value !== '', group);
+                    serviceSelect.dispatchEvent(new Event('change'));
                 });
             });
 
