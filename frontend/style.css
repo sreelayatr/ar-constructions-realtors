@@ -3482,3 +3482,53 @@ button, input, textarea {
         line-height: 1.25;
     }
 }
+
+/* Services Intro Section Styling */
+.services-intro {
+    padding: 60px 0 40px;
+    background-color: var(--color-bg-deep);
+    text-align: center;
+}
+
+.services-intro-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+
+.services-intro-content h2 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-light);
+    margin-bottom: 20px;
+    line-height: 1.35;
+}
+
+.services-intro-content p {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 768px) {
+    .services-intro {
+        padding: 40px 0 24px;
+    }
+
+    .services-intro-content {
+        padding: 0 20px;
+    }
+
+    .services-intro-content h2 {
+        font-size: 1.35rem;
+        margin-bottom: 14px;
+    }
+
+    .services-intro-content p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+}
