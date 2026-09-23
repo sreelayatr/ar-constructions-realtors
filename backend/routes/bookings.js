@@ -5,20 +5,7 @@ const Booking = require('../models/Booking');
 const { requireAuth } = require('../middleware/auth');
 
 // Shared memory store for fallback when MongoDB Atlas connection is pending
-const inMemoryBookings = [
-    {
-        _id: 'bk-sample-1',
-        name: 'Rahul Sharma',
-        email: 'rahul.sharma@example.com',
-        phone: '+91 98765 43210',
-        subject: 'Luxury Villa Design Inquiry',
-        message: 'Hello AR Constructions team, I would like to schedule a consultation for a 4BHK luxury villa layout in Bangalore.',
-        status: 'pending',
-        source: 'website-contact-form',
-        createdAt: new Date(Date.now() - 3600000 * 2),
-        updatedAt: new Date(Date.now() - 3600000 * 2)
-    }
-];
+const inMemoryBookings = [];
 
 // Public: Submit new enquiry/booking from website form
 router.post('/', async (req, res) => {
