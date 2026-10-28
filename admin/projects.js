@@ -123,6 +123,7 @@ function renderProjectsTable(projects) {
 function openAddProjectModal() {
     document.getElementById('project-id').value = '';
     document.getElementById('project-form').reset();
+    document.getElementById('p-category').value = '';
     document.getElementById('modal-project-title').textContent = 'Add New Project';
     document.getElementById('project-modal').classList.add('active');
 }
@@ -153,7 +154,9 @@ async function openEditProjectModal(id) {
 function populateAndOpenEditModal(p) {
     document.getElementById('project-id').value = p._id || '';
     document.getElementById('p-title').value = p.title || '';
-    document.getElementById('p-category').value = p.category || '';
+    // Ensure category is not defaulted to 'Residential'; defaults to '-- Select Category (Optional) --'
+    const cat = p.category || '';
+    document.getElementById('p-category').value = (cat === 'Residential') ? '' : cat;
     document.getElementById('p-location').value = p.location || '';
     document.getElementById('p-images').value = (p.images || []).join('\n');
 
