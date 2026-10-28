@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (projectsGrid) {
 
         // ── Cache helpers ──────────────────────────────────────────
-        const CACHE_KEY     = 'ar_projects_cache_v2';
+        const CACHE_KEY     = 'ar_projects_cache_v3';
         const CACHE_TTL_MS  = 10 * 60 * 1000;   // 10 minutes
 
         const readCache = () => {
@@ -645,9 +645,52 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // ── Render a list of project objects into the grid ─────────
+        // ── Wayanad Popup Modal Handlers ───────────────────────────
+        const wayanadModal = document.getElementById('wayanad-project-modal');
+        const closeWayanadModalBtn = document.getElementById('close-wayanad-modal');
+
+        const openWayanadModal = () => {
+            if (wayanadModal) {
+                wayanadModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        const closeWayanadModal = () => {
+            if (wayanadModal) {
+                wayanadModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        };
+
+        closeWayanadModalBtn?.addEventListener('click', closeWayanadModal);
+        wayanadModal?.addEventListener('click', (e) => {
+            if (e.target === wayanadModal) closeWayanadModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && wayanadModal?.classList.contains('active')) {
+                closeWayanadModal();
+            }
+        });
+        window.openWayanadModal = openWayanadModal;
+
         const attachCardListeners = () => {
             document.querySelectorAll('.project-card').forEach(card => {
                 card.addEventListener('click', (e) => {
+                    const isWayanadCard = card.dataset.projectModal === 'wayanad' ||
+                        card.textContent.toLowerCase().includes('wayanad') ||
+                        card.textContent.toLowerCase().includes('de143globe') ||
+                        card.querySelector('img')?.src.includes('6a7a49aa') ||
+                        card.querySelector('img')?.src.includes('6a2684b5') ||
+                        card.querySelector('img')?.src.includes('98c0d3b5');
+
+                    if (isWayanadCard) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openWayanadModal();
+                        return;
+                    }
+
                     e.preventDefault();
                     document.querySelectorAll('.project-card').forEach(c => {
                         if (c !== card) c.classList.remove('active');
@@ -687,14 +730,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     clientText = location;
                 }
 
+                // Check if this project is WAYANAD De143Globe
+                const isWayanad = (title && (title.toLowerCase().includes('wayanad') || title.toLowerCase().includes('de143globe'))) ||
+                                  (location && location.toLowerCase().includes('wayanad')) ||
+                                  (p.images && p.images.some(img => typeof img === 'string' && (
+                                      img.includes('6a7a49aa') || img.includes('6a2684b5') || img.includes('98c0d3b5')
+                                  )));
+
                 // Use contain fit for flyer/brochure-style images so full image is visible
-                const isBrochure = p.images && p.images.some(img =>
+                const isBrochure = isWayanad || (p.images && p.images.some(img =>
                     typeof img === 'string' && (
                         img.includes('6a7a49aa-1c79-4bf8-a5b8-3f386ef47009') ||
                         img.includes('6a2684b5-56d0-4c84-804b-7587947b1a6c') ||
                         img.includes('brochure') || img.includes('flyer')
                     )
-                );
+                ));
                 const imgClass = isBrochure ? 'project-img project-img--contain' : 'project-img';
 
                 const hasOverlay = Boolean(displayTitle || clientText);
@@ -705,7 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>` : '';
 
                 return `
-                    <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" tabindex="0">
+                    <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" ${isWayanad ? 'data-project-modal="wayanad"' : ''} tabindex="0">
                         <img class="${imgClass}" src="${imgUrl}"
                              onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
                              loading="eager"
