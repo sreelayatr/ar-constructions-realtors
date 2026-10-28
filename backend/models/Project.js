@@ -9,8 +9,8 @@ const projectSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['Residential', 'Commercial', 'Interior', 'Renovation', ''],
         default: '',
+        trim: true,
         index: true
     },
     location: {

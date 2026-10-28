@@ -120,10 +120,28 @@ function renderProjectsTable(projects) {
     }).join('');
 }
 
+function handleCategorySelectChange() {
+    const catSelect = document.getElementById('p-category');
+    const customInput = document.getElementById('p-category-custom');
+    if (!catSelect || !customInput) return;
+    if (catSelect.value === '__custom__') {
+        customInput.style.display = 'block';
+        customInput.focus();
+    } else {
+        customInput.style.display = 'none';
+        customInput.value = '';
+    }
+}
+
 function openAddProjectModal() {
     document.getElementById('project-id').value = '';
     document.getElementById('project-form').reset();
     document.getElementById('p-category').value = '';
+    const customInput = document.getElementById('p-category-custom');
+    if (customInput) {
+        customInput.value = '';
+        customInput.style.display = 'none';
+    }
     document.getElementById('modal-project-title').textContent = 'Add New Project';
     document.getElementById('project-modal').classList.add('active');
 }
@@ -154,9 +172,34 @@ async function openEditProjectModal(id) {
 function populateAndOpenEditModal(p) {
     document.getElementById('project-id').value = p._id || '';
     document.getElementById('p-title').value = p.title || '';
-    // Ensure category is not defaulted to 'Residential'; defaults to '-- Select Category (Optional) --'
-    const cat = p.category || '';
-    document.getElementById('p-category').value = (cat === 'Residential') ? '' : cat;
+    
+    const cat = (p.category || '').trim();
+    const catSelect = document.getElementById('p-category');
+    const customInput = document.getElementById('p-category-custom');
+    const knownCategories = ['Residential', 'Commercial', 'Interior', 'Renovation'];
+
+    if (!cat || cat === 'Residential') {
+        // Defaults to '-- Select Category (Optional) --'
+        catSelect.value = '';
+        if (customInput) {
+            customInput.value = '';
+            customInput.style.display = 'none';
+        }
+    } else if (knownCategories.includes(cat)) {
+        catSelect.value = cat;
+        if (customInput) {
+            customInput.value = '';
+            customInput.style.display = 'none';
+        }
+    } else {
+        // Existing custom category
+        catSelect.value = '__custom__';
+        if (customInput) {
+            customInput.value = cat;
+            customInput.style.display = 'block';
+        }
+    }
+
     document.getElementById('p-location').value = p.location || '';
     document.getElementById('p-images').value = (p.images || []).join('\n');
 
@@ -172,7 +215,11 @@ async function handleProjectSave(e) {
     e.preventDefault();
     const id = document.getElementById('project-id').value;
     const rawTitle = document.getElementById('p-title').value.trim();
-    const category = document.getElementById('p-category').value.trim();
+    let category = document.getElementById('p-category').value.trim();
+    if (category === '__custom__') {
+        const customInput = document.getElementById('p-category-custom');
+        category = customInput ? customInput.value.trim() : '';
+    }
     const location = document.getElementById('p-location').value.trim();
     const title = rawTitle || (location ? (category ? `${category} (${location})` : location) : (category || ''));
     const description = location || (category ? category : (rawTitle || ''));

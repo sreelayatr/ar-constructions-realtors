@@ -192,13 +192,15 @@
 
                     <div class="admin-form-group form-group-full">
                         <label for="p-category">Category</label>
-                        <select id="p-category" class="admin-select">
+                        <select id="p-category" class="admin-select" onchange="handleCategorySelectChange()">
                             <option value="">-- Select Category (Optional) --</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
                             <option value="Interior">Interior</option>
                             <option value="Renovation">Renovation</option>
+                            <option value="__custom__">+ Type your own category...</option>
                         </select>
+                        <input type="text" id="p-category-custom" class="admin-input" placeholder="Type your custom category..." style="display: none; margin-top: 8px;">
                     </div>
 
                     <div class="admin-form-group form-group-full">
@@ -237,7 +239,7 @@
         </div>
     </div>
 
-    <script src="admin.js?v=20261028_3"></script>
-    <script src="projects.js?v=20261028_3"></script>
+    <script src="admin.js?v=20261028_4"></script>
+    <script src="projects.js?v=20261028_4"></script>
 </body>
 </html>
