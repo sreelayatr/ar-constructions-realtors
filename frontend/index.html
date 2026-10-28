@@ -15,6 +15,9 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Preload Slide 1 Hero Image -->
+    <link rel="preload" as="image" href="https://res.cloudinary.com/vht1gwyc/image/upload/v1793202892/86f551ee-fbd4-4c62-9825-0d91ac87ff2b.png" fetchpriority="high">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css?v=202609021620">
 
@@ -155,10 +158,20 @@
             <div class="slide active">
 
                 <img
-                    src="https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg"
+                    id="hero-slide-1-img"
+                    src="https://res.cloudinary.com/vht1gwyc/image/upload/v1793202892/86f551ee-fbd4-4c62-9825-0d91ac87ff2b.png"
                     onerror="this.src='https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1920&q=80'"
                     alt="Bespoke Living Spaces"
+                    fetchpriority="high"
                 >
+                <script>
+                    (function() {
+                        try {
+                            var cached = localStorage.getItem('ar_workspace_slide_1_image');
+                            if (cached) document.getElementById('hero-slide-1-img').src = cached;
+                        } catch(e) {}
+                    })();
+                </script>
 
                 <div class="slide-overlay"></div>
 
@@ -203,10 +216,19 @@
             <div class="slide">
 
                 <img
-                    src="https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg"
+                    id="hero-slide-3-img"
+                    src="https://res.cloudinary.com/vht1gwyc/image/upload/v1789670585/6595d5f4-7b42-4623-9f65-2244eb34e831.png"
                     onerror="this.src='https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1920&q=80'"
                     alt="Luxury Details"
                 >
+                <script>
+                    (function() {
+                        try {
+                            var cached = localStorage.getItem('ar_workspace_slide_3_image');
+                            if (cached) document.getElementById('hero-slide-3-img').src = cached;
+                        } catch(e) {}
+                    })();
+                </script>
 
                 <div class="slide-overlay"></div>
 
@@ -229,10 +251,19 @@
             <div class="slide">
 
                 <img
-                    src="https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg"
+                    id="hero-slide-4-img"
+                    src="https://res.cloudinary.com/vht1gwyc/image/upload/v1789670481/263e63f4-c553-40c2-a6f3-7af9067359dc.png"
                     onerror="this.src='https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80'"
                     alt="Affordable Elegance"
                 >
+                <script>
+                    (function() {
+                        try {
+                            var cached = localStorage.getItem('ar_workspace_slide_4_image');
+                            if (cached) document.getElementById('hero-slide-4-img').src = cached;
+                        } catch(e) {}
+                    })();
+                </script>
 
                 <div class="slide-overlay"></div>
 

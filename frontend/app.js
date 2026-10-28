@@ -879,12 +879,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const slide = heroSlides[slideNum - 1];
             if (slide) {
                 const img = slide.querySelector('img');
-                if (img) img.src = cleanUrl;
+                if (img && img.src !== cleanUrl) img.src = cleanUrl;
             }
         } else if (key === 'workspace_intro_image' && introImgEl) {
-            introImgEl.src = cleanUrl;
+            if (introImgEl.src !== cleanUrl) introImgEl.src = cleanUrl;
         } else if (key === 'workspace_apart_image' && apartImgEl) {
-            apartImgEl.src = cleanUrl;
+            if (apartImgEl.src !== cleanUrl) apartImgEl.src = cleanUrl;
         }
     };
 

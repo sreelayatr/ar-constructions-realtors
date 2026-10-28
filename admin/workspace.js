@@ -3,10 +3,10 @@
    ============================================================ */
 
 const DEFAULT_WORKSPACE_IMAGES = {
-    '1': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-14-scaled.jpeg',
+    '1': 'https://res.cloudinary.com/vht1gwyc/image/upload/v1793202892/86f551ee-fbd4-4c62-9825-0d91ac87ff2b.png',
     '2': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
-    '3': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-1-scaled.jpeg',
-    '4': 'https://spaceliftstudio.com/wp-content/uploads/2024/10/01-15-scaled.jpeg',
+    '3': 'https://res.cloudinary.com/vht1gwyc/image/upload/v1789670585/6595d5f4-7b42-4623-9f65-2244eb34e831.png',
+    '4': 'https://res.cloudinary.com/vht1gwyc/image/upload/v1789670481/263e63f4-c553-40c2-a6f3-7af9067359dc.png',
     'intro': 'images/index_hero.png',
     'apart': 'images/index_apart.png'
 };
