@@ -2049,6 +2049,19 @@ button, input, textarea {
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* Brochure/flyer images: show the full image without cropping */
+.project-img--contain {
+    object-fit: contain;
+    background-color: #0a0e1a;
+}
+
+.project-card--contain:hover .project-img--contain,
+.project-card--contain:focus .project-img--contain,
+.project-card--contain:active .project-img--contain,
+.project-card--contain.active .project-img--contain {
+    transform: scale(1.03);
+}
+
 .project-overlay {
     position: absolute;
     inset: 0;

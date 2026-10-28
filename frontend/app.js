@@ -681,9 +681,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     ? `${p.category || 'Residential'} • ${p.location}`
                     : (p.description || p.category || 'Custom Project');
 
+                // Use contain fit for flyer/brochure-style images so full image is visible
+                const isBrochure = p.images && p.images.some(img =>
+                    typeof img === 'string' && (
+                        img.includes('6a7a49aa-1c79-4bf8-a5b8-3f386ef47009') ||
+                        img.includes('brochure') || img.includes('flyer')
+                    )
+                );
+                const imgClass = isBrochure ? 'project-img project-img--contain' : 'project-img';
+
                 return `
-                    <div class="project-card animate-up reveal-active" tabindex="0">
-                        <img class="project-img" src="${imgUrl}"
+                    <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" tabindex="0">
+                        <img class="${imgClass}" src="${imgUrl}"
                              onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
                              loading="eager"
                              decoding="async"
