@@ -153,7 +153,7 @@ async function openEditProjectModal(id) {
 function populateAndOpenEditModal(p) {
     document.getElementById('project-id').value = p._id || '';
     document.getElementById('p-title').value = p.title || '';
-    document.getElementById('p-category').value = p.category || 'Residential';
+    document.getElementById('p-category').value = p.category || '';
     document.getElementById('p-location').value = p.location || '';
     document.getElementById('p-images').value = (p.images || []).join('\n');
 
@@ -169,10 +169,10 @@ async function handleProjectSave(e) {
     e.preventDefault();
     const id = document.getElementById('project-id').value;
     const rawTitle = document.getElementById('p-title').value.trim();
-    const category = document.getElementById('p-category').value;
+    const category = document.getElementById('p-category').value.trim();
     const location = document.getElementById('p-location').value.trim();
-    const title = rawTitle || (location ? `${category} (${location})` : category);
-    const description = location || title;
+    const title = rawTitle || (location ? (category ? `${category} (${location})` : location) : (category || ''));
+    const description = location || (category ? category : (rawTitle || ''));
     const status = 'Completed';
     const imagesRaw = document.getElementById('p-images').value;
 

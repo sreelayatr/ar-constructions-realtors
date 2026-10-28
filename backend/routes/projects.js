@@ -98,13 +98,14 @@ router.post('/', requireAuth, async (req, res) => {
         }
 
         const resolvedLocation = location ? String(location).trim() : '';
-        const resolvedTitle = title ? String(title).trim() : (resolvedLocation ? `${category || 'Project'} (${resolvedLocation})` : (category || 'Untitled Project'));
+        const resolvedCategory = category ? String(category).trim() : '';
+        const resolvedTitle = title ? String(title).trim() : (resolvedLocation ? (resolvedCategory ? `${resolvedCategory} (${resolvedLocation})` : resolvedLocation) : (resolvedCategory || ''));
 
         if (mongoose.connection.readyState !== 1) {
             const newProj = {
                 _id: 'temp-' + Date.now(),
                 title: resolvedTitle,
-                category: category || '',
+                category: resolvedCategory,
                 location: resolvedLocation,
                 description: description ? String(description).trim() : '',
                 status: status || 'Completed',
@@ -116,7 +117,7 @@ router.post('/', requireAuth, async (req, res) => {
 
         const project = new Project({
             title: resolvedTitle,
-            category: category || '',
+            category: resolvedCategory,
             location: resolvedLocation,
             description: description ? String(description).trim() : '',
             status: status || 'Completed',
