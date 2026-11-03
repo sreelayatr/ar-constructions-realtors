@@ -134,8 +134,9 @@ button, input, textarea {
 .logo-link {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     background: transparent;
+    text-decoration: none;
 }
 
 .header-logo {
@@ -143,6 +144,26 @@ button, input, textarea {
     width: auto;
     object-fit: contain;
     display: block;
+}
+
+.logo-caption {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-accent-gold);
+    border-left: 1.5px solid var(--color-accent-gold);
+    padding-left: 12px;
+    line-height: 1.25;
+    display: inline-block;
+    white-space: nowrap;
+    transition: var(--transition-fast);
+}
+
+.logo-link:hover .logo-caption {
+    color: var(--color-accent-gold-light);
+    border-left-color: var(--color-accent-gold-light);
 }
 
 .logo-text-fallback {
@@ -1295,6 +1316,16 @@ button, input, textarea {
    RESPONSIVE MEDIA QUERIES
    ========================================== */
 @media screen and (max-width: 1024px) {
+    .nav-list {
+        gap: 20px;
+    }
+
+    .logo-caption {
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+        padding-left: 10px;
+    }
+    
     .info-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
@@ -1322,6 +1353,16 @@ button, input, textarea {
 @media screen and (max-width: 768px) {
     .main-header {
         padding: 16px 0;
+    }
+
+    .header-logo {
+        height: 52px;
+    }
+
+    .logo-caption {
+        font-size: 0.65rem;
+        letter-spacing: 1.2px;
+        padding-left: 8px;
     }
     
     .nav-menu {
@@ -1428,6 +1469,16 @@ button, input, textarea {
 }
 
 @media screen and (max-width: 480px) {
+    .header-logo {
+        height: 42px;
+    }
+
+    .logo-caption {
+        font-size: 0.54rem;
+        letter-spacing: 0.8px;
+        padding-left: 6px;
+    }
+
     .hero-section {
         height: 300px;
     }
