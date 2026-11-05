@@ -4049,33 +4049,9 @@ button, input, textarea {
     transform: translateY(-2px);
 }
 
-/* Card Badge Click Hint */
+/* Card Clickable for Details Modal */
 .project-card[data-project-modal="wayanad"] {
     cursor: pointer;
-}
-.project-card[data-project-modal="wayanad"]::after {
-    content: "\f05a  Click for Details";
-    font-family: "Font Awesome 6 Free", var(--font-body);
-    font-weight: 900;
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: rgba(10, 14, 26, 0.85);
-    color: var(--color-accent-gold-light, #e5c97b);
-    border: 1px solid rgba(201, 168, 76, 0.45);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    letter-spacing: 0.8px;
-    backdrop-filter: blur(4px);
-    z-index: 5;
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-.project-card[data-project-modal="wayanad"]:hover::after {
-    background: var(--color-accent-gold, #c9a84c);
-    color: #0a0d16;
-    transform: scale(1.05);
 }
 
 @media screen and (max-width: 768px) {

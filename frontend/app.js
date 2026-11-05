@@ -610,17 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================
        PROJECT CARDS INTERACTION & DYNAMIC API FETCH
        ========================================== */
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.project-card').forEach(c => {
-                if (c !== card) c.classList.remove('active');
-            });
-            card.classList.toggle('active');
-        });
-    });
-
     const projectsGrid = document.querySelector('.projects-grid');
     if (projectsGrid) {
 
@@ -676,10 +665,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const attachCardListeners = () => {
             document.querySelectorAll('.project-card').forEach(card => {
-                card.addEventListener('click', (e) => {
+                if (card._hasClickListener) return;
+                card._hasClickListener = true;
+
+                const handleCardClick = (e) => {
                     const isWayanadCard = card.dataset.projectModal === 'wayanad' ||
+                        card.getAttribute('data-project-modal') === 'wayanad' ||
                         card.textContent.toLowerCase().includes('wayanad') ||
                         card.textContent.toLowerCase().includes('de143globe') ||
+                        card.querySelector('img')?.src.toLowerCase().includes('wayanad') ||
                         card.querySelector('img')?.src.includes('6a7a49aa') ||
                         card.querySelector('img')?.src.includes('6a2684b5') ||
                         card.querySelector('img')?.src.includes('98c0d3b5');
@@ -696,6 +690,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (c !== card) c.classList.remove('active');
                     });
                     card.classList.toggle('active');
+                };
+
+                card.addEventListener('click', handleCardClick);
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleCardClick(e);
+                    }
                 });
             });
         };
