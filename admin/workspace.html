@@ -84,6 +84,31 @@
             outline: none;
         }
         .slide-url-group input:focus { border-color: #c9a96e; background: #fff; }
+        .slide-field-group {
+            margin-top: 12px;
+        }
+        .slide-field-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .slide-field-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 9px 12px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #374151;
+            background: #fafafa;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .slide-field-group input:focus { border-color: #c9a96e; background: #fff; }
         .btn-preview-slide {
             padding: 10px 14px;
             background: #f3f4f6;
@@ -207,12 +232,12 @@
             <div class="admin-content">
                 <p class="workspace-header-desc">
                     <i class="fa-solid fa-circle-info" style="color:#c9a96e;margin-right:6px;"></i>
-                    Manage all public images shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL and click <strong>Save Image</strong>. Changes update live instantly across the site.
+                    Manage all public images and overlay text shown on the <strong>Workspace</strong> page (public homepage). Enter an image URL and custom heading & subtitle text, then click <strong>Save Slide</strong>. Changes update live instantly across the site.
                 </p>
 
-                <!-- Section 1: Hero Slider Images -->
+                <!-- Section 1: Hero Slider Images & Text -->
                 <h2 style="font-family:'Cinzel',serif; font-size:18px; color:#ffffff; margin: 16px 0 16px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-images" style="color:#c9a96e;"></i> Hero Banner Slider Images
+                    <i class="fa-solid fa-images" style="color:#c9a96e;"></i> Hero Banner Slider Pictures & Text (All 4 Slides)
                 </h2>
 
                 <div class="workspace-grid" id="workspace-grid" style="margin-bottom: 36px;">
@@ -222,14 +247,25 @@
                         <div class="slide-card-header">
                             <div class="slide-badge">1</div>
                             <div>
-                                <h3>Slide 1 — Crafting Exquisite Spaces</h3>
-                                <p>Unique, Classy, and Versatile Interior Architecture</p>
+                                <h3>Slide 1 — Picture & Overlay Text</h3>
+                                <p>Homepage Hero Banner Slide 1</p>
                             </div>
                         </div>
                         <img class="slide-preview" id="slide-preview-1" src="" alt="Slide 1 Preview">
                         <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-1" placeholder="Paste image URL here…" oninput="previewSlide(1)">
+                            <div class="slide-field-group" style="margin-top: 0;">
+                                <label for="slide-url-1">Picture URL</label>
+                                <div class="slide-url-group">
+                                    <input type="url" id="slide-url-1" placeholder="Paste image URL here…" oninput="previewSlide(1)">
+                                </div>
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-title-1">Main Heading Text</label>
+                                <input type="text" id="slide-title-1" placeholder="Construction & Real Estate Solutions Across Bengaluru">
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-subtitle-1">Subtitle Text</label>
+                                <input type="text" id="slide-subtitle-1" placeholder="Residential & Commercial Construction Solutions">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(1)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 1
@@ -243,14 +279,25 @@
                         <div class="slide-card-header">
                             <div class="slide-badge">2</div>
                             <div>
-                                <h3>Slide 2 — Bespoke Home Solutions</h3>
-                                <p>Transforming Dreams Into Elegant Environments</p>
+                                <h3>Slide 2 — Picture & Overlay Text</h3>
+                                <p>Homepage Hero Banner Slide 2</p>
                             </div>
                         </div>
                         <img class="slide-preview" id="slide-preview-2" src="" alt="Slide 2 Preview">
                         <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-2" placeholder="Paste image URL here…" oninput="previewSlide(2)">
+                            <div class="slide-field-group" style="margin-top: 0;">
+                                <label for="slide-url-2">Picture URL</label>
+                                <div class="slide-url-group">
+                                    <input type="url" id="slide-url-2" placeholder="Paste image URL here…" oninput="previewSlide(2)">
+                                </div>
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-title-2">Main Heading Text</label>
+                                <input type="text" id="slide-title-2" placeholder="Bespoke Home Solutions">
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-subtitle-2">Subtitle Text</label>
+                                <input type="text" id="slide-subtitle-2" placeholder="Transforming Dreams Into Elegant Environments">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(2)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 2
@@ -264,14 +311,25 @@
                         <div class="slide-card-header">
                             <div class="slide-badge">3</div>
                             <div>
-                                <h3>Slide 3 — Luxury is in the Details</h3>
-                                <p>Complete Design Packages Tailored for Homeowners</p>
+                                <h3>Slide 3 — Picture & Overlay Text</h3>
+                                <p>Homepage Hero Banner Slide 3</p>
                             </div>
                         </div>
                         <img class="slide-preview" id="slide-preview-3" src="" alt="Slide 3 Preview">
                         <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-3" placeholder="Paste image URL here…" oninput="previewSlide(3)">
+                            <div class="slide-field-group" style="margin-top: 0;">
+                                <label for="slide-url-3">Picture URL</label>
+                                <div class="slide-url-group">
+                                    <input type="url" id="slide-url-3" placeholder="Paste image URL here…" oninput="previewSlide(3)">
+                                </div>
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-title-3">Main Heading Text</label>
+                                <input type="text" id="slide-title-3" placeholder="Luxury is in the Details">
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-subtitle-3">Subtitle Text</label>
+                                <input type="text" id="slide-subtitle-3" placeholder="Complete Design Packages Tailored for Homeowners">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(3)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 3
@@ -285,14 +343,25 @@
                         <div class="slide-card-header">
                             <div class="slide-badge">4</div>
                             <div>
-                                <h3>Slide 4 — Affordable Elegance</h3>
-                                <p>Delivering Exquisite Results with Professional Precision</p>
+                                <h3>Slide 4 — Picture & Overlay Text</h3>
+                                <p>Homepage Hero Banner Slide 4</p>
                             </div>
                         </div>
                         <img class="slide-preview" id="slide-preview-4" src="" alt="Slide 4 Preview">
                         <div class="slide-card-body">
-                            <div class="slide-url-group">
-                                <input type="url" id="slide-url-4" placeholder="Paste image URL here…" oninput="previewSlide(4)">
+                            <div class="slide-field-group" style="margin-top: 0;">
+                                <label for="slide-url-4">Picture URL</label>
+                                <div class="slide-url-group">
+                                    <input type="url" id="slide-url-4" placeholder="Paste image URL here…" oninput="previewSlide(4)">
+                                </div>
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-title-4">Main Heading Text</label>
+                                <input type="text" id="slide-title-4" placeholder="Affordable Elegance">
+                            </div>
+                            <div class="slide-field-group">
+                                <label for="slide-subtitle-4">Subtitle Text</label>
+                                <input type="text" id="slide-subtitle-4" placeholder="Delivering Exquisite Results with Professional Precision">
                             </div>
                             <button class="btn-save-slide" onclick="saveSlide(4)">
                                 <i class="fa-solid fa-floppy-disk"></i> Save Slide 4

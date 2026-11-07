@@ -1,5 +1,5 @@
 /* ============================================================
-   workspace.js – Admin: Edit images on the public Workspace page
+   workspace.js – Admin: Edit images & text on the public Workspace page
    ============================================================ */
 
 const DEFAULT_WORKSPACE_IMAGES = {
@@ -9,6 +9,25 @@ const DEFAULT_WORKSPACE_IMAGES = {
     '4': 'https://res.cloudinary.com/vht1gwyc/image/upload/v1789670481/263e63f4-c553-40c2-a6f3-7af9067359dc.png',
     'intro': 'images/index_hero.png',
     'apart': 'images/index_apart.png'
+};
+
+const DEFAULT_WORKSPACE_TEXT = {
+    '1': {
+        title: 'Construction & Real Estate Solutions Across Bengaluru',
+        subtitle: 'Residential & Commercial Construction Solutions'
+    },
+    '2': {
+        title: 'Bespoke Home Solutions',
+        subtitle: 'Transforming Dreams Into Elegant Environments'
+    },
+    '3': {
+        title: 'Luxury is in the Details',
+        subtitle: 'Complete Design Packages Tailored for Homeowners'
+    },
+    '4': {
+        title: 'Affordable Elegance',
+        subtitle: 'Delivering Exquisite Results with Professional Precision'
+    }
 };
 
 function getSettingKey(id) {
@@ -87,36 +106,18 @@ function previewSlide(id) {
     setPreviewImage(id, url);
 }
 
-// Handle file upload from computer
-function handleFileSelect(id) {
-    const fileInput = document.getElementById(`slide-file-${id}`);
-    if (!fileInput || !fileInput.files || !fileInput.files[0]) return;
-
-    const file = fileInput.files[0];
-    if (!file.type.startsWith('image/')) {
-        setSlideStatus(id, 'Please select a valid image file.', 'error');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        const urlInput = document.getElementById(`slide-url-${id}`);
-        if (urlInput) urlInput.value = dataUrl;
-        setPreviewImage(id, dataUrl);
-        setSlideStatus(id, 'File selected! Click Save to publish changes live.', 'success');
-    };
-    reader.onerror = () => setSlideStatus(id, 'Error reading local file.', 'error');
-    reader.readAsDataURL(file);
-}
-
-// Save: POST image URL/data to settings API
+// Save: POST image URL/data + title + subtitle to settings API
 async function saveSlide(id) {
     const url = document.getElementById(`slide-url-${id}`)?.value.trim();
     if (!url) {
-        setSlideStatus(id, 'Please enter a valid image URL or upload a file.', 'error');
+        setSlideStatus(id, 'Please enter a valid image URL.', 'error');
         return;
     }
+
+    const titleInput = document.getElementById(`slide-title-${id}`);
+    const subtitleInput = document.getElementById(`slide-subtitle-${id}`);
+    const titleVal = titleInput ? titleInput.value.trim() : '';
+    const subtitleVal = subtitleInput ? subtitleInput.value.trim() : '';
 
     const card = document.getElementById(`slide-card-${id}`);
     const btn = card ? card.querySelector('.btn-save-slide') : null;
@@ -129,34 +130,70 @@ async function saveSlide(id) {
     setSlideStatus(id, '', '');
 
     try {
-        const key = getSettingKey(id);
-        const res = await fetch(`${API_BASE}/settings/${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ value: url })
-        });
-        const data = await res.json();
+        const imageKey = getSettingKey(id);
+        const promises = [
+            fetch(`${API_BASE}/settings/${imageKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ value: url })
+            })
+        ];
 
-        if (data.success) {
+        if (titleInput) {
+            promises.push(
+                fetch(`${API_BASE}/settings/workspace_slide_${id}_title`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ value: titleVal })
+                })
+            );
+        }
+
+        if (subtitleInput) {
+            promises.push(
+                fetch(`${API_BASE}/settings/workspace_slide_${id}_subtitle`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ value: subtitleVal })
+                })
+            );
+        }
+
+        const responses = await Promise.all(promises);
+        const allOk = responses.every(r => r.ok);
+
+        if (allOk) {
             setPreviewImage(id, url);
 
-            // Save in local storage cache
-            localStorage.setItem(`ar_admin_${key}`, url);
-            localStorage.removeItem(`ar_${key}`);
+            // Update local storage caches
+            localStorage.setItem(`ar_admin_${imageKey}`, url);
+            localStorage.setItem(`ar_${imageKey}`, url);
 
-            setSlideStatus(id, '✓ Image saved! Changes are live on the website.', 'success');
+            if (titleInput) {
+                localStorage.setItem(`ar_admin_workspace_slide_${id}_title`, titleVal);
+                localStorage.setItem(`ar_workspace_slide_${id}_title`, titleVal);
+            }
+            if (subtitleInput) {
+                localStorage.setItem(`ar_admin_workspace_slide_${id}_subtitle`, subtitleVal);
+                localStorage.setItem(`ar_workspace_slide_${id}_subtitle`, subtitleVal);
+            }
+
+            const successMsg = titleInput ? `✓ Slide ${id} (Picture & Text) saved! Live on the website.` : '✓ Image saved! Changes are live on the website.';
+            setSlideStatus(id, successMsg, 'success');
             if (typeof showToast === 'function') {
-                showToast(`Image updated successfully.`, 'success');
+                showToast(`Slide ${id} updated successfully.`, 'success');
             }
         } else {
-            throw new Error(data.message || 'Save failed');
+            throw new Error('One or more settings failed to save');
         }
     } catch (err) {
         console.error('saveSlide error:', err);
         setSlideStatus(id, `Error: ${err.message}`, 'error');
         if (typeof showToast === 'function') {
-            showToast(`Failed to save image.`, 'error');
+            showToast(`Failed to save slide.`, 'error');
         }
     } finally {
         if (btn) {
@@ -166,23 +203,40 @@ async function saveSlide(id) {
     }
 }
 
-// Render cached / default images synchronously for zero delay
+// Render cached / default images & text synchronously for zero delay
 function renderWorkspaceSlidesImmediately() {
     const ids = ['1', '2', '3', '4', 'intro', 'apart'];
     ids.forEach(id => {
         const key = getSettingKey(id);
-        const cached = localStorage.getItem(`ar_admin_${key}`) || localStorage.getItem(`ar_${key}`);
+        const cachedImg = localStorage.getItem(`ar_admin_${key}`) || localStorage.getItem(`ar_${key}`);
         const defaultVal = DEFAULT_WORKSPACE_IMAGES[id];
-        const initialUrl = cached || defaultVal;
+        const initialUrl = cachedImg || defaultVal;
 
         const input = document.getElementById(`slide-url-${id}`);
         if (input && !input.value) input.value = initialUrl;
 
         setPreviewImage(id, initialUrl);
+
+        // Populate titles & subtitles for slides 1-4
+        if (DEFAULT_WORKSPACE_TEXT[id]) {
+            const titleInput = document.getElementById(`slide-title-${id}`);
+            const subInput = document.getElementById(`slide-subtitle-${id}`);
+
+            const cachedTitle = localStorage.getItem(`ar_admin_workspace_slide_${id}_title`) ||
+                                localStorage.getItem(`ar_workspace_slide_${id}_title`) ||
+                                DEFAULT_WORKSPACE_TEXT[id].title;
+
+            const cachedSub = localStorage.getItem(`ar_admin_workspace_slide_${id}_subtitle`) ||
+                              localStorage.getItem(`ar_workspace_slide_${id}_subtitle`) ||
+                              DEFAULT_WORKSPACE_TEXT[id].subtitle;
+
+            if (titleInput && !titleInput.value) titleInput.value = cachedTitle;
+            if (subInput && !subInput.value) subInput.value = cachedSub;
+        }
     });
 }
 
-// Load: fetch current image for each workspace section/slide in parallel
+// Load: fetch current image & text for each workspace section/slide in parallel
 async function loadWorkspaceSlides() {
     renderWorkspaceSlidesImmediately();
 
@@ -199,6 +253,26 @@ async function loadWorkspaceSlides() {
                 if (input) input.value = currentUrl;
                 setPreviewImage(id, currentUrl);
                 localStorage.setItem(`ar_admin_${key}`, currentUrl);
+            }
+
+            // Fetch title & subtitle for slides 1-4
+            if (DEFAULT_WORKSPACE_TEXT[id]) {
+                const [titleRes, subRes] = await Promise.all([
+                    fetch(`${API_BASE}/settings/workspace_slide_${id}_title`).then(r => r.json()).catch(() => null),
+                    fetch(`${API_BASE}/settings/workspace_slide_${id}_subtitle`).then(r => r.json()).catch(() => null)
+                ]);
+
+                if (titleRes && titleRes.success && titleRes.value !== undefined) {
+                    const titleInput = document.getElementById(`slide-title-${id}`);
+                    if (titleInput) titleInput.value = titleRes.value;
+                    localStorage.setItem(`ar_admin_workspace_slide_${id}_title`, titleRes.value);
+                }
+
+                if (subRes && subRes.success && subRes.value !== undefined) {
+                    const subInput = document.getElementById(`slide-subtitle-${id}`);
+                    if (subInput) subInput.value = subRes.value;
+                    localStorage.setItem(`ar_admin_workspace_slide_${id}_subtitle`, subRes.value);
+                }
             }
         } catch (err) {
             console.warn(`Could not load setting for ${id}:`, err.message);

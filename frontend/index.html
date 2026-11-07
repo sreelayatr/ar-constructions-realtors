@@ -178,13 +178,23 @@
                 <div class="slide-overlay"></div>
 
                 <div class="slide-content">
-                    <h1 class="slide-title">
+                    <h1 class="slide-title" id="hero-slide-1-title">
                         Construction & Real Estate Solutions Across Bengaluru
                     </h1>
-                    <p class="slide-subtitle">
+                    <p class="slide-subtitle" id="hero-slide-1-subtitle">
                         Residential & Commercial Construction Solutions
                     </p>
                 </div>
+                <script>
+                    (function() {
+                        try {
+                            var t = localStorage.getItem('ar_workspace_slide_1_title');
+                            if (t) document.getElementById('hero-slide-1-title').textContent = t;
+                            var s = localStorage.getItem('ar_workspace_slide_1_subtitle');
+                            if (s) document.getElementById('hero-slide-1-subtitle').textContent = s;
+                        } catch(e) {}
+                    })();
+                </script>
             </div>
 
 
@@ -192,24 +202,43 @@
             <div class="slide">
 
                 <img
+                    id="hero-slide-2-img"
                     src="https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg"
                     onerror="this.src='https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80'"
                     alt="Bespoke Residential Work"
                 >
+                <script>
+                    (function() {
+                        try {
+                            var cached = localStorage.getItem('ar_workspace_slide_2_image');
+                            if (cached) document.getElementById('hero-slide-2-img').src = cached;
+                        } catch(e) {}
+                    })();
+                </script>
 
                 <div class="slide-overlay"></div>
 
                 <div class="slide-content">
 
-                    <h2 class="slide-title">
+                    <h2 class="slide-title" id="hero-slide-2-title">
                         Bespoke Home Solutions
                     </h2>
 
-                    <p class="slide-subtitle">
+                    <p class="slide-subtitle" id="hero-slide-2-subtitle">
                         Transforming Dreams Into Elegant Environments
                     </p>
 
                 </div>
+                <script>
+                    (function() {
+                        try {
+                            var t = localStorage.getItem('ar_workspace_slide_2_title');
+                            if (t) document.getElementById('hero-slide-2-title').textContent = t;
+                            var s = localStorage.getItem('ar_workspace_slide_2_subtitle');
+                            if (s) document.getElementById('hero-slide-2-subtitle').textContent = s;
+                        } catch(e) {}
+                    })();
+                </script>
 
             </div>
 
@@ -236,15 +265,25 @@
 
                 <div class="slide-content">
 
-                    <h2 class="slide-title">
+                    <h2 class="slide-title" id="hero-slide-3-title">
                         Luxury is in the Details
                     </h2>
 
-                    <p class="slide-subtitle">
+                    <p class="slide-subtitle" id="hero-slide-3-subtitle">
                         Complete Design Packages Tailored for Homeowners
                     </p>
 
                 </div>
+                <script>
+                    (function() {
+                        try {
+                            var t = localStorage.getItem('ar_workspace_slide_3_title');
+                            if (t) document.getElementById('hero-slide-3-title').textContent = t;
+                            var s = localStorage.getItem('ar_workspace_slide_3_subtitle');
+                            if (s) document.getElementById('hero-slide-3-subtitle').textContent = s;
+                        } catch(e) {}
+                    })();
+                </script>
 
             </div>
 
@@ -271,15 +310,25 @@
 
                 <div class="slide-content">
 
-                    <h2 class="slide-title">
+                    <h2 class="slide-title" id="hero-slide-4-title">
                         Affordable Elegance
                     </h2>
 
-                    <p class="slide-subtitle">
+                    <p class="slide-subtitle" id="hero-slide-4-subtitle">
                         Delivering Exquisite Results with Professional Precision
                     </p>
 
                 </div>
+                <script>
+                    (function() {
+                        try {
+                            var t = localStorage.getItem('ar_workspace_slide_4_title');
+                            if (t) document.getElementById('hero-slide-4-title').textContent = t;
+                            var s = localStorage.getItem('ar_workspace_slide_4_subtitle');
+                            if (s) document.getElementById('hero-slide-4-subtitle').textContent = s;
+                        } catch(e) {}
+                    })();
+                </script>
 
             </div>
 

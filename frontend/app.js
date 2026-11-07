@@ -1055,23 +1055,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ==========================================
     /* ==========================================
-       WORKSPACE IMAGES SYNC (Hero Slides & Sections)
+       WORKSPACE IMAGES & TEXT SYNC (Hero Slides & Sections)
        ========================================== */
     const heroSlides = document.querySelectorAll('.slider-section .slide');
     const introImgEl = document.getElementById('home-intro-img') || document.querySelector('.home-hero-img-wrapper img');
     const apartImgEl = document.getElementById('home-apart-img') || document.querySelector('.apart-img-col img');
 
-    const updateWorkspaceImageInDOM = (key, url) => {
-        if (!url) return;
-        const cleanUrl = url.startsWith('../frontend/') ? url.replace('../frontend/', '') : url;
-        const slideMatch = key.match(/^workspace_slide_(\d+)_image$/);
-        if (slideMatch && heroSlides.length) {
-            const slideNum = parseInt(slideMatch[1], 10);
+    const updateWorkspaceContentInDOM = (key, val) => {
+        if (!val) return;
+        const cleanUrl = val.startsWith('../frontend/') ? val.replace('../frontend/', '') : val;
+        const slideImgMatch = key.match(/^workspace_slide_(\d+)_image$/);
+        const slideTitleMatch = key.match(/^workspace_slide_(\d+)_title$/);
+        const slideSubMatch = key.match(/^workspace_slide_(\d+)_subtitle$/);
+
+        if (slideImgMatch && heroSlides.length) {
+            const slideNum = parseInt(slideImgMatch[1], 10);
             const slide = heroSlides[slideNum - 1];
             if (slide) {
                 const img = slide.querySelector('img');
                 if (img && img.src !== cleanUrl) img.src = cleanUrl;
             }
+        } else if (slideTitleMatch) {
+            const el = document.getElementById(`hero-slide-${slideTitleMatch[1]}-title`);
+            if (el) el.textContent = val;
+        } else if (slideSubMatch) {
+            const el = document.getElementById(`hero-slide-${slideSubMatch[1]}-subtitle`);
+            if (el) el.textContent = val;
         } else if (key === 'workspace_intro_image' && introImgEl) {
             if (introImgEl.src !== cleanUrl) introImgEl.src = cleanUrl;
         } else if (key === 'workspace_apart_image' && apartImgEl) {
@@ -1081,9 +1090,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const workspaceKeys = [
         'workspace_slide_1_image',
+        'workspace_slide_1_title',
+        'workspace_slide_1_subtitle',
         'workspace_slide_2_image',
+        'workspace_slide_2_title',
+        'workspace_slide_2_subtitle',
         'workspace_slide_3_image',
+        'workspace_slide_3_title',
+        'workspace_slide_3_subtitle',
         'workspace_slide_4_image',
+        'workspace_slide_4_title',
+        'workspace_slide_4_subtitle',
         'workspace_intro_image',
         'workspace_apart_image'
     ];
@@ -1091,13 +1108,13 @@ document.addEventListener('DOMContentLoaded', () => {
     workspaceKeys.forEach(key => {
         const cacheKey = `ar_${key}`;
         const cached = localStorage.getItem(cacheKey);
-        if (cached) updateWorkspaceImageInDOM(key, cached);
+        if (cached) updateWorkspaceContentInDOM(key, cached);
 
         fetch(`${API_BASE_URL}/api/settings/${key}`)
             .then(r => r.json())
             .then(res => {
                 if (res && res.success && res.value) {
-                    updateWorkspaceImageInDOM(key, res.value);
+                    updateWorkspaceContentInDOM(key, res.value);
                     localStorage.setItem(cacheKey, res.value);
                 }
             })
@@ -1110,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const socket = io(API_BASE_URL, { transports: ['websocket', 'polling'] });
             socket.on('site_setting_updated', ({ key, value }) => {
                 if (workspaceKeys.includes(key) && value) {
-                    updateWorkspaceImageInDOM(key, value);
+                    updateWorkspaceContentInDOM(key, value);
                     localStorage.setItem(`ar_${key}`, value);
                 }
                 if (aboutKeys.includes(key) && value) {
