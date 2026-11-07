@@ -315,53 +315,19 @@
                         1b. Project Images Gallery
                     </h4>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 14px;">
-                        Paste Cloudinary / public image URLs below. These will appear as a scrollable gallery in the popup. Leave blank to hide.
+                        Paste any Cloudinary or public image URL and click <strong style="color:var(--primary-gold)">Add Image</strong>. Add as many as you want. Click ✕ on a card to remove it.
                     </p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;" id="wm-images-grid">
-                        <!-- Image slots 1-6 -->
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-1" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 1 URL</label>
-                            <input type="url" id="wm-img-1" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(1)">
-                            <div id="wm-img-1-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-1-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-2" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 2 URL</label>
-                            <input type="url" id="wm-img-2" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(2)">
-                            <div id="wm-img-2-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-2-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-3" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 3 URL</label>
-                            <input type="url" id="wm-img-3" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(3)">
-                            <div id="wm-img-3-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-3-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-4" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 4 URL</label>
-                            <input type="url" id="wm-img-4" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(4)">
-                            <div id="wm-img-4-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-4-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-5" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 5 URL</label>
-                            <input type="url" id="wm-img-5" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(5)">
-                            <div id="wm-img-5-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-5-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
-                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px;">
-                            <label for="wm-img-6" style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 6px;">Image 6 URL</label>
-                            <input type="url" id="wm-img-6" class="admin-input" placeholder="https://res.cloudinary.com/..." style="margin-bottom: 8px;" oninput="previewWmImage(6)">
-                            <div id="wm-img-6-preview" style="width:100%; height:90px; border-radius:6px; background:#1a1a1a; overflow:hidden; display:none;">
-                                <img id="wm-img-6-thumb" src="" alt="Preview" style="width:100%; height:100%; object-fit:cover;">
-                            </div>
-                        </div>
+
+                    <!-- Add image input row -->
+                    <div style="display:flex; gap:10px; margin-bottom:14px; align-items:center;">
+                        <input type="url" id="wm-new-img-url" class="admin-input" placeholder="https://res.cloudinary.com/..." style="flex:1;">
+                        <button type="button" onclick="wmAddImage()" style="background:var(--primary-gold);color:#000;border:none;border-radius:var(--radius-sm);padding:0 18px;height:40px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:0.85rem;">
+                            <i class="fa-solid fa-plus"></i> Add Image
+                        </button>
                     </div>
+
+                    <!-- Dynamic image cards container -->
+                    <div id="wm-images-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:12px;"></div>
                 </div>
 
                 <!-- Section 2: 3 Key Investment Metrics Cards -->

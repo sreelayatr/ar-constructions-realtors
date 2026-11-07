@@ -1,18 +1,55 @@
-// Preview helper for project images in Wayanad modal editor
-function previewWmImage(n) {
-    const input = document.getElementById('wm-img-' + n);
-    const preview = document.getElementById('wm-img-' + n + '-preview');
-    const thumb = document.getElementById('wm-img-' + n + '-thumb');
-    if (!input || !preview || !thumb) return;
-    const url = input.value.trim();
-    if (url) {
-        thumb.src = url;
-        preview.style.display = 'block';
-    } else {
-        preview.style.display = 'none';
-        thumb.src = '';
+/* ── Wayanad Project Images – dynamic add/remove ── */
+let wmImages = []; // array of URL strings
+
+function wmAddImage(url) {
+    const input = document.getElementById('wm-new-img-url');
+    const imgUrl = (url || (input ? input.value.trim() : '')).trim();
+    if (!imgUrl) return;
+    if (wmImages.includes(imgUrl)) {
+        if (input) input.value = '';
+        return; // no duplicates
     }
+    wmImages.push(imgUrl);
+    wmRenderImageGrid();
+    if (input) input.value = '';
 }
+
+function wmRemoveImage(idx) {
+    wmImages.splice(idx, 1);
+    wmRenderImageGrid();
+}
+
+function wmRenderImageGrid() {
+    const grid = document.getElementById('wm-images-grid');
+    if (!grid) return;
+    if (wmImages.length === 0) {
+        grid.innerHTML = '<p style="font-size:0.75rem;color:var(--text-muted);grid-column:1/-1;">No images added yet.</p>';
+        return;
+    }
+    grid.innerHTML = wmImages.map((url, i) => `
+        <div style="position:relative;border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#111;border:1px solid var(--border-color);">
+            <img src="${url}" alt="Project Image ${i+1}"
+                style="width:100%;height:100%;object-fit:cover;"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:0.7rem;color:var(--text-muted);padding:6px;text-align:center;word-break:break-all;">
+                ⚠ Cannot load image
+            </div>
+            <button type="button" onclick="wmRemoveImage(${i})"
+                style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
+            <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.5);font-size:0.65rem;color:#ccc;padding:3px 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+                Image ${i+1}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Allow pressing Enter in the URL input to add image
+document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('wm-new-img-url');
+    if (inp) {
+        inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); wmAddImage(); } });
+    }
+});
 
 /* ==========================================================================
    AR CONSTRUCTIONS & REALTORS - PROJECTS MANAGEMENT SCRIPT
@@ -556,13 +593,9 @@ function populateWayanadForm(data) {
     setVal('wm-tagline', d.tagline);
     setVal('wm-intro', d.intro);
 
-    // Load project images
-    const imgs = d.project_images || [];
-    for (let n = 1; n <= 6; n++) {
-        const url = imgs[n - 1] || '';
-        const inp = document.getElementById('wm-img-' + n);
-        if (inp) { inp.value = url; previewWmImage(n); }
-    }
+    // Load project images into dynamic grid
+    wmImages = Array.isArray(d.project_images) ? d.project_images.filter(Boolean) : [];
+    wmRenderImageGrid();
 
     setVal('wm-m1-label', d.metric_1_label);
     setVal('wm-m1-val', d.metric_1_value);
@@ -699,9 +732,7 @@ async function handleWayanadModalPopupSave(e) {
         contact_phone_2: getVal('wm-phone-2'),
         whatsapp_number: getVal('wm-wa-num'),
         whatsapp_text: getVal('wm-wa-msg'),
-        project_images: [1,2,3,4,5,6]
-            .map(n => (document.getElementById('wm-img-' + n)?.value || '').trim())
-            .filter(Boolean)
+        project_images: wmImages.filter(Boolean)
     };
 
     if (btn) {
