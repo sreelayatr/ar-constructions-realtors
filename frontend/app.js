@@ -762,20 +762,31 @@ document.addEventListener('DOMContentLoaded', () => {
             setText('wayanad-modal-tagline', data.tagline);
             if (data.intro) setHtml('wayanad-modal-intro', data.intro);
 
-            // Render project images gallery
+            // Render project images gallery using DOM (not innerHTML, to preserve URLs)
             const galleryWrap = document.getElementById('wayanad-gallery');
             const galleryGrid = document.getElementById('wayanad-gallery-grid');
             if (galleryWrap && galleryGrid) {
                 const imgs = data.project_images || [];
                 const validImgs = imgs.filter(Boolean);
+                galleryGrid.innerHTML = '';
                 if (validImgs.length > 0) {
-                    galleryGrid.innerHTML = validImgs.map(url =>
-                        `<div style="border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#111;">
-                            <img src="${url}" alt="Project Image"
-                                style="width:100%;height:100%;object-fit:cover;cursor:pointer;"
-                                onclick="openWayanadGalleryLightbox(this.src)">
-                        </div>`
-                    ).join('');
+                    validImgs.forEach((url) => {
+                        const wrap = document.createElement('div');
+                        wrap.style.cssText = 'border-radius:8px;overflow:hidden;width:100%;height:160px;background:#111;cursor:pointer;';
+
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.alt = 'Project Image';
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+                        img.onerror = function() {
+                            this.style.display = 'none';
+                            wrap.style.background = '#1a1a1a';
+                            wrap.innerHTML += '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.75rem;padding:8px;text-align:center;">Image unavailable</div>';
+                        };
+                        img.addEventListener('click', () => openWayanadGalleryLightbox(url));
+                        wrap.appendChild(img);
+                        galleryGrid.appendChild(wrap);
+                    });
                     galleryWrap.style.display = 'block';
                 } else {
                     galleryWrap.style.display = 'none';
