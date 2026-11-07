@@ -18,6 +18,10 @@
     <link rel="dns-prefetch" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://ar-constructions-realtors.onrender.com" crossorigin>
     <link rel="dns-prefetch" href="https://ar-constructions-realtors.onrender.com">
+    <!-- Preload above-the-fold top project images for instantaneous display -->
+    <link rel="preload" as="image" href="https://res.cloudinary.com/gbceotkl/image/upload/f_auto,q_auto,w_800/v1793702766/IMG_6020.jpg" fetchpriority="high">
+    <link rel="preload" as="image" href="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208899/6a2684b5-56d0-4c84-804b-7587947b1a6c.png" fetchpriority="high">
+    <link rel="preload" as="image" href="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208785/98c0d3b5-0e1e-4390-9ff3-6820465a60a1.png" fetchpriority="high">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/ar-logo.png">
     <link rel="shortcut icon" type="image/png" href="images/ar-logo.png">
@@ -96,84 +100,182 @@
             <div class="projects-grid" id="projects-grid">
                 <!-- Pre-rendered default projects for instant zero-delay loading -->
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788711132/f249f284-72b1-431c-b58c-421852e789b1.png"
+                    <img class="project-img" src="https://res.cloudinary.com/gbceotkl/image/upload/f_auto,q_auto,w_800/v1793702766/IMG_6020.jpg"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Residential construction project in Bangalore by AR Constructions & Realtors">
+                         loading="eager" fetchpriority="high" decoding="async"
+                         alt="4BHK">
                     <div class="project-overlay">
-                        <h3 class="project-title">Residential (Bangalore, Karnataka)</h3>
-                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                        <h3 class="project-title">4BHK</h3>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active project-card--contain" data-project-modal="wayanad" tabindex="0">
+                    <img class="project-img project-img--contain" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208899/6a2684b5-56d0-4c84-804b-7587947b1a6c.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" fetchpriority="high" decoding="async"
+                         alt="WAYANAD De143Globe">
+                    <div class="project-overlay">
+                        <h3 class="project-title">WAYANAD De143Globe</h3>
+                        <p class="project-client">Commercial • Kerala Wanayad</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active project-card--contain" data-project-modal="wayanad" tabindex="0">
+                    <img class="project-img project-img--contain" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208785/98c0d3b5-0e1e-4390-9ff3-6820465a60a1.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" fetchpriority="high" decoding="async"
+                         alt="WAYANAD De143Globe">
+                    <div class="project-overlay">
+                        <h3 class="project-title">WAYANAD De143Globe</h3>
+                        <p class="project-client">Price starting @69,00,000/- per unit only • Wayanad</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788712420/87d999b5-e7c0-4a57-a8b8-88184b174601.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788711132/f249f284-72b1-431c-b58c-421852e789b1.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Modern residential interior project by AR Constructions & Realtors">
+                         loading="eager" decoding="async"
+                         alt="Residential (Bangalore, Karnataka)">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Residential (Bangalore, Karnataka)</h3>
+                        <p class="project-client">Commercial • Bangalore, Karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788712420/87d999b5-e7c0-4a57-a8b8-88184b174601.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="eager" decoding="async"
+                         alt="Modern Layout">
                     <div class="project-overlay">
                         <h3 class="project-title">Modern Layout</h3>
                         <p class="project-client">Residential • Kerala</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788717169/bdbafd6c-9936-4380-8315-ae818c20c535.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788717169/bdbafd6c-9936-4380-8315-ae818c20c535.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Living room interior project in Bangalore by AR Constructions & Realtors">
+                         loading="eager" decoding="async"
+                         alt="Living Area">
                     <div class="project-overlay">
                         <h3 class="project-title">Living Area</h3>
                         <p class="project-client">Residential • Bangalore, Karnataka</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788644703/Screenshot_2026-09-06_031433.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788644703/Screenshot_2026-09-06_031433.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Residential courtyard project in Bangalore by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="Courtyard">
                     <div class="project-overlay">
                         <h3 class="project-title">Courtyard</h3>
                         <p class="project-client">Residential • Bangalore, Karnataka</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788647720/Screenshot_2026-09-06_040458.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788647720/Screenshot_2026-09-06_040458.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Residential interior project by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="Waiting Room">
                     <div class="project-overlay">
                         <h3 class="project-title">Waiting Room</h3>
                         <p class="project-client">Residential • Kerala</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788709069/Screenshot_2026-09-06_210724.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709069/Screenshot_2026-09-06_210724.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Commercial clinic construction project in JP Nagar Bangalore by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="Dr. RAJANI’S CLINIC COMMERCIAL PROJECT">
                     <div class="project-overlay">
-                        <h3 class="project-title">Dr. RAJANI'S CLINIC COMMERCIAL PROJECT</h3>
-                        <p class="project-client">Residential • JP NAGAR, BANGALORE</p>
+                        <h3 class="project-title">Dr. RAJANI’S CLINIC COMMERCIAL PROJECT</h3>
+                        <p class="project-client">Interior • JP NAGAR, BANGALORE</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788710261/Screenshot_2026-09-06_212716.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788710261/Screenshot_2026-09-06_212716.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Luxury villa residential project in Sarjapur Bangalore by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="Rainbow Residency Luxury Villa">
                     <div class="project-overlay">
                         <h3 class="project-title">Rainbow Residency Luxury Villa</h3>
                         <p class="project-client">Residential • Sarjapur, Bangalore</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788711046/89b33f0e-e171-459b-8f74-a9a2388ce06e.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788711046/89b33f0e-e171-459b-8f74-a9a2388ce06e.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Modern kitchen and utility interior project by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="Modern Kitchen & Utility">
                     <div class="project-overlay">
                         <h3 class="project-title">Modern Kitchen & Utility</h3>
                         <p class="project-client">Residential • karnataka</p>
                     </div>
                 </div>
                 <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788708392/Screenshot_2026-09-06_205556.png"
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788708392/Screenshot_2026-09-06_205556.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async" alt="Commercial conference room interior project in Hyderabad by AR Constructions & Realtors">
+                         loading="lazy" decoding="async"
+                         alt="COMMERCIAL PROJECT LRC - Conference Room">
                     <div class="project-overlay">
                         <h3 class="project-title">COMMERCIAL PROJECT LRC - Conference Room</h3>
-                        <p class="project-client">Residential • Hyderabad</p>
+                        <p class="project-client">Commercial • Hyderabad</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788708843/Screenshot_2026-09-06_210328.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="TV Unit">
+                    <div class="project-overlay">
+                        <h3 class="project-title">TV Unit</h3>
+                        <p class="project-client">Residential • Tamil Nadu</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788647899/Screenshot_2026-09-06_040757.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="Vaastu HillView">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Vaastu HillView</h3>
+                        <p class="project-client">Residential • RR Nagar Bangalore</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709653/Screenshot_2026-09-06_211613.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="Nanda Prakruthi Luxury Villa (4BHK)">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Nanda Prakruthi Luxury Villa (4BHK)</h3>
+                        <p class="project-client">Residential • Kanakpura, Bangalore</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788644345/Screenshot_2026-09-06_030759.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="Entrance">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Entrance</h3>
+                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788643394/Screenshot_2026-09-06_024824.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="Luxury Apartment 4BHK">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Luxury Apartment 4BHK</h3>
+                        <p class="project-client">Residential • L&T Bangalore</p>
+                    </div>
+                </div>
+                <div class="project-card animate-up reveal-active" tabindex="0">
+                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709858/Screenshot_2026-09-06_212040.png"
+                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
+                         loading="lazy" decoding="async"
+                         alt="Living Area (Terrazzo Flooring)">
+                    <div class="project-overlay">
+                        <h3 class="project-title">Living Area (Terrazzo Flooring)</h3>
+                        <p class="project-client">Residential • Tamil Nadu</p>
                     </div>
                 </div>
             </div>
@@ -445,7 +547,7 @@
     </div>
 
     <!-- Script File -->
-    <script src="app.js?v=20261028_4"></script>
+    <script src="app.js?v=20261107_1"></script>
 
     <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">

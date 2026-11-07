@@ -14,7 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // time the user reaches the Projects page.
     // ==========================================================
     if (!window.location.pathname.includes('projects.html')) {
-        fetch(`${API_BASE_URL}/api/projects`).catch(() => {});
+        fetch(`${API_BASE_URL}/api/projects`)
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success && Array.isArray(res.data)) {
+                    try {
+                        localStorage.setItem('ar_projects_cache_v3', JSON.stringify({ ts: Date.now(), data: res.data }));
+                    } catch {}
+                }
+            })
+            .catch(() => {});
     }
 
     /* ==========================================
@@ -613,17 +622,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectsGrid = document.querySelector('.projects-grid');
     if (projectsGrid) {
 
-        // ── Cache helpers ──────────────────────────────────────────
+        // ── Cloudinary URL Optimizer ───────────────────────────────
+        const optimizeCloudinaryUrl = (url) => {
+            if (!url || typeof url !== 'string') return url;
+            if (url.includes('cloudinary.com') && url.includes('/upload/') && !url.includes('/f_auto')) {
+                return url.replace('/upload/', '/upload/f_auto,q_auto,w_800/');
+            }
+            return url;
+        };
+
+        // ── Cache helpers (Instant render with stale-while-revalidate) ──
         const CACHE_KEY     = 'ar_projects_cache_v3';
-        const CACHE_TTL_MS  = 10 * 60 * 1000;   // 10 minutes
+        const CACHE_TTL_MS  = 30 * 24 * 60 * 60 * 1000;   // 30 days
 
         const readCache = () => {
             try {
                 const raw = localStorage.getItem(CACHE_KEY);
                 if (!raw) return null;
                 const { ts, data } = JSON.parse(raw);
-                if (Date.now() - ts > CACHE_TTL_MS) return null;   // expired
-                return data;
+                if (Date.now() - ts > CACHE_TTL_MS) return null;
+                return Array.isArray(data) ? data : null;
             } catch { return null; }
         };
 
@@ -633,7 +651,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch {}
         };
 
-        // ── Render a list of project objects into the grid ─────────
+        // Track rendered signature to avoid DOM thrashing if API data hasn't changed
+        let currentRenderSignature = null;
+        const getSignature = (list) => {
+            if (!Array.isArray(list)) return '';
+            return list.map(p => `${p._id || ''}:${p.updatedAt || ''}:${(p.images && p.images[0]) || ''}`).join('|');
+        };
+
         // ── Wayanad Popup Modal Handlers ───────────────────────────
         const wayanadModal = document.getElementById('wayanad-project-modal');
         const closeWayanadModalBtn = document.getElementById('close-wayanad-modal');
@@ -711,10 +735,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            projectsGrid.innerHTML = data.map(p => {
-                const imgUrl = (p.images && p.images.length > 0 && p.images[0])
+            currentRenderSignature = getSignature(data);
+
+            projectsGrid.innerHTML = data.map((p, idx) => {
+                const rawImgUrl = (p.images && p.images.length > 0 && p.images[0])
                     ? p.images[0]
                     : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80';
+
+                const imgUrl = optimizeCloudinaryUrl(rawImgUrl);
 
                 const category = (p.category || '').trim();
                 const location = (p.location || '').trim();
@@ -748,6 +776,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     )
                 ));
                 const imgClass = isBrochure ? 'project-img project-img--contain' : 'project-img';
+                const loadingAttr = idx < 6 ? 'loading="eager"' : 'loading="lazy"';
+                const fetchPriorityAttr = idx < 3 ? ' fetchpriority="high"' : '';
 
                 const hasOverlay = Boolean(displayTitle || clientText);
                 const overlayHtml = hasOverlay ? `
@@ -760,7 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" ${isWayanad ? 'data-project-modal="wayanad"' : ''} tabindex="0">
                         <img class="${imgClass}" src="${imgUrl}"
                              onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                             loading="eager"
+                             ${loadingAttr}${fetchPriorityAttr}
                              decoding="async"
                              alt="${displayTitle || 'Project'}">
                         ${overlayHtml}
@@ -770,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attachCardListeners();
         };
 
-        // ── Skeleton placeholders (first visit only) ───────────────
+        // ── Skeleton placeholders (first visit only when DOM is empty) ──
         const showSkeletons = () => {
             projectsGrid.innerHTML = Array.from({ length: 6 })
                 .map(() => '<div class="project-skeleton"></div>')
@@ -804,14 +834,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok && result.success && Array.isArray(result.data)) {
                     writeCache(result.data);
-                    if (!silent) renderProjects(result.data);       // first-time visitor
-                    else         renderProjects(result.data);       // silently refresh view
+                    const newSig = getSignature(result.data);
+                    // Only update DOM if server data differs from currently rendered data
+                    if (newSig !== currentRenderSignature) {
+                        renderProjects(result.data);
+                    }
                 } else {
-                    if (!silent) showError();
+                    if (!silent && !projectsGrid.querySelector('.project-card')) showError();
                 }
             } catch (err) {
                 console.error('Error fetching projects:', err);
-                if (!silent) showError();
+                if (!silent && !projectsGrid.querySelector('.project-card')) showError();
             }
         };
 
@@ -822,13 +855,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const cached = readCache();
 
-            if (cached) {
-                // ✅ Cached data → render and keep interactive
+            if (cached && cached.length > 0) {
+                // Instant zero-delay render from cache
                 renderProjects(cached);
                 fetchFresh(true);       // silent background refresh
             } else {
                 // If pre-rendered HTML cards already exist in DOM, keep them visible!
-                // Only show skeletons if grid is completely empty
                 const existingCards = projectsGrid.querySelectorAll('.project-card');
                 if (existingCards.length === 0) {
                     showSkeletons();
