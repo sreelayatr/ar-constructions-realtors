@@ -710,3 +710,22 @@ async function handleWayanadModalPopupSave(e) {
     }
 }
 
+// Real-time updates via Socket.IO
+if (typeof socket !== 'undefined' && socket) {
+    socket.on('projects_updated', () => {
+        loadProjects();
+    });
+    socket.on('refresh_projects', () => {
+        loadProjects();
+    });
+    socket.on('site_setting_updated', ({ key }) => {
+        if (key && key.includes('projects_')) {
+            loadHeroBanner();
+        }
+        if (key === 'wayanad_modal_data') {
+            loadWayanadModalSettings();
+        }
+    });
+}
+
+

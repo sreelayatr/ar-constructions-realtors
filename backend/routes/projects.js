@@ -112,6 +112,11 @@ router.post('/', requireAuth, async (req, res) => {
                 images: imageArray,
                 createdAt: new Date()
             };
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('projects_updated', { action: 'create', project: newProj });
+                io.emit('refresh_projects');
+            }
             return res.status(201).json({ success: true, message: 'Project created', data: newProj });
         }
 
@@ -125,6 +130,12 @@ router.post('/', requireAuth, async (req, res) => {
         });
 
         await project.save();
+
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('projects_updated', { action: 'create', project });
+            io.emit('refresh_projects');
+        }
 
         res.status(201).json({
             success: true,
@@ -183,6 +194,12 @@ router.patch('/:id', requireAuth, async (req, res) => {
             });
         }
 
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('projects_updated', { action: 'update', project });
+            io.emit('refresh_projects');
+        }
+
         res.json({
             success: true,
             message: 'Project updated successfully',
@@ -201,6 +218,11 @@ router.patch('/:id', requireAuth, async (req, res) => {
 router.delete('/:id', requireAuth, async (req, res) => {
     try {
         if (mongoose.connection.readyState !== 1) {
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('projects_updated', { action: 'delete', id: req.params.id });
+                io.emit('refresh_projects');
+            }
             return res.json({ success: true, message: 'Project deleted successfully' });
         }
 
@@ -210,6 +232,12 @@ router.delete('/:id', requireAuth, async (req, res) => {
                 success: false,
                 message: 'Project not found'
             });
+        }
+
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('projects_updated', { action: 'delete', id: req.params.id });
+            io.emit('refresh_projects');
         }
 
         res.json({

@@ -999,6 +999,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        window.loadProjects = loadProjects;
+        window.fetchFreshProjects = () => fetchFresh(true);
+
         loadProjects();
 
         // ── Dynamic Projects Hero Banner Sync ────────────────────────
@@ -1121,11 +1124,23 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => {});
     });
 
-    // Real-time update via Socket.IO when admin saves a new setting
+    // Real-time update via Socket.IO when admin saves a new setting or updates projects
     if (typeof io !== 'undefined') {
         try {
-            const socket = io(API_BASE_URL, { transports: ['websocket', 'polling'] });
+            const socket = io(API_BASE_URL, {
+                transports: ['websocket', 'polling'],
+                reconnection: true,
+                reconnectionAttempts: 15,
+                reconnectionDelay: 2000
+            });
+            window.socket = socket;
+
+            socket.on('connect', () => {
+                console.log('⚡ Socket.IO real-time connected:', socket.id);
+            });
+
             socket.on('site_setting_updated', ({ key, value }) => {
+                console.log('⚡ Socket.IO site_setting_updated received:', key);
                 if (workspaceKeys.includes(key) && value) {
                     updateWorkspaceContentInDOM(key, value);
                     localStorage.setItem(`ar_${key}`, value);
@@ -1161,7 +1176,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(val));
                 }
             });
-        } catch (e) { /* Socket.IO not available on this page */ }
+
+            socket.on('projects_updated', (payload) => {
+                console.log('⚡ Socket.IO projects_updated received:', payload);
+                if (typeof window.fetchFreshProjects === 'function') {
+                    window.fetchFreshProjects();
+                } else if (typeof window.loadProjects === 'function') {
+                    window.loadProjects();
+                }
+            });
+
+            socket.on('refresh_projects', () => {
+                if (typeof window.fetchFreshProjects === 'function') {
+                    window.fetchFreshProjects();
+                } else if (typeof window.loadProjects === 'function') {
+                    window.loadProjects();
+                }
+            });
+        } catch (e) {
+            console.warn('Socket.IO connection warning:', e);
+        }
     }
 
     /* ==========================================

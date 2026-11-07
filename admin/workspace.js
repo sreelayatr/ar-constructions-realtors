@@ -284,3 +284,12 @@ async function loadWorkspaceSlides() {
 document.addEventListener('DOMContentLoaded', () => {
     loadWorkspaceSlides();
 });
+
+// Real-time updates via Socket.IO
+if (typeof socket !== 'undefined' && socket) {
+    socket.on('site_setting_updated', ({ key }) => {
+        if (key && (key.startsWith('workspace_') || key.includes('slide'))) {
+            loadWorkspaceSlides();
+        }
+    });
+}

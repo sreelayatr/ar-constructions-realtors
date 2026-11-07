@@ -48,11 +48,24 @@ window.fetch = async function (resource, init = {}) {
 let socket = null;
 if (typeof io !== 'undefined') {
     const token = localStorage.getItem('ar_admin_token');
-    socket = API_BASE_URL 
-        ? io(API_BASE_URL, { withCredentials: true, auth: { token } }) 
-        : io({ auth: { token } });
+    const socketOpts = {
+        transports: ['websocket', 'polling'],
+        withCredentials: true,
+        reconnection: true,
+        reconnectionAttempts: 20,
+        reconnectionDelay: 2000
+    };
+    if (token) {
+        socketOpts.auth = { token };
+    }
+    socket = API_BASE_URL ? io(API_BASE_URL, socketOpts) : io(socketOpts);
+    window.socket = socket;
+
     socket.on('connect', () => {
         console.log('⚡ Socket.IO real-time connection active:', socket.id);
+    });
+    socket.on('disconnect', (reason) => {
+        console.log('🔌 Socket.IO disconnected:', reason);
     });
 }
 

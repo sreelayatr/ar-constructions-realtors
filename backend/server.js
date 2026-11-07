@@ -45,7 +45,10 @@ const PORT = process.env.PORT || 9100;
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: (origin, callback) => {
+      // Reflect origin so credentials work without wildcard '*' browser rejection
+      callback(null, true);
+    },
     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
     credentials: true,
   },
