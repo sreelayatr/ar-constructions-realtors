@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const currentCleanPath = getCleanPath(window.location.href);
-    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .logo-link');
+    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .logo-link, .footer-logo-link');
 
     allNavLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -160,6 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
+    });
+
+    
+    // Prevent social icon links with href="#" from reloading/jumping page top
+    document.querySelectorAll('.social-icons a').forEach(function(link) {
+        if (link.getAttribute('href') === '#') {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        }
     });
 
     // Smooth scroll for in-page hash anchor links (e.g. href="#contact")
