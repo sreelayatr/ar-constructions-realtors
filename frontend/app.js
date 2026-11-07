@@ -772,12 +772,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (validImgs.length > 0) {
                     validImgs.forEach((url) => {
                         const wrap = document.createElement('div');
-                        wrap.style.cssText = 'border-radius:8px;overflow:hidden;width:100%;height:160px;background:#111;cursor:pointer;';
+                        wrap.style.cssText = 'border-radius:8px;overflow:hidden;width:100%;background:#111;cursor:pointer;';
 
                         const img = document.createElement('img');
                         img.src = url;
                         img.alt = 'Project Image';
-                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+                        img.style.cssText = 'width:100%;height:auto;display:block;';
                         img.onerror = function() {
                             this.style.display = 'none';
                             wrap.style.background = '#1a1a1a';
