@@ -1,3 +1,19 @@
+// Preview helper for project images in Wayanad modal editor
+function previewWmImage(n) {
+    const input = document.getElementById('wm-img-' + n);
+    const preview = document.getElementById('wm-img-' + n + '-preview');
+    const thumb = document.getElementById('wm-img-' + n + '-thumb');
+    if (!input || !preview || !thumb) return;
+    const url = input.value.trim();
+    if (url) {
+        thumb.src = url;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+        thumb.src = '';
+    }
+}
+
 /* ==========================================================================
    AR CONSTRUCTIONS & REALTORS - PROJECTS MANAGEMENT SCRIPT
    ========================================================================== */
@@ -540,6 +556,14 @@ function populateWayanadForm(data) {
     setVal('wm-tagline', d.tagline);
     setVal('wm-intro', d.intro);
 
+    // Load project images
+    const imgs = d.project_images || [];
+    for (let n = 1; n <= 6; n++) {
+        const url = imgs[n - 1] || '';
+        const inp = document.getElementById('wm-img-' + n);
+        if (inp) { inp.value = url; previewWmImage(n); }
+    }
+
     setVal('wm-m1-label', d.metric_1_label);
     setVal('wm-m1-val', d.metric_1_value);
     setVal('wm-m1-sub', d.metric_1_sub);
@@ -674,7 +698,10 @@ async function handleWayanadModalPopupSave(e) {
         contact_phone_1: getVal('wm-phone-1'),
         contact_phone_2: getVal('wm-phone-2'),
         whatsapp_number: getVal('wm-wa-num'),
-        whatsapp_text: getVal('wm-wa-msg')
+        whatsapp_text: getVal('wm-wa-msg'),
+        project_images: [1,2,3,4,5,6]
+            .map(n => (document.getElementById('wm-img-' + n)?.value || '').trim())
+            .filter(Boolean)
     };
 
     if (btn) {

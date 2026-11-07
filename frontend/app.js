@@ -762,6 +762,26 @@ document.addEventListener('DOMContentLoaded', () => {
             setText('wayanad-modal-tagline', data.tagline);
             if (data.intro) setHtml('wayanad-modal-intro', data.intro);
 
+            // Render project images gallery
+            const galleryWrap = document.getElementById('wayanad-gallery');
+            const galleryGrid = document.getElementById('wayanad-gallery-grid');
+            if (galleryWrap && galleryGrid) {
+                const imgs = data.project_images || [];
+                const validImgs = imgs.filter(Boolean);
+                if (validImgs.length > 0) {
+                    galleryGrid.innerHTML = validImgs.map(url =>
+                        `<div style="border-radius:8px;overflow:hidden;aspect-ratio:4/3;background:#111;">
+                            <img src="${url}" alt="Project Image"
+                                style="width:100%;height:100%;object-fit:cover;cursor:pointer;"
+                                onclick="openWayanadGalleryLightbox(this.src)">
+                        </div>`
+                    ).join('');
+                    galleryWrap.style.display = 'block';
+                } else {
+                    galleryWrap.style.display = 'none';
+                }
+            }
+
             setText('wayanad-metric-1-label', data.metric_1_label);
             if (data.metric_1_value) {
                 setHtml('wayanad-metric-1-value', `${data.metric_1_value} <span class="sub" id="wayanad-metric-1-sub">${data.metric_1_sub || ''}</span>`);
@@ -1367,3 +1387,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
+// Lightbox for Wayanad project gallery
+function openWayanadGalleryLightbox(src) {
+    let lb = document.getElementById('wg-lightbox');
+    if (!lb) {
+        lb = document.createElement('div');
+        lb.id = 'wg-lightbox';
+        lb.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+                const imgEl = document.createElement('img');
+        imgEl.id = 'wg-lb-img';
+        imgEl.alt = 'Project';
+        imgEl.style.cssText = 'max-width:92vw;max-height:88vh;border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,0.6);';
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '×';
+        closeBtn.style.cssText = 'position:absolute;top:18px;right:22px;background:transparent;border:none;color:#fff;font-size:1.8rem;cursor:pointer;line-height:1;';
+        closeBtn.addEventListener('click', function() { lb.remove(); });
+        lb.appendChild(imgEl);
+        lb.appendChild(closeBtn);
+        lb.addEventListener('click', (e) => { if (e.target === lb) lb.remove(); });
+        document.body.appendChild(lb);
+    }
+    document.getElementById('wg-lb-img').src = src;
+    lb.style.display = 'flex';
+}
