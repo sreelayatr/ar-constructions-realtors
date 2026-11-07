@@ -90,40 +90,251 @@
                 <div class="card-section" style="margin-bottom: 24px;">
                     <div class="section-header">
                         <div>
-                            <h2 class="section-title"><i class="fa-solid fa-image" style="color: var(--primary-gold); margin-right: 8px;"></i> Projects Hero Cover Picture</h2>
-                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the main hero picture displayed at the top of the public Projects page.</p>
+                            <h2 class="section-title"><i class="fa-solid fa-pen-nib" style="color: var(--primary-gold); margin-right: 8px;"></i> Projects Page Header & Section Text</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">Update the hero cover banner picture and the introductory heading & description on the public Projects page.</p>
                         </div>
+                        <button type="button" class="btn-gold" onclick="document.getElementById('hero-banner-form').requestSubmit()" id="save-hero-banner-btn-top">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Save Header & Text</span>
+                        </button>
                     </div>
 
-                    <form id="hero-banner-form" onsubmit="handleHeroBannerSave(event)" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: end;">
-                        <div class="admin-form-group" style="margin-bottom: 0;">
-                            <label for="hero-banner-url">Banner Picture URL</label>
-                            <input type="url" id="hero-banner-url" class="admin-input" placeholder="https://res.cloudinary.com/..." required oninput="previewHeroBanner()">
-                        </div>
-                        <button type="submit" class="btn-gold" id="save-hero-banner-btn" style="height: 42px; white-space: nowrap;">
-                            <i class="fa-solid fa-floppy-disk"></i>
-                            <span>Update Picture</span>
-                        </button>
-                    </form>
-
-                    <!-- Preview Thumbnail -->
-                    <div style="margin-top: 16px; display: flex; align-items: center; gap: 20px;">
-                        <div style="position: relative; width: 240px; height: 110px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-color); background: #000;">
-                            <img id="hero-banner-preview" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png" alt="Hero Banner Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png'">
-                            <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(9, 13, 22, 0.2), rgba(9, 13, 22, 0.6)); display: flex; align-items: flex-end; justify-content: flex-end; padding: 8px;">
-                                <span style="font-family: var(--font-heading); font-size: 0.65rem; color: #fff; letter-spacing: 1px;">Home | Projects</span>
+                    <form id="hero-banner-form" onsubmit="handleHeroBannerSave(event)">
+                        <div class="form-grid">
+                            <div class="admin-form-group form-group-full">
+                                <label for="hero-banner-url">Hero Banner Picture URL</label>
+                                <input type="url" id="hero-banner-url" class="admin-input" placeholder="https://res.cloudinary.com/..." required oninput="previewHeroBanner()">
+                            </div>
+                            <div class="admin-form-group form-group-full">
+                                <label for="projects-header-title-input">Projects Section Main Heading</label>
+                                <input type="text" id="projects-header-title-input" class="admin-input" placeholder="Our Construction & Interior Projects Across Bengaluru">
+                            </div>
+                            <div class="admin-form-group form-group-full">
+                                <label for="projects-header-desc-input">Projects Section Subtitle / Description</label>
+                                <textarea id="projects-header-desc-input" class="admin-textarea" rows="2" placeholder="Explore our residential, commercial, construction, renovation and interior design projects completed by AR Constructions & Realtors across Bengaluru."></textarea>
                             </div>
                         </div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
-                            <div><strong>Current Hero Preview</strong></div>
-                            <div>Supports Cloudinary, Unsplash, or any public image URL. Updates immediately across the website.</div>
+
+                        <!-- Preview Thumbnail & Save Button -->
+                        <div style="margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="position: relative; width: 200px; height: 95px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-color); background: #000;">
+                                    <img id="hero-banner-preview" src="https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png" alt="Hero Banner Preview" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png'">
+                                </div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+                                    <div><strong>Live Preview of Header Banner</strong></div>
+                                    <div>Updates immediately across the public website.</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-gold" id="save-hero-banner-btn" style="height: 42px;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save Header & Text</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- WAYANAD De143Globe Modal Content Editor -->
+                <div class="card-section" id="wayanad-editor-card" style="margin-bottom: 24px; border: 1px solid rgba(201, 168, 76, 0.4); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);">
+                    <div class="section-header" style="align-items: flex-start;">
+                        <div>
+                            <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span style="background: rgba(201, 168, 76, 0.15); color: var(--primary-gold); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(201, 168, 76, 0.3);">
+                                    <i class="fa-solid fa-tree"></i> Featured Project Popup
+                                </span>
+                            </div>
+                            <h2 class="section-title" style="color: var(--primary-gold); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-hotel"></i>
+                                WAYANAD De143Globe Modal Content Editor
+                            </h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px;">
+                                Edit all titles, badges, investment metrics, key features, pricing, and WhatsApp inquiry text shown when visitors click the WAYANAD De143Globe card on the public website.
+                            </p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn-secondary" onclick="resetWayanadModalDefaults()" style="height: 38px; font-size: 0.85rem;">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>Reset Defaults</span>
+                            </button>
+                            <button type="button" class="btn-gold" onclick="document.getElementById('wayanad-modal-form').requestSubmit()" id="quick-save-wayanad-btn" style="height: 38px; font-size: 0.85rem;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save Changes</span>
+                            </button>
                         </div>
                     </div>
+
+                    <form id="wayanad-modal-form" onsubmit="handleWayanadModalSave(event)">
+                        <!-- Section 1: Header & Badges -->
+                        <div style="margin-bottom: 22px; border-bottom: 1px solid var(--border-color); padding-bottom: 18px;">
+                            <h3 style="font-size: 0.88rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                                <i class="fa-solid fa-heading" style="margin-right: 6px;"></i> 1. Header, Badges & Intro
+                            </h3>
+                            <div class="form-grid">
+                                <div class="admin-form-group">
+                                    <label for="w-badge-1">Top Badge 1 (Gold)</label>
+                                    <input type="text" id="w-badge-1" class="admin-input" placeholder="De Land of Tomorrow | WAYANAD">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-badge-2">Top Badge 2 (Red Urgency)</label>
+                                    <input type="text" id="w-badge-2" class="admin-input" placeholder="Only 5 Units Available">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-title">Project Title *</label>
+                                    <input type="text" id="w-title" class="admin-input" required placeholder="WAYANAD De143Globe">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-tagline">Tagline</label>
+                                    <input type="text" id="w-tagline" class="admin-input" placeholder="✨ Your Private Paradise Awaits in the Lap of Nature ✨">
+                                </div>
+                                <div class="admin-form-group form-group-full">
+                                    <label for="w-intro">Intro Description (Supports &lt;strong&gt; bold tags)</label>
+                                    <textarea id="w-intro" class="admin-textarea" rows="2" placeholder="Escape to luxury with this exclusive pool villa project in <strong>Thrishellery, Wayanad</strong>. An incredible investment opportunity and a perfect holiday home!"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: 3 Key Investment Metrics Cards -->
+                        <div style="margin-bottom: 22px; border-bottom: 1px solid var(--border-color); padding-bottom: 18px;">
+                            <h3 style="font-size: 0.88rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                                <i class="fa-solid fa-chart-simple" style="margin-right: 6px;"></i> 2. Key Investment Metrics (3 Cards)
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                                <!-- Metric 1 -->
+                                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+                                    <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-arrow-trend-up"></i> Metric 1 (Rental Income)
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m1-label" style="font-size: 0.78rem;">Label</label>
+                                        <input type="text" id="w-m1-label" class="admin-input" placeholder="Rental Income Potential">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m1-val" style="font-size: 0.78rem;">Value</label>
+                                        <input type="text" id="w-m1-val" class="admin-input" placeholder="Up to ₹15 Lakhs">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 0;">
+                                        <label for="w-m1-sub" style="font-size: 0.78rem;">Subtext</label>
+                                        <input type="text" id="w-m1-sub" class="admin-input" placeholder="/ annum">
+                                    </div>
+                                </div>
+
+                                <!-- Metric 2 -->
+                                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+                                    <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-ruler-combined"></i> Metric 2 (Villa Size)
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m2-label" style="font-size: 0.78rem;">Label</label>
+                                        <input type="text" id="w-m2-label" class="admin-input" placeholder="Villa Size">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m2-val" style="font-size: 0.78rem;">Value</label>
+                                        <input type="text" id="w-m2-val" class="admin-input" placeholder="~2,000 SQFT">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 0;">
+                                        <label for="w-m2-sub" style="font-size: 0.78rem;">Subtext</label>
+                                        <input type="text" id="w-m2-sub" class="admin-input" placeholder="luxury living">
+                                    </div>
+                                </div>
+
+                                <!-- Metric 3 -->
+                                <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+                                    <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-tags"></i> Metric 3 (Pricing)
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m3-label" style="font-size: 0.78rem;">Label</label>
+                                        <input type="text" id="w-m3-label" class="admin-input" placeholder="Exclusive Pricing">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 8px;">
+                                        <label for="w-m3-val" style="font-size: 0.78rem;">Value</label>
+                                        <input type="text" id="w-m3-val" class="admin-input" placeholder="Starts @ ₹69 Lakhs">
+                                    </div>
+                                    <div class="admin-form-group" style="margin-bottom: 0;">
+                                        <label for="w-m3-sub" style="font-size: 0.78rem;">Subtext</label>
+                                        <input type="text" id="w-m3-sub" class="admin-input" placeholder="per villa">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Highlights, Features & Destinations -->
+                        <div style="margin-bottom: 22px; border-bottom: 1px solid var(--border-color); padding-bottom: 18px;">
+                            <h3 style="font-size: 0.88rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                                <i class="fa-solid fa-list-check" style="margin-right: 6px;"></i> 3. Highlights, Features & Nearby Destinations
+                            </h3>
+                            <div class="form-grid">
+                                <div class="admin-form-group">
+                                    <label for="w-highlights">Project Highlights (One item per line)</label>
+                                    <textarea id="w-highlights" class="admin-textarea" rows="4" placeholder="Villa Size: ~2,000 SQFT of luxury living&#10;Low Density: Only 5 premium units spread across 1 acre&#10;Exclusive Pricing: Starts at just ₹69 Lakhs per villa"></textarea>
+                                </div>
+
+                                <div class="admin-form-group">
+                                    <label for="w-features">Key Features (One item per line)</label>
+                                    <textarea id="w-features" class="admin-textarea" rows="4" placeholder="2 Bedrooms with Attached Bathrooms&#10;Open Living & Dining Area + Modern Kitchen Counter&#10;Fully Closed Ground Floor with elegant laterite walls & door&#10;Single Full-Length Glass frontage with spectacular views&#10;Private Front Deck + Pool Area (30 ft x 30 ft)&#10;Common Bathroom with both inside & outside access"></textarea>
+                                </div>
+
+                                <div class="admin-form-group form-group-full">
+                                    <label for="w-destinations">Breathtaking Destinations Nearby (Comma-separated)</label>
+                                    <input type="text" id="w-destinations" class="admin-input" placeholder="Mountain Views, Serene Environment, Kottiyoor Mahashiva Temple, Banasura Hills, Edakkal Caves, Heart Island">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Urgency Banner, Partners & Contact Actions -->
+                        <div>
+                            <h3 style="font-size: 0.88rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                                <i class="fa-solid fa-bullhorn" style="margin-right: 6px;"></i> 4. Urgency Banner, Partners & Contacts
+                            </h3>
+                            <div class="form-grid">
+                                <div class="admin-form-group">
+                                    <label for="w-urgency-title">Urgency Banner Title</label>
+                                    <input type="text" id="w-urgency-title" class="admin-input" placeholder="LIMITED OPPORTUNITY — ONLY 5 UNITS AVAILABLE!">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-urgency-sub">Urgency Banner Subtitle</label>
+                                    <input type="text" id="w-urgency-sub" class="admin-input" placeholder="Invest in nature, invest in your future.">
+                                </div>
+                                <div class="admin-form-group form-group-full">
+                                    <label for="w-partners">Partner Attribution Text (Supports &lt;strong&gt; bold tags)</label>
+                                    <input type="text" id="w-partners" class="admin-input" placeholder="A Project by <strong>DE143GLOBE</strong> &bull; Partnered With <strong>AR Constructions and Realtors</strong>">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-phone-1">Phone 1 (Display & Call)</label>
+                                    <input type="text" id="w-phone-1" class="admin-input" placeholder="73538 77999">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-phone-2">Phone 2 (Display & Call)</label>
+                                    <input type="text" id="w-phone-2" class="admin-input" placeholder="98451 39034">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-wa-num">WhatsApp Inquire Number</label>
+                                    <input type="text" id="w-wa-num" class="admin-input" placeholder="917353877999">
+                                </div>
+                                <div class="admin-form-group">
+                                    <label for="w-wa-msg">WhatsApp Prefilled Message</label>
+                                    <input type="text" id="w-wa-msg" class="admin-input" placeholder="Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 22px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                            <button type="submit" class="btn-gold" id="save-wayanad-btn" style="height: 44px; padding: 0 28px; font-size: 0.95rem;">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save & Publish Modal Text</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <div class="card-section">
                     <div class="section-header">
-                        <h2 class="section-title">Projects Catalog</h2>
+                        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                            <h2 class="section-title">Projects Catalog</h2>
+                            <button type="button" class="btn-secondary" onclick="scrollToWayanadEditor()" style="height: 32px; font-size: 0.78rem; padding: 0 10px;">
+                                <i class="fa-solid fa-hotel" style="color: var(--primary-gold);"></i> Edit Wayanad Modal Text
+                            </button>
+                        </div>
                         
                         <div class="controls-wrap">
                             <div class="search-box">
@@ -139,6 +350,10 @@
                                 <option value="Renovation">Renovation</option>
                             </select>
 
+                            <button type="button" class="btn-gold" onclick="openWayanadModalEditor()" style="background: linear-gradient(135deg, #c9a84c, #9d7c2a); box-shadow: 0 4px 15px rgba(201, 168, 76, 0.35);">
+                                <i class="fa-solid fa-file-pen"></i>
+                                <span>Edit WAYANAD Text</span>
+                            </button>
                             <button class="btn-gold" onclick="openAddProjectModal()">
                                 <i class="fa-solid fa-plus"></i>
                                 <span>Add New Project</span>
@@ -183,6 +398,16 @@
             
             <form id="project-form" onsubmit="handleProjectSave(event)">
                 <input type="hidden" id="project-id">
+
+                <div id="wayanad-edit-hint" style="display: none; background: rgba(201, 168, 76, 0.12); border: 1px solid rgba(201, 168, 76, 0.4); border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; align-items: center; justify-content: space-between; gap: 12px;">
+                    <div>
+                        <div style="font-weight: 600; color: var(--primary-gold); font-size: 0.88rem;"><i class="fa-solid fa-hotel"></i> WAYANAD De143Globe Project</div>
+                        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">Need to edit popup modal text, pricing, features, and metrics?</div>
+                    </div>
+                    <button type="button" class="btn-gold" style="height: 34px; padding: 0 14px; font-size: 0.8rem; white-space: nowrap;" onclick="closeProjectModal(); openWayanadModalEditor();">
+                        <i class="fa-solid fa-file-pen"></i> Edit Modal Text
+                    </button>
+                </div>
                 
                 <div class="form-grid">
                     <div class="admin-form-group form-group-full">
@@ -239,7 +464,181 @@
         </div>
     </div>
 
-    <script src="admin.js?v=20261028_4"></script>
-    <script src="projects.js?v=20261028_4"></script>
+    <!-- Dedicated WAYANAD De143Globe Text Editor Modal -->
+    <div class="modal-overlay" id="wayanad-modal-popup">
+        <div class="modal-card" style="max-width: 860px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="position: sticky; top: -24px; background: var(--bg-card); z-index: 10; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; margin-top: -8px;">
+                <div>
+                    <span style="background: rgba(201, 168, 76, 0.15); color: var(--primary-gold); font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px;">
+                        <i class="fa-solid fa-hotel"></i> Featured Project Popup
+                    </span>
+                    <h3 class="modal-title" style="color: var(--primary-gold); margin-top: 4px; display: flex; align-items: center; gap: 8px;">
+                        Edit WAYANAD De143Globe Text & Metrics
+                    </h3>
+                </div>
+                <button class="modal-close" onclick="closeWayanadModalEditor()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="wayanad-popup-form" onsubmit="handleWayanadModalPopupSave(event)" style="margin-top: 16px;">
+                <!-- Section 1: Header & Badges -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                    <h4 style="font-size: 0.85rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                        1. Header, Badges & Intro
+                    </h4>
+                    <div class="form-grid">
+                        <div class="admin-form-group">
+                            <label for="wm-badge-1">Top Badge 1 (Gold)</label>
+                            <input type="text" id="wm-badge-1" class="admin-input" placeholder="De Land of Tomorrow | WAYANAD">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-badge-2">Top Badge 2 (Red Urgency)</label>
+                            <input type="text" id="wm-badge-2" class="admin-input" placeholder="Only 5 Units Available">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-title">Project Title *</label>
+                            <input type="text" id="wm-title" class="admin-input" required placeholder="WAYANAD De143Globe">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-tagline">Tagline</label>
+                            <input type="text" id="wm-tagline" class="admin-input" placeholder="✨ Your Private Paradise Awaits in the Lap of Nature ✨">
+                        </div>
+                        <div class="admin-form-group form-group-full">
+                            <label for="wm-intro">Intro Description (Supports &lt;strong&gt; bold tags)</label>
+                            <textarea id="wm-intro" class="admin-textarea" rows="2" placeholder="Escape to luxury with this exclusive pool villa project in <strong>Thrishellery, Wayanad</strong>..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: 3 Key Investment Metrics Cards -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                    <h4 style="font-size: 0.85rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                        2. Key Investment Metrics (3 Cards)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+                        <!-- Metric 1 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
+                            <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 8px; font-size: 0.82rem;">Metric 1 (Rental Income)</div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m1-label" style="font-size: 0.75rem;">Label</label>
+                                <input type="text" id="wm-m1-label" class="admin-input" placeholder="Rental Income Potential">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m1-val" style="font-size: 0.75rem;">Value</label>
+                                <input type="text" id="wm-m1-val" class="admin-input" placeholder="Up to ₹15 Lakhs">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="wm-m1-sub" style="font-size: 0.75rem;">Subtext</label>
+                                <input type="text" id="wm-m1-sub" class="admin-input" placeholder="/ annum">
+                            </div>
+                        </div>
+
+                        <!-- Metric 2 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
+                            <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 8px; font-size: 0.82rem;">Metric 2 (Villa Size)</div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m2-label" style="font-size: 0.75rem;">Label</label>
+                                <input type="text" id="wm-m2-label" class="admin-input" placeholder="Villa Size">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m2-val" style="font-size: 0.75rem;">Value</label>
+                                <input type="text" id="wm-m2-val" class="admin-input" placeholder="~2,000 SQFT">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="wm-m2-sub" style="font-size: 0.75rem;">Subtext</label>
+                                <input type="text" id="wm-m2-sub" class="admin-input" placeholder="luxury living">
+                            </div>
+                        </div>
+
+                        <!-- Metric 3 -->
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px;">
+                            <div style="font-weight: 600; color: var(--primary-gold); margin-bottom: 8px; font-size: 0.82rem;">Metric 3 (Pricing)</div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m3-label" style="font-size: 0.75rem;">Label</label>
+                                <input type="text" id="wm-m3-label" class="admin-input" placeholder="Exclusive Pricing">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 6px;">
+                                <label for="wm-m3-val" style="font-size: 0.75rem;">Value</label>
+                                <input type="text" id="wm-m3-val" class="admin-input" placeholder="Starts @ ₹69 Lakhs">
+                            </div>
+                            <div class="admin-form-group" style="margin-bottom: 0;">
+                                <label for="wm-m3-sub" style="font-size: 0.75rem;">Subtext</label>
+                                <input type="text" id="wm-m3-sub" class="admin-input" placeholder="per villa">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Highlights, Features & Destinations -->
+                <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                    <h4 style="font-size: 0.85rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                        3. Highlights, Features & Nearby Destinations
+                    </h4>
+                    <div class="form-grid">
+                        <div class="admin-form-group">
+                            <label for="wm-highlights">Project Highlights (One item per line)</label>
+                            <textarea id="wm-highlights" class="admin-textarea" rows="4" placeholder="Villa Size: ~2,000 SQFT of luxury living&#10;Low Density: Only 5 premium units spread across 1 acre&#10;Exclusive Pricing: Starts at just ₹69 Lakhs per villa"></textarea>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label for="wm-features">Key Features (One item per line)</label>
+                            <textarea id="wm-features" class="admin-textarea" rows="4" placeholder="2 Bedrooms with Attached Bathrooms&#10;Open Living & Dining Area + Modern Kitchen Counter&#10;Fully Closed Ground Floor with elegant laterite walls & door&#10;Single Full-Length Glass frontage with spectacular views&#10;Private Front Deck + Pool Area (30 ft x 30 ft)&#10;Common Bathroom with both inside & outside access"></textarea>
+                        </div>
+
+                        <div class="admin-form-group form-group-full">
+                            <label for="wm-destinations">Breathtaking Destinations Nearby (Comma-separated)</label>
+                            <input type="text" id="wm-destinations" class="admin-input" placeholder="Mountain Views, Serene Environment, Kottiyoor Mahashiva Temple, Banasura Hills, Edakkal Caves, Heart Island">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Urgency Banner, Partners & Contact Actions -->
+                <div>
+                    <h4 style="font-size: 0.85rem; color: var(--primary-gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">
+                        4. Urgency Banner, Partners & Contacts
+                    </h4>
+                    <div class="form-grid">
+                        <div class="admin-form-group">
+                            <label for="wm-urgency-title">Urgency Banner Title</label>
+                            <input type="text" id="wm-urgency-title" class="admin-input" placeholder="LIMITED OPPORTUNITY — ONLY 5 UNITS AVAILABLE!">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-urgency-sub">Urgency Banner Subtitle</label>
+                            <input type="text" id="wm-urgency-sub" class="admin-input" placeholder="Invest in nature, invest in your future.">
+                        </div>
+                        <div class="admin-form-group form-group-full">
+                            <label for="wm-partners">Partner Attribution Text</label>
+                            <input type="text" id="wm-partners" class="admin-input" placeholder="A Project by <strong>DE143GLOBE</strong> &bull; Partnered With <strong>AR Constructions and Realtors</strong>">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-phone-1">Phone 1</label>
+                            <input type="text" id="wm-phone-1" class="admin-input" placeholder="73538 77999">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-phone-2">Phone 2</label>
+                            <input type="text" id="wm-phone-2" class="admin-input" placeholder="98451 39034">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-wa-num">WhatsApp Inquire Number</label>
+                            <input type="text" id="wm-wa-num" class="admin-input" placeholder="917353877999">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="wm-wa-msg">WhatsApp Prefilled Message</label>
+                            <input type="text" id="wm-wa-msg" class="admin-input" placeholder="Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="margin-top: 20px;">
+                    <button type="button" class="btn-secondary" onclick="closeWayanadModalEditor()">Cancel</button>
+                    <button type="submit" class="btn-gold" id="save-wayanad-popup-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> Save & Publish Text
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js?v=20261107_1"></script>
+    <script src="projects.js?v=20261107_1"></script>
 </body>
 </html>

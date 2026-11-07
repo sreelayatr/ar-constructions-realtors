@@ -687,6 +687,133 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         window.openWayanadModal = openWayanadModal;
 
+        // ── Wayanad Popup Modal Dynamic Content Sync ───────────────
+        const WAYANAD_STORAGE_KEY = 'ar_wayanad_modal_data';
+
+        const updateWayanadModalInDOM = (data) => {
+            if (!data || typeof data !== 'object') return;
+            const setText = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && val !== undefined && val !== null && val !== '') el.textContent = val;
+            };
+            const setHtml = (id, val) => {
+                const el = document.getElementById(id);
+                if (el && val !== undefined && val !== null && val !== '') el.innerHTML = val;
+            };
+
+            setText('wayanad-badge-1-text', data.badge_1);
+            setText('wayanad-badge-2-text', data.badge_2);
+            setText('wayanad-modal-title', data.title);
+            setText('wayanad-modal-tagline', data.tagline);
+            if (data.intro) setHtml('wayanad-modal-intro', data.intro);
+
+            setText('wayanad-metric-1-label', data.metric_1_label);
+            if (data.metric_1_value) {
+                setHtml('wayanad-metric-1-value', `${data.metric_1_value} <span class="sub" id="wayanad-metric-1-sub">${data.metric_1_sub || ''}</span>`);
+            }
+
+            setText('wayanad-metric-2-label', data.metric_2_label);
+            if (data.metric_2_value) {
+                setHtml('wayanad-metric-2-value', `${data.metric_2_value} <span class="sub" id="wayanad-metric-2-sub">${data.metric_2_sub || ''}</span>`);
+            }
+
+            setText('wayanad-metric-3-label', data.metric_3_label);
+            if (data.metric_3_value) {
+                setHtml('wayanad-metric-3-value', `${data.metric_3_value} <span class="sub" id="wayanad-metric-3-sub">${data.metric_3_sub || ''}</span>`);
+            }
+
+            // Highlights
+            if (Array.isArray(data.highlights) && data.highlights.length > 0) {
+                const hlList = document.getElementById('wayanad-highlights-list');
+                if (hlList) {
+                    hlList.innerHTML = data.highlights
+                        .filter(h => h && h.trim())
+                        .map(h => `<li><i class="fa-solid fa-check"></i> <div>${h}</div></li>`)
+                        .join('');
+                }
+            }
+
+            // Features
+            if (Array.isArray(data.features) && data.features.length > 0) {
+                const ftList = document.getElementById('wayanad-features-list');
+                if (ftList) {
+                    const icons = ['fa-bed', 'fa-couch', 'fa-cube', 'fa-mountain-sun', 'fa-water-ladder', 'fa-bath', 'fa-check'];
+                    ftList.innerHTML = data.features
+                        .filter(f => f && f.trim())
+                        .map((f, i) => {
+                            const icon = icons[i % icons.length];
+                            return `<li><i class="fa-solid ${icon}"></i> <div>${f}</div></li>`;
+                        })
+                        .join('');
+                }
+            }
+
+            // Destinations
+            if (Array.isArray(data.destinations) && data.destinations.length > 0) {
+                const dTags = document.getElementById('wayanad-dest-tags');
+                if (dTags) {
+                    const icons = ['fa-mountain', 'fa-spa', 'fa-om', 'fa-tree', 'fa-dungeon', 'fa-heart', 'fa-location-dot'];
+                    dTags.innerHTML = data.destinations
+                        .filter(d => d && d.trim())
+                        .map((d, i) => {
+                            const icon = icons[i % icons.length];
+                            return `<span><i class="fa-solid ${icon}"></i> ${d.trim()}</span>`;
+                        })
+                        .join('');
+                }
+            }
+
+            setText('wayanad-urgency-title-text', data.urgency_title);
+            setText('wayanad-urgency-sub', data.urgency_sub);
+            if (data.partners) setHtml('wayanad-partners-text', data.partners);
+
+            // Contacts
+            if (data.contact_phone_1) {
+                const p1 = document.getElementById('wayanad-phone-1');
+                if (p1) {
+                    p1.href = `tel:+91${data.contact_phone_1.replace(/\D/g, '')}`;
+                    const span = p1.querySelector('span');
+                    if (span) span.textContent = data.contact_phone_1;
+                }
+            }
+            if (data.contact_phone_2) {
+                const p2 = document.getElementById('wayanad-phone-2');
+                if (p2) {
+                    p2.href = `tel:+91${data.contact_phone_2.replace(/\D/g, '')}`;
+                    const span = p2.querySelector('span');
+                    if (span) span.textContent = data.contact_phone_2;
+                }
+            }
+            if (data.whatsapp_number) {
+                const wa = document.getElementById('wayanad-whatsapp-btn');
+                if (wa) {
+                    const cleanNum = data.whatsapp_number.replace(/\D/g, '');
+                    const text = encodeURIComponent(data.whatsapp_text || 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.');
+                    wa.href = `https://wa.me/${cleanNum}?text=${text}`;
+                }
+            }
+        };
+
+        // Restore cached Wayanad modal content instantly
+        try {
+            const cachedWayanad = localStorage.getItem(WAYANAD_STORAGE_KEY);
+            if (cachedWayanad) {
+                updateWayanadModalInDOM(JSON.parse(cachedWayanad));
+            }
+        } catch {}
+
+        // Fetch fresh Wayanad modal setting from backend
+        fetch(`${API_BASE_URL}/api/settings/wayanad_modal_data`)
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success && res.value) {
+                    const val = typeof res.value === 'string' ? JSON.parse(res.value) : res.value;
+                    updateWayanadModalInDOM(val);
+                    localStorage.setItem(WAYANAD_STORAGE_KEY, JSON.stringify(val));
+                }
+            })
+            .catch(() => {});
+
         const attachCardListeners = () => {
             document.querySelectorAll('.project-card').forEach(card => {
                 if (card._hasClickListener) return;
@@ -893,6 +1020,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(() => {});
         }
+
+        // ── Dynamic Projects Section Title & Description Sync ─────────
+        const sectionTitleEl = document.getElementById('projects-section-title');
+        const sectionDescEl = document.getElementById('projects-section-desc');
+        if (sectionTitleEl || sectionDescEl) {
+            const cachedTitle = localStorage.getItem('ar_projects_section_title');
+            const cachedDesc = localStorage.getItem('ar_projects_section_desc');
+            if (cachedTitle && sectionTitleEl) sectionTitleEl.textContent = cachedTitle;
+            if (cachedDesc && sectionDescEl) sectionDescEl.textContent = cachedDesc;
+
+            fetch(`${API_BASE_URL}/api/settings/projects_section_title`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.success && res.value && sectionTitleEl) {
+                        sectionTitleEl.textContent = res.value;
+                        localStorage.setItem('ar_projects_section_title', res.value);
+                    }
+                })
+                .catch(() => {});
+
+            fetch(`${API_BASE_URL}/api/settings/projects_section_desc`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.success && res.value && sectionDescEl) {
+                        sectionDescEl.textContent = res.value;
+                        localStorage.setItem('ar_projects_section_desc', res.value);
+                    }
+                })
+                .catch(() => {});
+        }
     }
 
 
@@ -970,6 +1127,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = value;
                         localStorage.setItem('ar_projects_hero_image', value);
                     }
+                }
+                if (key === 'projects_section_title' && value) {
+                    const titleEl = document.getElementById('projects-section-title');
+                    if (titleEl) titleEl.textContent = value;
+                    localStorage.setItem('ar_projects_section_title', value);
+                }
+                if (key === 'projects_section_desc' && value) {
+                    const descEl = document.getElementById('projects-section-desc');
+                    if (descEl) descEl.textContent = value;
+                    localStorage.setItem('ar_projects_section_desc', value);
+                }
+                if (key === 'wayanad_modal_data' && value) {
+                    const val = typeof value === 'string' ? JSON.parse(value) : value;
+                    updateWayanadModalInDOM(val);
+                    localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(val));
                 }
             });
         } catch (e) { /* Socket.IO not available on this page */ }

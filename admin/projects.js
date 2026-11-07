@@ -8,6 +8,7 @@ let cachedProjects = [];
 document.addEventListener('DOMContentLoaded', () => {
     loadHeroBanner();
     loadProjects();
+    loadWayanadModalSettings();
 });
 
 function debounceProjectSearch() {
@@ -95,6 +96,8 @@ function renderProjectsTable(projects) {
     tbody.innerHTML = projects.map(p => {
         const thumb = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=300&q=80';
         const displayTitle = p.title ? p.title : (p.location ? `${p.category || 'Project'} (${p.location})` : (p.category || 'Untitled Project'));
+        const isWayanad = (p.title && (p.title.toLowerCase().includes('wayanad') || p.title.toLowerCase().includes('de143globe'))) ||
+                          (p.location && p.location.toLowerCase().includes('wayanad'));
 
         return `
             <tr>
@@ -107,6 +110,11 @@ function renderProjectsTable(projects) {
                 <td>${formatDate(p.createdAt)}</td>
                 <td>
                     <div class="action-btns">
+                        ${isWayanad ? `
+                        <button type="button" class="btn-sm" style="background: rgba(201, 168, 76, 0.2); border: 1px solid var(--primary-gold); color: var(--primary-gold); font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" title="Edit Wayanad Modal Text & Details" onclick="openWayanadModalEditor()">
+                            <i class="fa-solid fa-file-pen"></i> Edit Text
+                        </button>
+                        ` : ''}
                         <button class="icon-btn" title="Edit Project" onclick="openEditProjectModal('${p._id}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
@@ -142,6 +150,8 @@ function openAddProjectModal() {
         customInput.value = '';
         customInput.style.display = 'none';
     }
+    const wayanadHint = document.getElementById('wayanad-edit-hint');
+    if (wayanadHint) wayanadHint.style.display = 'none';
     document.getElementById('modal-project-title').textContent = 'Add New Project';
     document.getElementById('project-modal').classList.add('active');
 }
@@ -202,6 +212,13 @@ function populateAndOpenEditModal(p) {
 
     document.getElementById('p-location').value = p.location || '';
     document.getElementById('p-images').value = (p.images || []).join('\n');
+
+    const wayanadHint = document.getElementById('wayanad-edit-hint');
+    const isWayanad = ((p.title || '') + ' ' + (p.location || '')).toLowerCase().includes('wayanad') ||
+                      ((p.title || '') + ' ' + (p.location || '')).toLowerCase().includes('de143globe');
+    if (wayanadHint) {
+        wayanadHint.style.display = isWayanad ? 'flex' : 'none';
+    }
 
     document.getElementById('modal-project-title').textContent = 'Edit Project';
     document.getElementById('project-modal').classList.add('active');
@@ -300,10 +317,12 @@ async function executeDeleteProject(id) {
 }
 
 /* ==========================================================================
-   PROJECTS COVER / HERO BANNER MANAGEMENT
+   PROJECTS COVER / HERO BANNER & SECTION TEXT MANAGEMENT
    ========================================================================== */
 
 const DEFAULT_HERO_BANNER = 'https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png';
+const DEFAULT_PROJECTS_TITLE = 'Our Construction & Interior Projects Across Bengaluru';
+const DEFAULT_PROJECTS_DESC = 'Explore our residential, commercial, construction, renovation and interior design projects completed by AR Constructions & Realtors across Bengaluru.';
 
 function previewHeroBanner() {
     const input = document.getElementById('hero-banner-url');
@@ -314,75 +333,465 @@ function previewHeroBanner() {
 }
 
 async function loadHeroBanner() {
-    const input = document.getElementById('hero-banner-url');
+    const bannerInput = document.getElementById('hero-banner-url');
+    const titleInput = document.getElementById('projects-header-title-input');
+    const descInput = document.getElementById('projects-header-desc-input');
     const preview = document.getElementById('hero-banner-preview');
-    if (!input) return;
 
-    const cached = localStorage.getItem('ar_projects_hero_image');
-    if (cached) {
-        input.value = cached;
-        if (preview) preview.src = cached;
+    // 1. Restore from cache for immediate display
+    const cachedBanner = localStorage.getItem('ar_projects_hero_image');
+    const cachedTitle = localStorage.getItem('ar_projects_section_title');
+    const cachedDesc = localStorage.getItem('ar_projects_section_desc');
+
+    if (bannerInput && cachedBanner) {
+        bannerInput.value = cachedBanner;
+        if (preview) preview.src = cachedBanner;
     }
+    if (titleInput && cachedTitle) titleInput.value = cachedTitle;
+    if (descInput && cachedDesc) descInput.value = cachedDesc;
 
+    // 2. Fetch fresh values from backend
     try {
-        const res = await fetch(`${API_BASE}/settings/projects_hero_image`);
-        const data = await res.json();
+        const [bannerRes, titleRes, descRes] = await Promise.all([
+            fetch(`${API_BASE}/settings/projects_hero_image`).then(r => r.json()).catch(() => null),
+            fetch(`${API_BASE}/settings/projects_section_title`).then(r => r.json()).catch(() => null),
+            fetch(`${API_BASE}/settings/projects_section_desc`).then(r => r.json()).catch(() => null)
+        ]);
 
-        if (data && data.success && data.value) {
-            input.value = data.value;
-            if (preview) preview.src = data.value;
-            localStorage.setItem('ar_projects_hero_image', data.value);
-        } else if (!cached) {
-            input.value = DEFAULT_HERO_BANNER;
-            if (preview) preview.src = DEFAULT_HERO_BANNER;
+        if (bannerInput) {
+            if (bannerRes && bannerRes.success && bannerRes.value) {
+                bannerInput.value = bannerRes.value;
+                if (preview) preview.src = bannerRes.value;
+                localStorage.setItem('ar_projects_hero_image', bannerRes.value);
+            } else if (!cachedBanner) {
+                bannerInput.value = DEFAULT_HERO_BANNER;
+                if (preview) preview.src = DEFAULT_HERO_BANNER;
+            }
+        }
+
+        if (titleInput) {
+            if (titleRes && titleRes.success && titleRes.value) {
+                titleInput.value = titleRes.value;
+                localStorage.setItem('ar_projects_section_title', titleRes.value);
+            } else if (!cachedTitle) {
+                titleInput.value = DEFAULT_PROJECTS_TITLE;
+            }
+        }
+
+        if (descInput) {
+            if (descRes && descRes.success && descRes.value) {
+                descInput.value = descRes.value;
+                localStorage.setItem('ar_projects_section_desc', descRes.value);
+            } else if (!cachedDesc) {
+                descInput.value = DEFAULT_PROJECTS_DESC;
+            }
         }
     } catch (err) {
-        console.warn('Could not fetch projects_hero_image setting:', err);
-        if (!cached) {
-            input.value = DEFAULT_HERO_BANNER;
-            if (preview) preview.src = DEFAULT_HERO_BANNER;
-        }
+        console.warn('Could not fetch projects header/banner settings:', err);
     }
 }
 
 async function handleHeroBannerSave(e) {
     e.preventDefault();
-    const input = document.getElementById('hero-banner-url');
+    const bannerInput = document.getElementById('hero-banner-url');
+    const titleInput = document.getElementById('projects-header-title-input');
+    const descInput = document.getElementById('projects-header-desc-input');
     const btn = document.getElementById('save-hero-banner-btn');
+    const topBtn = document.getElementById('save-hero-banner-btn-top');
     const preview = document.getElementById('hero-banner-preview');
-    const value = input ? input.value.trim() : '';
 
-    if (!value) {
-        showToast('Please enter an image URL', 'error');
+    const bannerVal = bannerInput ? bannerInput.value.trim() : '';
+    const titleVal = titleInput ? titleInput.value.trim() : '';
+    const descVal = descInput ? descInput.value.trim() : '';
+
+    if (!bannerVal) {
+        showToast('Please enter a Hero Banner picture URL', 'error');
         return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+    const setBtnLoading = (loading) => {
+        if (btn) {
+            btn.disabled = loading;
+            btn.innerHTML = loading ? '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...' : '<i class="fa-solid fa-floppy-disk"></i> <span>Save Header & Text</span>';
+        }
+        if (topBtn) {
+            topBtn.disabled = loading;
+            topBtn.innerHTML = loading ? '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...' : '<i class="fa-solid fa-floppy-disk"></i> <span>Save Header & Text</span>';
+        }
+    };
+
+    setBtnLoading(true);
 
     try {
-        const res = await fetch(`${API_BASE}/settings/projects_hero_image`, {
+        const promises = [
+            fetch(`${API_BASE}/settings/projects_hero_image`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ value: bannerVal })
+            })
+        ];
+
+        if (titleVal) {
+            promises.push(
+                fetch(`${API_BASE}/settings/projects_section_title`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ value: titleVal })
+                })
+            );
+        }
+
+        if (descVal) {
+            promises.push(
+                fetch(`${API_BASE}/settings/projects_section_desc`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ value: descVal })
+                })
+            );
+        }
+
+        const results = await Promise.all(promises);
+        const allOk = results.every(r => r.ok);
+
+        if (allOk) {
+            showToast('Projects Header Picture & Section Text updated successfully!', 'success');
+            if (preview) preview.src = bannerVal;
+            localStorage.setItem('ar_projects_hero_image', bannerVal);
+            if (titleVal) localStorage.setItem('ar_projects_section_title', titleVal);
+            if (descVal) localStorage.setItem('ar_projects_section_desc', descVal);
+        } else {
+            showToast('Saved with some warnings', 'warning');
+        }
+    } catch (err) {
+        console.error('Error saving projects header settings:', err);
+        showToast('Server error while saving projects header settings', 'error');
+    } finally {
+        setBtnLoading(false);
+    }
+}
+
+/* ==========================================================================
+   WAYANAD DE143GLOBE MODAL CONTENT MANAGEMENT
+   ========================================================================== */
+
+const DEFAULT_WAYANAD_DATA = {
+    badge_1: 'De Land of Tomorrow | WAYANAD',
+    badge_2: 'Only 5 Units Available',
+    title: 'WAYANAD De143Globe',
+    tagline: '✨ Your Private Paradise Awaits in the Lap of Nature ✨',
+    intro: 'Escape to luxury with this exclusive pool villa project in <strong>Thrishellery, Wayanad</strong>. An incredible investment opportunity and a perfect holiday home!',
+    metric_1_label: 'Rental Income Potential',
+    metric_1_value: 'Up to ₹15 Lakhs',
+    metric_1_sub: '/ annum',
+    metric_2_label: 'Villa Size',
+    metric_2_value: '~2,000 SQFT',
+    metric_2_sub: 'luxury living',
+    metric_3_label: 'Exclusive Pricing',
+    metric_3_value: 'Starts @ ₹69 Lakhs',
+    metric_3_sub: 'per villa',
+    highlights: [
+        'Villa Size: ~2,000 SQFT of luxury living',
+        'Low Density: Only 5 premium units spread across 1 acre',
+        'Exclusive Pricing: Starts at just ₹69 Lakhs per villa'
+    ],
+    features: [
+        '2 Bedrooms with Attached Bathrooms',
+        'Open Living & Dining Area + Modern Kitchen Counter',
+        'Fully Closed Ground Floor with elegant laterite walls & door',
+        'Single Full-Length Glass frontage with spectacular views',
+        'Private Front Deck + Pool Area (30 ft x 30 ft)',
+        'Common Bathroom with both inside & outside access'
+    ],
+    destinations: [
+        'Mountain Views',
+        'Serene Environment',
+        'Kottiyoor Mahashiva Temple',
+        'Banasura Hills',
+        'Edakkal Caves',
+        'Heart Island'
+    ],
+    urgency_title: 'LIMITED OPPORTUNITY — ONLY 5 UNITS AVAILABLE!',
+    urgency_sub: 'Invest in nature, invest in your future.',
+    partners: 'A Project by <strong>DE143GLOBE</strong> &bull; Partnered With <strong>AR Constructions and Realtors</strong>',
+    contact_phone_1: '73538 77999',
+    contact_phone_2: '98451 39034',
+    whatsapp_number: '917353877999',
+    whatsapp_text: 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.'
+};
+
+function scrollToWayanadEditor() {
+    const card = document.getElementById('wayanad-editor-card');
+    if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.style.transition = 'box-shadow 0.4s ease, border-color 0.4s ease';
+        card.style.borderColor = 'var(--primary-gold)';
+        card.style.boxShadow = '0 0 25px rgba(201, 168, 76, 0.45)';
+        setTimeout(() => {
+            card.style.boxShadow = '';
+            card.style.borderColor = 'rgba(201, 168, 76, 0.4)';
+        }, 2200);
+    }
+}
+
+function populateWayanadForm(data) {
+    const d = { ...DEFAULT_WAYANAD_DATA, ...(data || {}) };
+    const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val !== undefined && val !== null ? val : '';
+    };
+
+    // Populate both inline card form (w-) and popup modal form (wm-)
+    ['w', 'wm'].forEach(prefix => {
+        setVal(`${prefix}-badge-1`, d.badge_1);
+        setVal(`${prefix}-badge-2`, d.badge_2);
+        setVal(`${prefix}-title`, d.title);
+        setVal(`${prefix}-tagline`, d.tagline);
+        setVal(`${prefix}-intro`, d.intro);
+
+        setVal(`${prefix}-m1-label`, d.metric_1_label);
+        setVal(`${prefix}-m1-val`, d.metric_1_value);
+        setVal(`${prefix}-m1-sub`, d.metric_1_sub);
+
+        setVal(`${prefix}-m2-label`, d.metric_2_label);
+        setVal(`${prefix}-m2-val`, d.metric_2_value);
+        setVal(`${prefix}-m2-sub`, d.metric_2_sub);
+
+        setVal(`${prefix}-m3-label`, d.metric_3_label);
+        setVal(`${prefix}-m3-val`, d.metric_3_value);
+        setVal(`${prefix}-m3-sub`, d.metric_3_sub);
+
+        setVal(`${prefix}-highlights`, Array.isArray(d.highlights) ? d.highlights.join('\n') : (d.highlights || ''));
+        setVal(`${prefix}-features`, Array.isArray(d.features) ? d.features.join('\n') : (d.features || ''));
+        setVal(`${prefix}-destinations`, Array.isArray(d.destinations) ? d.destinations.join(', ') : (d.destinations || ''));
+
+        setVal(`${prefix}-urgency-title`, d.urgency_title);
+        setVal(`${prefix}-urgency-sub`, d.urgency_sub);
+        setVal(`${prefix}-partners`, d.partners);
+
+        setVal(`${prefix}-phone-1`, d.contact_phone_1);
+        setVal(`${prefix}-phone-2`, d.contact_phone_2);
+        setVal(`${prefix}-wa-num`, d.whatsapp_number);
+        setVal(`${prefix}-wa-msg`, d.whatsapp_text);
+    });
+}
+
+function openWayanadModalEditor() {
+    // Sync current values from inline form or cache to popup fields
+    try {
+        const cached = localStorage.getItem('ar_wayanad_modal_data');
+        if (cached) {
+            populateWayanadForm(JSON.parse(cached));
+        }
+    } catch {}
+
+    const popup = document.getElementById('wayanad-modal-popup');
+    if (popup) {
+        popup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeWayanadModalEditor() {
+    const popup = document.getElementById('wayanad-modal-popup');
+    if (popup) {
+        popup.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close popup on overlay click
+document.addEventListener('click', (e) => {
+    const popup = document.getElementById('wayanad-modal-popup');
+    if (popup && e.target === popup) {
+        closeWayanadModalEditor();
+    }
+});
+
+// Close popup on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const popup = document.getElementById('wayanad-modal-popup');
+        if (popup && popup.classList.contains('active')) {
+            closeWayanadModalEditor();
+        }
+    }
+});
+
+function resetWayanadModalDefaults() {
+    if (confirm('Are you sure you want to restore the default text for the WAYANAD De143Globe modal?')) {
+        populateWayanadForm(DEFAULT_WAYANAD_DATA);
+        showToast('Default values loaded. Click "Save Changes" to publish.', 'info');
+    }
+}
+
+async function loadWayanadModalSettings() {
+    // 1. Try local cache for immediate display
+    try {
+        const cached = localStorage.getItem('ar_wayanad_modal_data');
+        if (cached) {
+            populateWayanadForm(JSON.parse(cached));
+        } else {
+            populateWayanadForm(DEFAULT_WAYANAD_DATA);
+        }
+    } catch {
+        populateWayanadForm(DEFAULT_WAYANAD_DATA);
+    }
+
+    // 2. Fetch from backend
+    try {
+        const res = await fetch(`${API_BASE}/settings/wayanad_modal_data`);
+        const data = await res.json();
+        if (data && data.success && data.value) {
+            const val = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+            populateWayanadForm(val);
+            localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(val));
+        }
+    } catch (err) {
+        console.warn('Could not fetch wayanad_modal_data:', err);
+    }
+}
+
+async function handleWayanadModalSave(e) {
+    e.preventDefault();
+    const btn = document.getElementById('save-wayanad-btn');
+    const quickBtn = document.getElementById('quick-save-wayanad-btn');
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+
+    const highlightsRaw = getVal('w-highlights');
+    const featuresRaw = getVal('w-features');
+    const destinationsRaw = getVal('w-destinations');
+
+    const value = {
+        badge_1: getVal('w-badge-1'),
+        badge_2: getVal('w-badge-2'),
+        title: getVal('w-title') || 'WAYANAD De143Globe',
+        tagline: getVal('w-tagline'),
+        intro: getVal('w-intro'),
+        metric_1_label: getVal('w-m1-label'),
+        metric_1_value: getVal('w-m1-val'),
+        metric_1_sub: getVal('w-m1-sub'),
+        metric_2_label: getVal('w-m2-label'),
+        metric_2_value: getVal('w-m2-val'),
+        metric_2_sub: getVal('w-m2-sub'),
+        metric_3_label: getVal('w-m3-label'),
+        metric_3_value: getVal('w-m3-val'),
+        metric_3_sub: getVal('w-m3-sub'),
+        highlights: highlightsRaw ? highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
+        features: featuresRaw ? featuresRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
+        destinations: destinationsRaw ? destinationsRaw.split(',').map(s => s.trim()).filter(Boolean) : [],
+        urgency_title: getVal('w-urgency-title'),
+        urgency_sub: getVal('w-urgency-sub'),
+        partners: getVal('w-partners'),
+        contact_phone_1: getVal('w-phone-1'),
+        contact_phone_2: getVal('w-phone-2'),
+        whatsapp_number: getVal('w-wa-num'),
+        whatsapp_text: getVal('w-wa-msg')
+    };
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+    }
+    if (quickBtn) quickBtn.disabled = true;
+
+    try {
+        const res = await fetch(`${API_BASE}/settings/wayanad_modal_data`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({ value })
         });
-
         const data = await res.json();
 
         if (data.success) {
-            showToast('Projects Hero Cover picture updated successfully!', 'success');
-            if (preview) preview.src = value;
-            localStorage.setItem('ar_projects_hero_image', value);
+            showToast('WAYANAD De143Globe modal text updated successfully!', 'success');
+            localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(value));
+            populateWayanadForm(value);
         } else {
-            showToast(data.message || 'Failed to update hero picture', 'error');
+            showToast(data.message || 'Failed to save Wayanad modal details', 'error');
         }
     } catch (err) {
-        console.error('Error saving hero picture:', err);
-        showToast('Server error while saving hero picture', 'error');
+        console.error('Error saving Wayanad modal data:', err);
+        showToast('Server error while saving Wayanad details', 'error');
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Update Picture</span>';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Save & Publish Modal Text</span>';
+        }
+        if (quickBtn) quickBtn.disabled = false;
+    }
+}
+
+async function handleWayanadModalPopupSave(e) {
+    e.preventDefault();
+    const btn = document.getElementById('save-wayanad-popup-btn');
+    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+
+    const highlightsRaw = getVal('wm-highlights');
+    const featuresRaw = getVal('wm-features');
+    const destinationsRaw = getVal('wm-destinations');
+
+    const value = {
+        badge_1: getVal('wm-badge-1'),
+        badge_2: getVal('wm-badge-2'),
+        title: getVal('wm-title') || 'WAYANAD De143Globe',
+        tagline: getVal('wm-tagline'),
+        intro: getVal('wm-intro'),
+        metric_1_label: getVal('wm-m1-label'),
+        metric_1_value: getVal('wm-m1-val'),
+        metric_1_sub: getVal('wm-m1-sub'),
+        metric_2_label: getVal('wm-m2-label'),
+        metric_2_value: getVal('wm-m2-val'),
+        metric_2_sub: getVal('wm-m2-sub'),
+        metric_3_label: getVal('wm-m3-label'),
+        metric_3_value: getVal('wm-m3-val'),
+        metric_3_sub: getVal('wm-m3-sub'),
+        highlights: highlightsRaw ? highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
+        features: featuresRaw ? featuresRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
+        destinations: destinationsRaw ? destinationsRaw.split(',').map(s => s.trim()).filter(Boolean) : [],
+        urgency_title: getVal('wm-urgency-title'),
+        urgency_sub: getVal('wm-urgency-sub'),
+        partners: getVal('wm-partners'),
+        contact_phone_1: getVal('wm-phone-1'),
+        contact_phone_2: getVal('wm-phone-2'),
+        whatsapp_number: getVal('wm-wa-num'),
+        whatsapp_text: getVal('wm-wa-msg')
+    };
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/settings/wayanad_modal_data`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ value })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showToast('WAYANAD De143Globe modal text updated successfully!', 'success');
+            localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(value));
+            populateWayanadForm(value);
+            closeWayanadModalEditor();
+        } else {
+            showToast(data.message || 'Failed to save Wayanad modal details', 'error');
+        }
+    } catch (err) {
+        console.error('Error saving Wayanad modal data:', err);
+        showToast('Server error while saving Wayanad details', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Save & Publish Text</span>';
+        }
     }
 }
 

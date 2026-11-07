@@ -7,6 +7,8 @@ const { requireAuth } = require('../middleware/auth');
 // Default fallback images and settings
 const defaultSettings = {
     projects_hero_image: 'https://res.cloudinary.com/vht1gwyc/image/upload/v1788710917/2f023e90-2298-4519-9a66-e98a7af35ffe.png',
+    projects_section_title: 'Our Construction & Interior Projects Across Bengaluru',
+    projects_section_desc: 'Explore our residential, commercial, construction, renovation and interior design projects completed by AR Constructions & Realtors across Bengaluru.',
     workspace_slide_1_image: 'https://res.cloudinary.com/vht1gwyc/image/upload/v1793202892/86f551ee-fbd4-4c62-9825-0d91ac87ff2b.png',
     workspace_slide_2_image: 'https://spaceliftstudio.com/wp-content/uploads/2024/10/WhatsApp-Image-2024-10-17-at-18.48.35_773a27d1.jpg',
     workspace_slide_3_image: 'https://res.cloudinary.com/vht1gwyc/image/upload/v1789670585/6595d5f4-7b42-4623-9f65-2244eb34e831.png',
@@ -31,7 +33,53 @@ const defaultSettings = {
     services_showcase_image_1: 'images/showcase-interior-1.jpg',
     services_showcase_image_2: 'images/showcase-interior-2.jpg',
     services_quote_image_1: 'https://spaceliftstudio.com/wp-content/uploads/2020/03/Anto7-2.jpg',
-    services_quote_image_2: 'https://spaceliftstudio.com/wp-content/uploads/2020/03/24.jpg'
+    services_quote_image_2: 'https://spaceliftstudio.com/wp-content/uploads/2020/03/24.jpg',
+
+    // Wayanad De143Globe Project Modal Settings
+    wayanad_modal_data: {
+        badge_1: 'De Land of Tomorrow | WAYANAD',
+        badge_2: 'Only 5 Units Available',
+        title: 'WAYANAD De143Globe',
+        tagline: '✨ Your Private Paradise Awaits in the Lap of Nature ✨',
+        intro: 'Escape to luxury with this exclusive pool villa project in Thrishellery, Wayanad. An incredible investment opportunity and a perfect holiday home!',
+        metric_1_label: 'Rental Income Potential',
+        metric_1_value: 'Up to ₹15 Lakhs',
+        metric_1_sub: '/ annum',
+        metric_2_label: 'Villa Size',
+        metric_2_value: '~2,000 SQFT',
+        metric_2_sub: 'luxury living',
+        metric_3_label: 'Exclusive Pricing',
+        metric_3_value: 'Starts @ ₹69 Lakhs',
+        metric_3_sub: 'per villa',
+        highlights: [
+            'Villa Size: ~2,000 SQFT of luxury living',
+            'Low Density: Only 5 premium units spread across 1 acre',
+            'Exclusive Pricing: Starts at just ₹69 Lakhs per villa'
+        ],
+        features: [
+            '2 Bedrooms with Attached Bathrooms',
+            'Open Living & Dining Area + Modern Kitchen Counter',
+            'Fully Closed Ground Floor with elegant laterite walls & door',
+            'Single Full-Length Glass frontage with spectacular views',
+            'Private Front Deck + Pool Area (30 ft x 30 ft)',
+            'Common Bathroom with both inside & outside access'
+        ],
+        destinations: [
+            'Mountain Views',
+            'Serene Environment',
+            'Kottiyoor Mahashiva Temple',
+            'Banasura Hills',
+            'Edakkal Caves',
+            'Heart Island'
+        ],
+        urgency_title: 'LIMITED OPPORTUNITY — ONLY 5 UNITS AVAILABLE!',
+        urgency_sub: 'Invest in nature, invest in your future.',
+        partners: 'A Project by DE143GLOBE • Partnered With AR Constructions and Realtors',
+        contact_phone_1: '73538 77999',
+        contact_phone_2: '98451 39034',
+        whatsapp_number: '917353877999',
+        whatsapp_text: 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.'
+    }
 };
 
 // In-memory store fallback when DB is disconnected
