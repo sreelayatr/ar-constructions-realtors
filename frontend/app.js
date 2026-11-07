@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const currentCleanPath = getCleanPath(window.location.href);
-    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .logo-link, .footer-logo-link');
+    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
 
     allNavLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -163,6 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     
+    
+    // Make header & footer logos completely inactive (no navigation, no scroll)
+    document.querySelectorAll('.logo-link, .footer-logo-link').forEach(function(logo) {
+        logo.addEventListener('click', function(e) {
+            e.preventDefault();
+        });
+        logo.style.cursor = 'default';
+        logo.style.pointerEvents = 'auto'; // keep visible but intercept click
+    });
+
     // Prevent social icon links with href="#" from reloading/jumping page top
     document.querySelectorAll('.social-icons a').forEach(function(link) {
         if (link.getAttribute('href') === '#') {
