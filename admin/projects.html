@@ -466,5 +466,63 @@
 
     <script src="admin.js?v=20261107_1"></script>
     <script src="projects.js?v=20261107_1"></script>
+
+    <!-- ═══════════ Project Text Editor Modal ═══════════ -->
+    <div class="modal-overlay" id="project-text-editor-modal" style="display:none;align-items:flex-start;padding-top:40px;">
+        <div class="modal-card" style="width:100%;max-width:680px;max-height:88vh;overflow-y:auto;">
+            <div class="modal-header" style="position:sticky;top:0;background:var(--bg-card);z-index:10;border-bottom:1px solid var(--border-color);padding-bottom:14px;">
+                <div>
+                    <span style="background:rgba(201,168,76,0.15);color:var(--primary-gold);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px;">
+                        <i class="fa-solid fa-file-pen"></i> Edit Project Text
+                    </span>
+                    <h3 class="modal-title" id="pte-modal-heading" style="color:var(--primary-gold);margin-top:4px;">Edit Project</h3>
+                </div>
+                <button class="modal-close" onclick="closePTE()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="pte-form" onsubmit="savePTE(event)" style="margin-top:16px;">
+                <input type="hidden" id="pte-project-id">
+
+                <div class="admin-form-group" style="margin-bottom:14px;">
+                    <label for="pte-title" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Project Title</label>
+                    <input type="text" id="pte-title" class="admin-input" placeholder="e.g. WAYANAD De143Globe">
+                </div>
+
+                <div class="admin-form-group" style="margin-bottom:14px;">
+                    <label for="pte-tagline" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Tagline <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">(short line shown below title on card)</span></label>
+                    <input type="text" id="pte-tagline" class="admin-input" placeholder="e.g. ✨ Your Private Paradise Awaits in the Lap of Nature ✨">
+                </div>
+
+                <div class="admin-form-group" style="margin-bottom:20px;">
+                    <label for="pte-description" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Description</label>
+                    <textarea id="pte-description" class="admin-textarea" rows="4" placeholder="Write a detailed description of this project..."></textarea>
+                </div>
+
+                <div style="border-top:1px solid var(--border-color);padding-top:16px;margin-bottom:20px;">
+                    <div style="font-size:0.85rem;color:var(--primary-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">
+                        <i class="fa-solid fa-images"></i> Project Image Gallery
+                    </div>
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 12px 0;">
+                        Paste a Cloudinary/public image URL and click <strong style="color:var(--primary-gold)">Add Image</strong>. Add as many as you want. The first image is the thumbnail. Use ↑ to reorder.
+                    </p>
+                    <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center;">
+                        <input type="url" id="pte-new-img-url" class="admin-input" placeholder="https://res.cloudinary.com/..." style="flex:1;">
+                        <button type="button" onclick="pteAddImage()" style="background:var(--primary-gold);color:#000;border:none;border-radius:var(--radius-sm);padding:0 18px;height:40px;font-weight:700;cursor:pointer;white-space:nowrap;font-size:0.85rem;">
+                            <i class="fa-solid fa-plus"></i> Add Image
+                        </button>
+                    </div>
+                    <div id="pte-gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;"></div>
+                </div>
+
+                <div class="modal-footer" style="border-top:1px solid var(--border-color);padding-top:14px;display:flex;justify-content:flex-end;gap:10px;">
+                    <button type="button" class="btn-secondary" onclick="closePTE()">Cancel</button>
+                    <button type="submit" class="btn-gold" id="pte-save-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </body>
 </html>

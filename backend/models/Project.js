@@ -23,6 +23,11 @@ const projectSchema = new mongoose.Schema({
         default: '',
         trim: true
     },
+    tagline: {
+        type: String,
+        default: '',
+        trim: true
+    },
     status: {
         type: String,
         enum: ['Ongoing', 'Completed', 'Upcoming'],

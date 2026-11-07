@@ -162,15 +162,18 @@ function renderProjectsTable(projects) {
                 <td>${escapeHtml(p.location)}</td>
                 <td>${formatDate(p.createdAt)}</td>
                 <td>
-                    <div class="action-btns">
-                        ${isWayanad ? `
-                        <button type="button" class="btn-sm" style="background: rgba(201, 168, 76, 0.2); border: 1px solid var(--primary-gold); color: var(--primary-gold); font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;" title="Edit Wayanad Modal Text & Details" onclick="openWayanadModalEditor()">
-                            <i class="fa-solid fa-file-pen"></i> Edit Text
-                        </button>
-                        ` : ''}
-                        <button class="icon-btn" title="Edit Project" onclick="openEditProjectModal('${p._id}')">
+                    <div class="action-btns" style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+                        <button class="icon-btn" title="Edit Project Details" onclick="openEditProjectModal('${p._id}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
+                        <button type="button" onclick="openProjectTextEditor('${p._id}')" style="background:rgba(201,168,76,0.18);border:1px solid var(--primary-gold);color:var(--primary-gold);font-size:0.72rem;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;" title="Edit Text &amp; Gallery">
+                            <i class="fa-solid fa-file-pen"></i> Edit Text
+                        </button>
+                        ${isWayanad ? `
+                        <button type="button" onclick="openWayanadModalEditor()" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.4);color:var(--primary-gold);font-size:0.68rem;padding:3px 7px;border-radius:4px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;" title="Edit Wayanad Popup">
+                            <i class="fa-solid fa-hotel"></i>
+                        </button>
+                        ` : ''}
                         <button class="icon-btn delete-btn" title="Delete Project" onclick="promptDeleteProject('${p._id}')">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
@@ -767,6 +770,185 @@ async function handleWayanadModalPopupSave(e) {
         }
     }
 }
+
+
+/* ══════════════════════════════════════════════════════
+   PROJECT TEXT EDITOR (PTE) — Title, Tagline, Desc, Gallery
+   ══════════════════════════════════════════════════════ */
+let pteImages = [];
+
+function openProjectTextEditor(id) {
+    const p = cachedProjects.find(item => item._id === id);
+    if (!p) { showToast('Project not found', 'error'); return; }
+
+    document.getElementById('pte-project-id').value = p._id;
+    document.getElementById('pte-modal-heading').textContent = p.title || 'Edit Project';
+    document.getElementById('pte-title').value = p.title || '';
+    document.getElementById('pte-tagline').value = p.tagline || '';
+    document.getElementById('pte-description').value = p.description || '';
+    document.getElementById('pte-new-img-url').value = '';
+
+    // Load gallery images
+    pteImages = Array.isArray(p.images) ? [...p.images] : [];
+    pteMergeGallery();
+
+    const modal = document.getElementById('project-text-editor-modal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closePTE() {
+    const modal = document.getElementById('project-text-editor-modal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+    pteImages = [];
+    const grid = document.getElementById('pte-gallery-grid');
+    if (grid) grid.innerHTML = '';
+    const inp = document.getElementById('pte-new-img-url');
+    if (inp) inp.value = '';
+}
+
+function pteAddImage() {
+    const inp = document.getElementById('pte-new-img-url');
+    const url = inp ? inp.value.trim() : '';
+    if (!url) return;
+    if (!pteImages.includes(url)) {
+        pteImages.push(url);
+        pteMergeGallery();
+    }
+    if (inp) inp.value = '';
+}
+
+function pteRemoveImage(idx) {
+    pteImages.splice(idx, 1);
+    pteMergeGallery();
+}
+
+function pteMoveUp(idx) {
+    if (idx <= 0) return;
+    const temp = pteImages[idx - 1];
+    pteImages[idx - 1] = pteImages[idx];
+    pteImages[idx] = temp;
+    pteMergeGallery();
+}
+
+function pteMergeGallery() {
+    const grid = document.getElementById('pte-gallery-grid');
+    if (!grid) return;
+    if (pteImages.length === 0) {
+        grid.innerHTML = '<p style="font-size:0.75rem;color:var(--text-muted);grid-column:1/-1;">No images added yet.</p>';
+        return;
+    }
+    grid.innerHTML = '';
+    pteImages.forEach((url, i) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'position:relative;border-radius:7px;overflow:hidden;background:#111;border:1px solid var(--border-color);';
+
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Img ' + (i + 1);
+        img.style.cssText = 'width:100%;height:110px;object-fit:cover;display:block;';
+        img.onerror = function() { this.style.opacity = '0.2'; };
+        card.appendChild(img);
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;padding:4px;';
+
+        const topRow = document.createElement('div');
+        if (i === 0) {
+            const badge = document.createElement('span');
+            badge.textContent = 'THUMBNAIL';
+            badge.style.cssText = 'background:rgba(201,168,76,0.9);color:#000;font-size:0.6rem;font-weight:800;padding:1px 5px;border-radius:3px;';
+            topRow.appendChild(badge);
+        }
+        overlay.appendChild(topRow);
+
+        const bottomRow = document.createElement('div');
+        bottomRow.style.cssText = 'display:flex;justify-content:space-between;align-items:center;';
+
+        if (i > 0) {
+            const upBtn = document.createElement('button');
+            upBtn.type = 'button';
+            upBtn.title = 'Move to thumbnail';
+            upBtn.textContent = '↑';
+            upBtn.style.cssText = 'background:rgba(0,0,0,0.6);border:none;color:#fff;border-radius:3px;width:22px;height:22px;cursor:pointer;font-size:0.75rem;';
+            upBtn.addEventListener('click', function() { pteMoveUp(i); });
+            bottomRow.appendChild(upBtn);
+        } else {
+            bottomRow.appendChild(document.createElement('span'));
+        }
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.title = 'Remove';
+        delBtn.textContent = '✕';
+        delBtn.style.cssText = 'background:rgba(180,30,30,0.85);border:none;color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;';
+        delBtn.addEventListener('click', function() { pteRemoveImage(i); });
+        bottomRow.appendChild(delBtn);
+
+        overlay.appendChild(bottomRow);
+        card.appendChild(overlay);
+        grid.appendChild(card);
+    });
+}
+
+async function savePTE(e) {
+    e.preventDefault();
+    const id = document.getElementById('pte-project-id').value;
+    if (!id) return;
+
+    if (pteImages.length === 0) {
+        showToast('Please add at least one image', 'error');
+        return;
+    }
+
+    const payload = {
+        title: document.getElementById('pte-title').value.trim(),
+        tagline: document.getElementById('pte-tagline').value.trim(),
+        description: document.getElementById('pte-description').value.trim(),
+        images: pteImages.filter(Boolean)
+    };
+
+    const btn = document.getElementById('pte-save-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...'; }
+
+    try {
+        const res = await fetch(API_BASE + '/projects/' + id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Project updated successfully!', 'success');
+            closePTE();
+            loadProjects();
+        } else {
+            showToast(data.message || 'Failed to save project', 'error');
+        }
+    } catch (err) {
+        console.error('PTE save error:', err);
+        showToast('Server error while saving', 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes'; }
+    }
+}
+
+// Close PTE on overlay click + Enter key support
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('project-text-editor-modal');
+    if (modal && e.target === modal) closePTE();
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const inp = document.getElementById('pte-new-img-url');
+    if (inp) {
+        inp.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); pteAddImage(); }
+        });
+    }
+});
+
 
 // Real-time updates via Socket.IO
 if (typeof socket !== 'undefined' && socket) {

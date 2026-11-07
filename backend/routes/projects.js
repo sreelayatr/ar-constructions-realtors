@@ -84,7 +84,7 @@ router.get('/:id', async (req, res) => {
 // Protected: Create new project
 router.post('/', requireAuth, async (req, res) => {
     try {
-        const { title, category, location, description, status, images } = req.body;
+        const { title, category, location, description, tagline, status, images } = req.body;
 
         const imageArray = Array.isArray(images) 
             ? images.filter(img => typeof img === 'string' && img.trim() !== '')
@@ -167,6 +167,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
         }
         if (location !== undefined) updateData.location = String(location).trim();
         if (description !== undefined) updateData.description = String(description).trim();
+        if (tagline !== undefined) updateData.tagline = String(tagline).trim();
         if (status !== undefined) updateData.status = status;
         if (images !== undefined) {
             const imageArray = Array.isArray(images) 
