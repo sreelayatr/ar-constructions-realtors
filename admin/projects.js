@@ -524,17 +524,7 @@ const DEFAULT_WAYANAD_DATA = {
 };
 
 function scrollToWayanadEditor() {
-    const card = document.getElementById('wayanad-editor-card');
-    if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        card.style.transition = 'box-shadow 0.4s ease, border-color 0.4s ease';
-        card.style.borderColor = 'var(--primary-gold)';
-        card.style.boxShadow = '0 0 25px rgba(201, 168, 76, 0.45)';
-        setTimeout(() => {
-            card.style.boxShadow = '';
-            card.style.borderColor = 'rgba(201, 168, 76, 0.4)';
-        }, 2200);
-    }
+    openWayanadModalEditor();
 }
 
 function populateWayanadForm(data) {
@@ -544,43 +534,39 @@ function populateWayanadForm(data) {
         if (el) el.value = val !== undefined && val !== null ? val : '';
     };
 
-    // Populate both inline card form (w-) and popup modal form (wm-)
-    ['w', 'wm'].forEach(prefix => {
-        setVal(`${prefix}-badge-1`, d.badge_1);
-        setVal(`${prefix}-badge-2`, d.badge_2);
-        setVal(`${prefix}-title`, d.title);
-        setVal(`${prefix}-tagline`, d.tagline);
-        setVal(`${prefix}-intro`, d.intro);
+    setVal('wm-badge-1', d.badge_1);
+    setVal('wm-badge-2', d.badge_2);
+    setVal('wm-title', d.title);
+    setVal('wm-tagline', d.tagline);
+    setVal('wm-intro', d.intro);
 
-        setVal(`${prefix}-m1-label`, d.metric_1_label);
-        setVal(`${prefix}-m1-val`, d.metric_1_value);
-        setVal(`${prefix}-m1-sub`, d.metric_1_sub);
+    setVal('wm-m1-label', d.metric_1_label);
+    setVal('wm-m1-val', d.metric_1_value);
+    setVal('wm-m1-sub', d.metric_1_sub);
 
-        setVal(`${prefix}-m2-label`, d.metric_2_label);
-        setVal(`${prefix}-m2-val`, d.metric_2_value);
-        setVal(`${prefix}-m2-sub`, d.metric_2_sub);
+    setVal('wm-m2-label', d.metric_2_label);
+    setVal('wm-m2-val', d.metric_2_value);
+    setVal('wm-m2-sub', d.metric_2_sub);
 
-        setVal(`${prefix}-m3-label`, d.metric_3_label);
-        setVal(`${prefix}-m3-val`, d.metric_3_value);
-        setVal(`${prefix}-m3-sub`, d.metric_3_sub);
+    setVal('wm-m3-label', d.metric_3_label);
+    setVal('wm-m3-val', d.metric_3_value);
+    setVal('wm-m3-sub', d.metric_3_sub);
 
-        setVal(`${prefix}-highlights`, Array.isArray(d.highlights) ? d.highlights.join('\n') : (d.highlights || ''));
-        setVal(`${prefix}-features`, Array.isArray(d.features) ? d.features.join('\n') : (d.features || ''));
-        setVal(`${prefix}-destinations`, Array.isArray(d.destinations) ? d.destinations.join(', ') : (d.destinations || ''));
+    setVal('wm-highlights', Array.isArray(d.highlights) ? d.highlights.join('\n') : (d.highlights || ''));
+    setVal('wm-features', Array.isArray(d.features) ? d.features.join('\n') : (d.features || ''));
+    setVal('wm-destinations', Array.isArray(d.destinations) ? d.destinations.join(', ') : (d.destinations || ''));
 
-        setVal(`${prefix}-urgency-title`, d.urgency_title);
-        setVal(`${prefix}-urgency-sub`, d.urgency_sub);
-        setVal(`${prefix}-partners`, d.partners);
+    setVal('wm-urgency-title', d.urgency_title);
+    setVal('wm-urgency-sub', d.urgency_sub);
+    setVal('wm-partners', d.partners);
 
-        setVal(`${prefix}-phone-1`, d.contact_phone_1);
-        setVal(`${prefix}-phone-2`, d.contact_phone_2);
-        setVal(`${prefix}-wa-num`, d.whatsapp_number);
-        setVal(`${prefix}-wa-msg`, d.whatsapp_text);
-    });
+    setVal('wm-phone-1', d.contact_phone_1);
+    setVal('wm-phone-2', d.contact_phone_2);
+    setVal('wm-wa-num', d.whatsapp_number);
+    setVal('wm-wa-msg', d.whatsapp_text);
 }
 
 function openWayanadModalEditor() {
-    // Sync current values from inline form or cache to popup fields
     try {
         const cached = localStorage.getItem('ar_wayanad_modal_data');
         if (cached) {
@@ -624,7 +610,7 @@ document.addEventListener('keydown', (e) => {
 function resetWayanadModalDefaults() {
     if (confirm('Are you sure you want to restore the default text for the WAYANAD De143Globe modal?')) {
         populateWayanadForm(DEFAULT_WAYANAD_DATA);
-        showToast('Default values loaded. Click "Save Changes" to publish.', 'info');
+        showToast('Default values loaded. Click "Save & Publish Text" to publish.', 'info');
     }
 }
 
@@ -652,77 +638,6 @@ async function loadWayanadModalSettings() {
         }
     } catch (err) {
         console.warn('Could not fetch wayanad_modal_data:', err);
-    }
-}
-
-async function handleWayanadModalSave(e) {
-    e.preventDefault();
-    const btn = document.getElementById('save-wayanad-btn');
-    const quickBtn = document.getElementById('quick-save-wayanad-btn');
-    const getVal = (id) => (document.getElementById(id)?.value || '').trim();
-
-    const highlightsRaw = getVal('w-highlights');
-    const featuresRaw = getVal('w-features');
-    const destinationsRaw = getVal('w-destinations');
-
-    const value = {
-        badge_1: getVal('w-badge-1'),
-        badge_2: getVal('w-badge-2'),
-        title: getVal('w-title') || 'WAYANAD De143Globe',
-        tagline: getVal('w-tagline'),
-        intro: getVal('w-intro'),
-        metric_1_label: getVal('w-m1-label'),
-        metric_1_value: getVal('w-m1-val'),
-        metric_1_sub: getVal('w-m1-sub'),
-        metric_2_label: getVal('w-m2-label'),
-        metric_2_value: getVal('w-m2-val'),
-        metric_2_sub: getVal('w-m2-sub'),
-        metric_3_label: getVal('w-m3-label'),
-        metric_3_value: getVal('w-m3-val'),
-        metric_3_sub: getVal('w-m3-sub'),
-        highlights: highlightsRaw ? highlightsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
-        features: featuresRaw ? featuresRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
-        destinations: destinationsRaw ? destinationsRaw.split(',').map(s => s.trim()).filter(Boolean) : [],
-        urgency_title: getVal('w-urgency-title'),
-        urgency_sub: getVal('w-urgency-sub'),
-        partners: getVal('w-partners'),
-        contact_phone_1: getVal('w-phone-1'),
-        contact_phone_2: getVal('w-phone-2'),
-        whatsapp_number: getVal('w-wa-num'),
-        whatsapp_text: getVal('w-wa-msg')
-    };
-
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
-    }
-    if (quickBtn) quickBtn.disabled = true;
-
-    try {
-        const res = await fetch(`${API_BASE}/settings/wayanad_modal_data`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ value })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-            showToast('WAYANAD De143Globe modal text updated successfully!', 'success');
-            localStorage.setItem('ar_wayanad_modal_data', JSON.stringify(value));
-            populateWayanadForm(value);
-        } else {
-            showToast(data.message || 'Failed to save Wayanad modal details', 'error');
-        }
-    } catch (err) {
-        console.error('Error saving Wayanad modal data:', err);
-        showToast('Server error while saving Wayanad details', 'error');
-    } finally {
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>Save & Publish Modal Text</span>';
-        }
-        if (quickBtn) quickBtn.disabled = false;
     }
 }
 
