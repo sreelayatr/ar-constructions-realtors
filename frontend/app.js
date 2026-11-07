@@ -9,21 +9,29 @@ document.addEventListener('DOMContentLoaded', () => {
         : 'https://ar-constructions-realtors.onrender.com';
 
     // ==========================================================
+    // SMOOTH SCROLL RESTORATION (Prevents navigation jitter)
+    // ==========================================================
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    // ==========================================================
     // BACKGROUND WAKE-UP PING (prevents Render cold-start delay)
-    // Fires silently on every page so the backend is warm by the
-    // time the user reaches the Projects page.
+    // Deferred so it does not block or compete with initial render.
     // ==========================================================
     if (!window.location.pathname.includes('projects.html')) {
-        fetch(`${API_BASE_URL}/api/projects`)
-            .then(r => r.json())
-            .then(res => {
-                if (res && res.success && Array.isArray(res.data)) {
-                    try {
-                        localStorage.setItem('ar_projects_cache_v3', JSON.stringify({ ts: Date.now(), data: res.data }));
-                    } catch {}
-                }
-            })
-            .catch(() => {});
+        setTimeout(() => {
+            fetch(`${API_BASE_URL}/api/projects`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res && res.success && Array.isArray(res.data)) {
+                        try {
+                            localStorage.setItem('ar_projects_cache_v3', JSON.stringify({ ts: Date.now(), data: res.data }));
+                        } catch {}
+                    }
+                })
+                .catch(() => {});
+        }, 1500);
     }
 
     /* ==========================================
@@ -126,17 +134,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ==========================================
-       PREVENT RELOAD ON CURRENT-PAGE NAV LINKS
+       SMOOTH NAVIGATION & CURRENT-PAGE LINK HANDLING
        ========================================== */
+    const getCleanPath = (url) => {
+        try {
+            const u = new URL(url, window.location.origin);
+            let path = u.pathname;
+            if (path.endsWith('/index.html')) path = path.replace(/\/index\.html$/, '/');
+            if (path.endsWith('/') && path.length > 1) path = path.slice(0, -1);
+            return path || '/';
+        } catch {
+            return url;
+        }
+    };
 
-    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
-    const currentPage = window.location.href.split('?')[0].split('#')[0];
+    const currentCleanPath = getCleanPath(window.location.href);
+    const allNavLinks = document.querySelectorAll('.nav-link, .mobile-nav-link, .logo-link');
 
     allNavLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-            const linkHref = link.href.split('?')[0].split('#')[0];
-            if (linkHref === currentPage) {
+            const targetCleanPath = getCleanPath(link.href);
+            // If already on this page and not an anchor jump, smoothly scroll to top without full reload
+            if (targetCleanPath === currentCleanPath && !link.hash) {
                 e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Smooth scroll for in-page hash anchor links (e.g. href="#contact")
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            const targetId = anchor.getAttribute('href');
+            if (targetId && targetId !== '#') {
+                const targetEl = document.querySelector(targetId);
+                if (targetEl) {
+                    e.preventDefault();
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
         });
     });
@@ -1076,18 +1111,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const slide = heroSlides[slideNum - 1];
             if (slide) {
                 const img = slide.querySelector('img');
-                if (img && img.src !== cleanUrl) img.src = cleanUrl;
+                if (img && img.src !== cleanUrl && img.getAttribute('src') !== cleanUrl) {
+                    img.src = cleanUrl;
+                }
             }
         } else if (slideTitleMatch) {
             const el = document.getElementById(`hero-slide-${slideTitleMatch[1]}-title`);
-            if (el) el.textContent = val;
+            if (el && el.textContent.trim() !== val.trim()) {
+                el.textContent = val;
+            }
         } else if (slideSubMatch) {
             const el = document.getElementById(`hero-slide-${slideSubMatch[1]}-subtitle`);
-            if (el) el.textContent = val;
+            if (el && el.textContent.trim() !== val.trim()) {
+                el.textContent = val;
+            }
         } else if (key === 'workspace_intro_image' && introImgEl) {
-            if (introImgEl.src !== cleanUrl) introImgEl.src = cleanUrl;
+            if (introImgEl.src !== cleanUrl && introImgEl.getAttribute('src') !== cleanUrl) {
+                introImgEl.src = cleanUrl;
+            }
         } else if (key === 'workspace_apart_image' && apartImgEl) {
-            if (apartImgEl.src !== cleanUrl) apartImgEl.src = cleanUrl;
+            if (apartImgEl.src !== cleanUrl && apartImgEl.getAttribute('src') !== cleanUrl) {
+                apartImgEl.src = cleanUrl;
+            }
         }
     };
 
@@ -1108,21 +1153,35 @@ document.addEventListener('DOMContentLoaded', () => {
         'workspace_apart_image'
     ];
 
+    // Instantly apply cached values without network delay
     workspaceKeys.forEach(key => {
         const cacheKey = `ar_${key}`;
         const cached = localStorage.getItem(cacheKey);
         if (cached) updateWorkspaceContentInDOM(key, cached);
-
-        fetch(`${API_BASE_URL}/api/settings/${key}`)
-            .then(r => r.json())
-            .then(res => {
-                if (res && res.success && res.value) {
-                    updateWorkspaceContentInDOM(key, res.value);
-                    localStorage.setItem(cacheKey, res.value);
-                }
-            })
-            .catch(() => {});
     });
+
+    // Stagger background setting verification once the page is idle
+    const syncSettingsInBackground = () => {
+        workspaceKeys.forEach((key, idx) => {
+            setTimeout(() => {
+                fetch(`${API_BASE_URL}/api/settings/${key}`)
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res && res.success && res.value !== undefined) {
+                            updateWorkspaceContentInDOM(key, res.value);
+                            localStorage.setItem(`ar_${key}`, res.value);
+                        }
+                    })
+                    .catch(() => {});
+            }, idx * 120);
+        });
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(syncSettingsInBackground, { timeout: 3000 });
+    } else {
+        setTimeout(syncSettingsInBackground, 1200);
+    }
 
     // Real-time update via Socket.IO when admin saves a new setting or updates projects
     if (typeof io !== 'undefined') {

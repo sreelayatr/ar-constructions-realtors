@@ -40,7 +40,6 @@
 }
 
 html {
-    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     touch-action: manipulation;
@@ -1593,6 +1592,29 @@ button, input, textarea {
 .slide.active .slide-subtitle {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Ensure the first active slide is immediately visible and stable without transition delay on page landing */
+.slide:first-child.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.slide:first-child.active img {
+    transform: scale(1);
+    transition: none;
+}
+
+.slide:first-child.active .slide-title {
+    opacity: 1;
+    transform: translateY(0);
+    transition: none;
+}
+
+.slide:first-child.active .slide-subtitle {
+    opacity: 1;
+    transform: translateY(0);
+    transition: none;
 }
 
 /* Slider Controls */
