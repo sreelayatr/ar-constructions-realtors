@@ -635,6 +635,29 @@ body {
     color: var(--status-cancelled);
 }
 
+.btn-edit-text {
+    height: 32px;
+    box-sizing: border-box;
+    padding: 0 12px;
+    background-color: rgba(201, 168, 76, 0.14);
+    border: 1px solid var(--primary-gold);
+    color: var(--primary-gold);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.btn-edit-text:hover {
+    background-color: var(--primary-gold);
+    color: #000;
+}
+
 /* ==========================================================================
    MODAL WINDOWS & FORMS
    ========================================================================== */

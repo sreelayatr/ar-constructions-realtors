@@ -161,15 +161,14 @@ function renderProjectsTable(projects) {
                 <td><span style="font-size: 0.85rem; color: var(--text-secondary);">${escapeHtml(p.category)}</span></td>
                 <td>${escapeHtml(p.location)}</td>
                 <td>${formatDate(p.createdAt)}</td>
-                <td>
-                    <div class="action-btns" style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+                <td style="white-space: nowrap;">
+                    <div class="action-btns" style="display:inline-flex;align-items:center;gap:8px;flex-wrap:nowrap;">
                         <button class="icon-btn" title="Edit Project Details" onclick="openEditProjectModal('${p._id}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button type="button" onclick="openProjectTextEditor('${p._id}')" style="background:rgba(201,168,76,0.18);border:1px solid var(--primary-gold);color:var(--primary-gold);font-size:0.72rem;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;" title="Edit Text &amp; Gallery">
+                        <button type="button" class="btn-edit-text" onclick="openProjectTextEditor('${p._id}')" style="height:32px;box-sizing:border-box;background:rgba(201,168,76,0.14);border:1px solid var(--primary-gold);color:var(--primary-gold);font-size:0.75rem;font-weight:600;padding:0 12px;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;" title="Edit Text &amp; Gallery">
                             <i class="fa-solid fa-file-pen"></i> Edit Text
                         </button>
-                        
                         <button class="icon-btn delete-btn" title="Delete Project" onclick="promptDeleteProject('${p._id}')">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
