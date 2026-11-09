@@ -708,9 +708,118 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Track rendered signature to avoid DOM thrashing if API data hasn't changed
         let currentRenderSignature = null;
+        let allProjectsList = [];
+
         const getSignature = (list) => {
             if (!Array.isArray(list)) return '';
-            return list.map(p => `${p._id || ''}:${p.updatedAt || ''}:${(p.images && p.images[0]) || ''}`).join('|');
+            return list.map(p => `${p._id || ''}:${p.updatedAt || ''}:${p.title || ''}:${p.tagline || ''}:${p.description || ''}:${(p.images && p.images.length) || ''}:${(p.images && p.images[0]) || ''}`).join('|');
+        };
+
+        // ── Generic Project Modal Handlers (For All Projects) ──────
+        const genericModal = document.getElementById('generic-project-modal');
+        const closeGenericModalBtn = document.getElementById('close-generic-project-modal');
+
+        const closeGenericProjectModal = () => {
+            if (genericModal) {
+                genericModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        };
+
+        closeGenericModalBtn?.addEventListener('click', closeGenericProjectModal);
+        genericModal?.addEventListener('click', (e) => {
+            if (e.target === genericModal) closeGenericProjectModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && genericModal?.classList.contains('active')) {
+                closeGenericProjectModal();
+            }
+        });
+
+        const openGenericProjectModal = (p) => {
+            if (!genericModal || !p) return;
+
+            const displayTitle = p.title || (p.location && p.category ? `${p.category} (${p.location})` : (p.category || 'Project Details'));
+            const titleEl = document.getElementById('gpm-title');
+            if (titleEl) titleEl.textContent = displayTitle;
+
+            const catText = document.getElementById('gpm-category-text');
+            if (catText) catText.textContent = p.category || 'Project';
+
+            const locBadge = document.getElementById('gpm-badge-location');
+            const locText = document.getElementById('gpm-location-text');
+            if (locBadge && locText) {
+                if (p.location && p.location.trim()) {
+                    locText.textContent = p.location.trim();
+                    locBadge.style.display = 'inline-flex';
+                } else {
+                    locBadge.style.display = 'none';
+                }
+            }
+
+            const tagEl = document.getElementById('gpm-tagline');
+            if (tagEl) {
+                if (p.tagline && p.tagline.trim()) {
+                    tagEl.textContent = p.tagline.trim();
+                    tagEl.style.display = 'block';
+                } else {
+                    tagEl.style.display = 'none';
+                }
+            }
+
+            const descEl = document.getElementById('gpm-description');
+            if (descEl) {
+                if (p.description && p.description.trim()) {
+                    descEl.textContent = p.description.trim();
+                    descEl.style.display = 'block';
+                } else {
+                    descEl.style.display = 'none';
+                }
+            }
+
+            const galleryWrap = document.getElementById('gpm-gallery-wrap');
+            const galleryGrid = document.getElementById('gpm-gallery-grid');
+            if (galleryWrap && galleryGrid) {
+                const imgs = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
+                galleryGrid.innerHTML = '';
+                if (imgs.length > 0) {
+                    imgs.forEach((url, i) => {
+                        const wrap = document.createElement('div');
+                        wrap.style.cssText = 'border-radius:10px;overflow:hidden;width:100%;aspect-ratio:4/3;background:#111;cursor:pointer;position:relative;border:1px solid rgba(255,255,255,0.08);';
+
+                        const img = document.createElement('img');
+                        img.src = optimizeCloudinaryUrl(url);
+                        img.alt = `${displayTitle} - Image ${i + 1}`;
+                        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;';
+                        img.onerror = function() {
+                            this.style.display = 'none';
+                            wrap.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.75rem;padding:8px;text-align:center;">Image unavailable</div>';
+                        };
+                        wrap.addEventListener('mouseenter', () => { img.style.transform = 'scale(1.05)'; });
+                        wrap.addEventListener('mouseleave', () => { img.style.transform = 'scale(1)'; });
+                        wrap.addEventListener('click', () => {
+                            if (typeof openWayanadGalleryLightbox === 'function') {
+                                openWayanadGalleryLightbox(url);
+                            }
+                        });
+
+                        wrap.appendChild(img);
+                        galleryGrid.appendChild(wrap);
+                    });
+                    galleryWrap.style.display = 'block';
+                } else {
+                    galleryWrap.style.display = 'none';
+                }
+            }
+
+            const waBtn = document.getElementById('gpm-whatsapp-btn');
+            if (waBtn) {
+                const waMsg = encodeURIComponent(`Hi, I am interested in the ${displayTitle} project.`);
+                waBtn.href = `https://wa.me/917353877999?text=${waMsg}`;
+            }
+
+            genericModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         };
 
         // ── Wayanad Popup Modal Handlers ───────────────────────────
@@ -915,18 +1024,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         card.querySelector('img')?.src.includes('6a2684b5') ||
                         card.querySelector('img')?.src.includes('98c0d3b5');
 
+                    e.preventDefault();
+                    e.stopPropagation();
+
                     if (isWayanadCard) {
-                        e.preventDefault();
-                        e.stopPropagation();
                         openWayanadModal();
                         return;
                     }
 
-                    e.preventDefault();
-                    document.querySelectorAll('.project-card').forEach(c => {
-                        if (c !== card) c.classList.remove('active');
-                    });
-                    card.classList.toggle('active');
+                    // For all other projects, open the dynamic project details modal
+                    const pId = card.dataset.id;
+                    const pIdx = parseInt(card.dataset.index, 10);
+                    const project = (allProjectsList && allProjectsList.find(item => String(item._id) === String(pId))) ||
+                                    (allProjectsList && !isNaN(pIdx) && allProjectsList[pIdx]);
+                    if (project) {
+                        openGenericProjectModal(project);
+                    }
                 };
 
                 card.addEventListener('click', handleCardClick);
@@ -948,6 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            allProjectsList = data || [];
             currentRenderSignature = getSignature(data);
 
             projectsGrid.innerHTML = data.map((p, idx) => {
@@ -992,15 +1106,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loadingAttr = idx < 6 ? 'loading="eager"' : 'loading="lazy"';
                 const fetchPriorityAttr = idx < 3 ? ' fetchpriority="high"' : '';
 
-                const hasOverlay = Boolean(displayTitle || clientText);
+                const hasOverlay = Boolean(displayTitle || clientText || p.tagline);
                 const overlayHtml = hasOverlay ? `
                         <div class="project-overlay">
                             ${displayTitle ? `<h3 class="project-title">${displayTitle}</h3>` : ''}
+                            ${p.tagline ? `<p class="project-tagline" style="color:var(--color-accent-gold-light,#e5c97b);font-size:0.82rem;margin:2px 0 4px;font-style:italic;line-height:1.3;">${p.tagline}</p>` : ''}
                             ${clientText ? `<p class="project-client">${clientText}</p>` : ''}
+                            <span class="project-card-badge" style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--color-accent-gold,#c9a84c);margin-top:6px;font-weight:600;letter-spacing:0.5px;">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> View Details
+                            </span>
                         </div>` : '';
 
                 return `
-                    <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" ${isWayanad ? 'data-project-modal="wayanad"' : ''} tabindex="0">
+                    <div class="project-card animate-up reveal-active${isBrochure ? ' project-card--contain' : ''}" ${isWayanad ? 'data-project-modal="wayanad"' : ''} data-id="${p._id || idx}" data-index="${idx}" tabindex="0">
                         <img class="${imgClass}" src="${imgUrl}"
                              onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
                              ${loadingAttr}${fetchPriorityAttr}

@@ -523,9 +523,57 @@
         </div>
     </div>
 
+    <!-- ==========================================
+         DYNAMIC PROJECT DETAILS POPUP MODAL (For All Projects)
+         ========================================== -->
+    <div class="pmodal-overlay" id="generic-project-modal">
+        <div class="pmodal-card">
+            <button class="pmodal-close-btn" id="close-generic-project-modal" aria-label="Close details">&times;</button>
+
+            <!-- Modal Header with Badges, Title, Tagline & Description -->
+            <div class="pmodal-header">
+                <div class="pmodal-badge-row" id="gpm-badge-row">
+                    <span class="pmodal-badge gold" id="gpm-badge-category"><i class="fa-solid fa-building"></i> <span id="gpm-category-text">Project</span></span>
+                    <span class="pmodal-badge" id="gpm-badge-location" style="display:none;"><i class="fa-solid fa-location-dot"></i> <span id="gpm-location-text"></span></span>
+                </div>
+                <h2 class="pmodal-title" id="gpm-title">Project Title</h2>
+                <p class="pmodal-tagline" id="gpm-tagline" style="display:none;"></p>
+                <div class="pmodal-intro" id="gpm-description" style="display:none; white-space:pre-line; line-height:1.7;"></div>
+            </div>
+
+            <!-- Project Images Gallery (Dynamic) -->
+            <div id="gpm-gallery-wrap" style="display:none; margin: 24px 0;">
+                <p style="font-size:0.75rem;color:#a0a0a0;margin:0 0 10px 0;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">
+                    <i class="fa-solid fa-images" style="color:var(--color-accent-gold-light,#c9a84c);margin-right:6px;"></i>Project Gallery
+                </p>
+                <div id="gpm-gallery-grid" style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                    gap: 12px;
+                "></div>
+            </div>
+
+            <!-- Modal Footer Contacts & Actions -->
+            <div class="pmodal-footer">
+                <div class="pmodal-contacts">
+                    <span class="pmodal-contacts-label">Contact for Enquiries & Site Visits:</span>
+                    <div class="pmodal-contact-links">
+                        <a href="tel:+917353877999" class="pmodal-contact-pill"><i class="fa-solid fa-phone"></i> <span>73538 77999</span></a>
+                        <a href="tel:+919845139034" class="pmodal-contact-pill"><i class="fa-solid fa-phone"></i> <span>98451 39034</span></a>
+                    </div>
+                </div>
+                <div class="pmodal-actions">
+                    <a href="https://wa.me/917353877999" target="_blank" rel="noopener noreferrer" class="btn-gold-pmodal whatsapp" id="gpm-whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Inquire on WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script File -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="app.js?v=20261107_1"></script>
+    <script src="app.js?v=20261109_4"></script>
 
     <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/919972790814" target="_blank" rel="noopener noreferrer" class="whatsapp-float-btn" aria-label="Chat on WhatsApp">
