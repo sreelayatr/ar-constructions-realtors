@@ -781,6 +781,14 @@ function openProjectTextEditor(id) {
     const p = cachedProjects.find(item => item._id === id);
     if (!p) { showToast('Project not found', 'error'); return; }
 
+    // De143Globe / WAYANAD project → open the dedicated featured popup editor
+    const isWayanad = ((p.title || '') + ' ' + (p.location || '')).toLowerCase().includes('wayanad') ||
+                      ((p.title || '') + ' ' + (p.location || '')).toLowerCase().includes('de143globe');
+    if (isWayanad) {
+        openWayanadModalEditor();
+        return;
+    }
+
     document.getElementById('pte-project-id').value = p._id;
     document.getElementById('pte-modal-heading').textContent = p.title || 'Edit Project';
     document.getElementById('pte-title').value = p.title || '';
