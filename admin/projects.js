@@ -573,7 +573,7 @@ const DEFAULT_WAYANAD_DATA = {
     partners: 'A Project by <strong>DE143GLOBE</strong> &bull; Partnered With <strong>AR Constructions and Realtors</strong>',
     contact_phone_1: '73538 77999',
     contact_phone_2: '98451 39034',
-    whatsapp_number: '917353877999',
+    whatsapp_number: '7353877999',
     whatsapp_text: 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.'
 };
 
@@ -618,19 +618,24 @@ function populateWayanadForm(data) {
     setVal('wm-urgency-sub', d.urgency_sub);
     setVal('wm-partners', d.partners);
 
-    setVal('wm-phone-1', d.contact_phone_1);
-    setVal('wm-phone-2', d.contact_phone_2);
-    setVal('wm-wa-num', d.whatsapp_number);
-    setVal('wm-wa-msg', d.whatsapp_text);
+    setVal('wm-phone-1', (d.contact_phone_1 && d.contact_phone_1.trim()) ? d.contact_phone_1 : '73538 77999');
+    setVal('wm-phone-2', (d.contact_phone_2 && d.contact_phone_2.trim()) ? d.contact_phone_2 : '98451 39034');
+    setVal('wm-wa-num', (d.whatsapp_number && d.whatsapp_number.trim()) ? d.whatsapp_number : '7353877999');
+    setVal('wm-wa-msg', (d.whatsapp_text && d.whatsapp_text.trim()) ? d.whatsapp_text : 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.');
 }
 
 function openWayanadModalEditor() {
+    let populated = false;
     try {
         const cached = localStorage.getItem('ar_wayanad_modal_data');
         if (cached) {
             populateWayanadForm(JSON.parse(cached));
+            populated = true;
         }
     } catch {}
+    if (!populated) {
+        populateWayanadForm(DEFAULT_WAYANAD_DATA);
+    }
 
     const popup = document.getElementById('wayanad-modal-popup');
     if (popup) {

@@ -982,7 +982,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.whatsapp_number) {
                 const wa = document.getElementById('wayanad-whatsapp-btn');
                 if (wa) {
-                    const cleanNum = data.whatsapp_number.replace(/\D/g, '');
+                    let cleanNum = data.whatsapp_number.replace(/\D/g, '');
+                    if (cleanNum.length === 10) cleanNum = '91' + cleanNum;
                     const text = encodeURIComponent(data.whatsapp_text || 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.');
                     wa.href = `https://wa.me/${cleanNum}?text=${text}`;
                 }
