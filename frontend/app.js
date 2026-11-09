@@ -1071,13 +1071,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const imgUrl = optimizeCloudinaryUrl(rawImgUrl);
 
-                const category = (p.category || '').trim();
-                const location = (p.location || '').trim();
+                let category = (p.category || '').trim();
+                let location = (p.location || '').trim();
                 const title = (p.title || '').trim();
 
-                const displayTitle = title || (location && category ? `${category} (${location})` : (location || category || ''));
+                // Check if this project is 4BHK
+                const is4BHK = title === '4BHK' || (p.images && p.images.some(img => typeof img === 'string' && img.includes('IMG_6020')));
+                if (is4BHK) {
+                    if (!category) category = 'Residential';
+                    if (!location) location = 'Bangalore, Karnataka';
+                }
 
-                // If neither category nor location is mentioned, clientText remains empty (shows nothing)
+                // Check if this project is Wayanad
+                const isWayanadProj = (title && (title.toLowerCase().includes('wayanad') || title.toLowerCase().includes('de143globe'))) ||
+                                      (location && location.toLowerCase().includes('wayanad')) ||
+                                      (p.images && p.images.some(img => typeof img === 'string' && (
+                                          img.includes('6a7a49aa') || img.includes('6a2684b5') || img.includes('98c0d3b5')
+                                      )));
+                if (isWayanadProj) {
+                    if (!category || category.toLowerCase().includes('price') || category.includes('@')) {
+                        category = 'Commercial';
+                    }
+                    if (!location || location.toLowerCase().includes('wanayad')) {
+                        location = 'Wayanad, Kerala';
+                    }
+                }
+
+                // Clean title display (title > category > 'Project')
+                const displayTitle = title || category || 'Project';
+
+                // Display only Category and Location on hover
                 let clientText = '';
                 if (category && location) {
                     clientText = `${category} • ${location}`;
