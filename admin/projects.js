@@ -797,13 +797,17 @@ function openProjectTextEditor(id) {
     pteMergeGallery();
 
     const modal = document.getElementById('project-text-editor-modal');
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closePTE() {
     const modal = document.getElementById('project-text-editor-modal');
-    if (modal) modal.style.display = 'none';
+    if (modal) {
+        modal.classList.remove('active');
+    }
     document.body.style.overflow = '';
     pteImages = [];
     const grid = document.getElementById('pte-gallery-grid');
