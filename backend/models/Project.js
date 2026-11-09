@@ -28,6 +28,26 @@ const projectSchema = new mongoose.Schema({
         default: '',
         trim: true
     },
+    phone_1: {
+        type: String,
+        default: '73538 77999',
+        trim: true
+    },
+    phone_2: {
+        type: String,
+        default: '98451 39034',
+        trim: true
+    },
+    whatsapp_number: {
+        type: String,
+        default: '7353877999',
+        trim: true
+    },
+    whatsapp_text: {
+        type: String,
+        default: '',
+        trim: true
+    },
     status: {
         type: String,
         enum: ['Ongoing', 'Completed', 'Upcoming'],

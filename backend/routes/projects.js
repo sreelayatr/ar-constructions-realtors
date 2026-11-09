@@ -84,7 +84,7 @@ router.get('/:id', async (req, res) => {
 // Protected: Create new project
 router.post('/', requireAuth, async (req, res) => {
     try {
-        const { title, category, location, description, tagline, status, images } = req.body;
+        const { title, category, location, description, tagline, phone_1, phone_2, whatsapp_number, whatsapp_text, status, images } = req.body;
 
         const imageArray = Array.isArray(images) 
             ? images.filter(img => typeof img === 'string' && img.trim() !== '')
@@ -125,6 +125,11 @@ router.post('/', requireAuth, async (req, res) => {
             category: resolvedCategory,
             location: resolvedLocation,
             description: description ? String(description).trim() : '',
+            tagline: tagline ? String(tagline).trim() : '',
+            phone_1: phone_1 ? String(phone_1).trim() : '73538 77999',
+            phone_2: phone_2 ? String(phone_2).trim() : '98451 39034',
+            whatsapp_number: whatsapp_number ? String(whatsapp_number).trim() : '7353877999',
+            whatsapp_text: whatsapp_text ? String(whatsapp_text).trim() : '',
             status: status || 'Completed',
             images: imageArray
         });
@@ -154,7 +159,7 @@ router.post('/', requireAuth, async (req, res) => {
 // Protected: Update project
 router.patch('/:id', requireAuth, async (req, res) => {
     try {
-        const { title, category, location, description, tagline, status, images } = req.body;
+        const { title, category, location, description, tagline, phone_1, phone_2, whatsapp_number, whatsapp_text, status, images } = req.body;
 
         if (mongoose.connection.readyState !== 1) {
             return res.json({ success: true, message: 'Project updated successfully' });
@@ -168,6 +173,10 @@ router.patch('/:id', requireAuth, async (req, res) => {
         if (location !== undefined) updateData.location = String(location).trim();
         if (description !== undefined) updateData.description = String(description).trim();
         if (tagline !== undefined) updateData.tagline = String(tagline).trim();
+        if (phone_1 !== undefined) updateData.phone_1 = String(phone_1).trim();
+        if (phone_2 !== undefined) updateData.phone_2 = String(phone_2).trim();
+        if (whatsapp_number !== undefined) updateData.whatsapp_number = String(whatsapp_number).trim();
+        if (whatsapp_text !== undefined) updateData.whatsapp_text = String(whatsapp_text).trim();
         if (status !== undefined) updateData.status = status;
         if (images !== undefined) {
             const imageArray = Array.isArray(images) 

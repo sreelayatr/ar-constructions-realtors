@@ -812,12 +812,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Phone 1
+            const phone1 = (p.phone_1 && p.phone_1.trim()) ? p.phone_1 : '73538 77999';
+            const p1Link = document.getElementById('gpm-phone-1');
+            const p1Text = document.getElementById('gpm-phone-1-text');
+            if (p1Link && p1Text) {
+                const cleanP1 = phone1.replace(/\D/g, '');
+                p1Link.href = `tel:+91${cleanP1}`;
+                p1Text.textContent = phone1;
+            }
+
+            // Phone 2
+            const phone2 = (p.phone_2 && p.phone_2.trim()) ? p.phone_2 : '98451 39034';
+            const p2Link = document.getElementById('gpm-phone-2');
+            const p2Text = document.getElementById('gpm-phone-2-text');
+            if (p2Link && p2Text) {
+                const cleanP2 = phone2.replace(/\D/g, '');
+                p2Link.href = `tel:+91${cleanP2}`;
+                p2Text.textContent = phone2;
+            }
+
+            // WhatsApp Inquire Button
             const waBtn = document.getElementById('gpm-whatsapp-btn');
             if (waBtn) {
+                let cleanNum = (p.whatsapp_number || '7353877999').replace(/\D/g, '');
+                if (cleanNum.length === 10) cleanNum = '91' + cleanNum;
+                
                 const cleanTitle = (displayTitle || 'Project').trim();
                 const suffix = /project\s*$/i.test(cleanTitle) ? '' : ' project';
-                const waMsg = encodeURIComponent(`Hi, I am interested in the ${cleanTitle}${suffix}.`);
-                waBtn.href = `https://wa.me/917353877999?text=${waMsg}`;
+                const defaultMsg = `Hi, I am interested in the ${cleanTitle}${suffix}.`;
+                const finalWaMsg = (p.whatsapp_text && p.whatsapp_text.trim()) ? p.whatsapp_text.trim() : defaultMsg;
+                
+                waBtn.href = `https://wa.me/${cleanNum}?text=${encodeURIComponent(finalWaMsg)}`;
             }
 
             genericModal.classList.add('active');

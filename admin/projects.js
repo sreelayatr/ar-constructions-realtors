@@ -809,6 +809,24 @@ function openProjectTextEditor(id) {
     document.getElementById('pte-description').value = p.description || '';
     document.getElementById('pte-new-img-url').value = '';
 
+    // Populate Phone & WhatsApp fields
+    const p1El = document.getElementById('pte-phone-1');
+    if (p1El) p1El.value = (p.phone_1 && p.phone_1.trim()) ? p.phone_1 : '73538 77999';
+
+    const p2El = document.getElementById('pte-phone-2');
+    if (p2El) p2El.value = (p.phone_2 && p.phone_2.trim()) ? p.phone_2 : '98451 39034';
+
+    const waNumEl = document.getElementById('pte-wa-num');
+    if (waNumEl) waNumEl.value = (p.whatsapp_number && p.whatsapp_number.trim()) ? p.whatsapp_number : '7353877999';
+
+    const waMsgEl = document.getElementById('pte-wa-msg');
+    if (waMsgEl) {
+        const curTitle = (p.title || '').trim();
+        const suffix = /project\s*$/i.test(curTitle) ? '' : ' project';
+        const defaultMsg = curTitle ? `Hi, I am interested in the ${curTitle}${suffix}.` : 'Hi, I am interested in this project.';
+        waMsgEl.value = (p.whatsapp_text && p.whatsapp_text.trim()) ? p.whatsapp_text : defaultMsg;
+    }
+
     // Load gallery images
     pteImages = Array.isArray(p.images) ? [...p.images] : [];
     pteMergeGallery();
@@ -927,10 +945,19 @@ async function savePTE(e) {
         return;
     }
 
+    const p1Val = document.getElementById('pte-phone-1')?.value.trim() || '73538 77999';
+    const p2Val = document.getElementById('pte-phone-2')?.value.trim() || '98451 39034';
+    const waNumVal = document.getElementById('pte-wa-num')?.value.trim() || '7353877999';
+    const waMsgVal = document.getElementById('pte-wa-msg')?.value.trim() || '';
+
     const payload = {
         title: document.getElementById('pte-title').value.trim(),
         tagline: document.getElementById('pte-tagline').value.trim(),
         description: document.getElementById('pte-description').value.trim(),
+        phone_1: p1Val,
+        phone_2: p2Val,
+        whatsapp_number: waNumVal,
+        whatsapp_text: waMsgVal,
         images: pteImages.filter(Boolean)
     };
 
@@ -1012,6 +1039,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 delete waMsgEl.dataset.customEdited;
             } else {
                 waMsgEl.dataset.customEdited = 'true';
+            }
+        });
+    }
+});
+
+// Live sync for PTE modal: WhatsApp prefilled message updates when title changes
+document.addEventListener('DOMContentLoaded', () => {
+    const pteTitle = document.getElementById('pte-title');
+    const pteWaMsg = document.getElementById('pte-wa-msg');
+    if (pteTitle && pteWaMsg) {
+        pteTitle.addEventListener('input', () => {
+            if (!pteWaMsg.dataset.customEdited) {
+                const val = pteTitle.value.trim();
+                const suffix = /project\s*$/i.test(val) ? '' : ' project';
+                pteWaMsg.value = val ? `Hi, I am interested in the ${val}${suffix}.` : 'Hi, I am interested in this project.';
+            }
+        });
+        pteWaMsg.addEventListener('input', () => {
+            if (!pteWaMsg.value.trim()) {
+                delete pteWaMsg.dataset.customEdited;
+            } else {
+                pteWaMsg.dataset.customEdited = 'true';
             }
         });
     }
