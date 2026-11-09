@@ -814,7 +814,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const waBtn = document.getElementById('gpm-whatsapp-btn');
             if (waBtn) {
-                const waMsg = encodeURIComponent(`Hi, I am interested in the ${displayTitle} project.`);
+                const cleanTitle = (displayTitle || 'Project').trim();
+                const suffix = /project\s*$/i.test(cleanTitle) ? '' : ' project';
+                const waMsg = encodeURIComponent(`Hi, I am interested in the ${cleanTitle}${suffix}.`);
                 waBtn.href = `https://wa.me/917353877999?text=${waMsg}`;
             }
 
@@ -984,7 +986,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (wa) {
                     let cleanNum = data.whatsapp_number.replace(/\D/g, '');
                     if (cleanNum.length === 10) cleanNum = '91' + cleanNum;
-                    const text = encodeURIComponent(data.whatsapp_text || 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.');
+                    const titleText = (data.title || 'WAYANAD De143Globe').trim();
+                    const suffix = /project\s*$/i.test(titleText) ? '' : ' project';
+                    const defaultMsg = `Hi, I am interested in the ${titleText}${suffix}.`;
+                    const waText = (data.whatsapp_text && data.whatsapp_text.trim()) ? data.whatsapp_text.trim() : defaultMsg;
+                    const text = encodeURIComponent(waText);
                     wa.href = `https://wa.me/${cleanNum}?text=${text}`;
                 }
             }

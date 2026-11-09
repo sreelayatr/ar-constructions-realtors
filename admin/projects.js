@@ -574,7 +574,7 @@ const DEFAULT_WAYANAD_DATA = {
     contact_phone_1: '73538 77999',
     contact_phone_2: '98451 39034',
     whatsapp_number: '7353877999',
-    whatsapp_text: 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.'
+    whatsapp_text: 'Hi, I am interested in the WAYANAD De143Globe project.'
 };
 
 function scrollToWayanadEditor() {
@@ -618,10 +618,20 @@ function populateWayanadForm(data) {
     setVal('wm-urgency-sub', d.urgency_sub);
     setVal('wm-partners', d.partners);
 
+    const titleVal = (d.title && d.title.trim()) ? d.title.trim() : 'WAYANAD De143Globe';
+    const suffix = /project\s*$/i.test(titleVal) ? '' : ' project';
+    const dynamicDefaultMsg = `Hi, I am interested in the ${titleVal}${suffix}.`;
+
+    let finalWaMsg = (d.whatsapp_text && d.whatsapp_text.trim()) ? d.whatsapp_text.trim() : dynamicDefaultMsg;
+    // If the saved message was the old hardcoded template and title differs, update dynamically
+    if (finalWaMsg.includes('Luxury Pool Villa project') && !titleVal.includes('Luxury Pool Villa')) {
+        finalWaMsg = dynamicDefaultMsg;
+    }
+
     setVal('wm-phone-1', (d.contact_phone_1 && d.contact_phone_1.trim()) ? d.contact_phone_1 : '73538 77999');
     setVal('wm-phone-2', (d.contact_phone_2 && d.contact_phone_2.trim()) ? d.contact_phone_2 : '98451 39034');
     setVal('wm-wa-num', (d.whatsapp_number && d.whatsapp_number.trim()) ? d.whatsapp_number : '7353877999');
-    setVal('wm-wa-msg', (d.whatsapp_text && d.whatsapp_text.trim()) ? d.whatsapp_text : 'Hi, I am interested in the WAYANAD De143Globe Luxury Pool Villa project.');
+    setVal('wm-wa-msg', finalWaMsg);
 }
 
 function openWayanadModalEditor() {
@@ -984,3 +994,25 @@ if (typeof socket !== 'undefined' && socket) {
 }
 
 
+
+// Live sync: WhatsApp prefilled message updates automatically when project title changes
+document.addEventListener('DOMContentLoaded', () => {
+    const titleEl = document.getElementById('wm-title');
+    const waMsgEl = document.getElementById('wm-wa-msg');
+    if (titleEl && waMsgEl) {
+        titleEl.addEventListener('input', () => {
+            if (!waMsgEl.dataset.customEdited) {
+                const titleVal = titleEl.value.trim() || 'WAYANAD De143Globe';
+                const suffix = /project\s*$/i.test(titleVal) ? '' : ' project';
+                waMsgEl.value = `Hi, I am interested in the ${titleVal}${suffix}.`;
+            }
+        });
+        waMsgEl.addEventListener('input', () => {
+            if (!waMsgEl.value.trim()) {
+                delete waMsgEl.dataset.customEdited;
+            } else {
+                waMsgEl.dataset.customEdited = 'true';
+            }
+        });
+    }
+});
