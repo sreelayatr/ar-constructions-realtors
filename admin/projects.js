@@ -290,7 +290,7 @@ async function handleProjectSave(e) {
     }
     const location = document.getElementById('p-location').value.trim();
     const title = rawTitle || (location ? (category ? `${category} (${location})` : location) : (category || ''));
-    const description = location || (category ? category : (rawTitle || ''));
+    // Description is managed independently via the Text Editor
     const status = 'Completed';
     const imagesRaw = document.getElementById('p-images').value;
 
@@ -301,7 +301,10 @@ async function handleProjectSave(e) {
         return;
     }
 
-    const payload = { title, category, status, location, description, images };
+    const payload = { title, category, status, location, images };
+    if (!id) {
+        payload.description = '';
+    }
     const method = id ? 'PATCH' : 'POST';
     const url = id ? `${API_BASE}/projects/${id}` : `${API_BASE}/projects`;
 
