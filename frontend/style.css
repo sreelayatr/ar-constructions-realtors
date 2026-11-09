@@ -3746,19 +3746,24 @@ button, input, textarea {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(201, 168, 76, 0.35);
     color: var(--color-accent-gold-light, #e5c97b);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 10;
 }
 
 .pmodal-close-btn:hover {
     background: var(--color-accent-gold, #c9a84c);
     color: #0a0d16;
-    transform: rotate(90deg) scale(1.05);
+    border-color: var(--color-accent-gold, #c9a84c);
+    transform: rotate(90deg) scale(1.08);
+}
+
+.pmodal-close-btn:active {
+    transform: rotate(180deg) scale(0.95);
 }
 
 .pmodal-badge-row {
