@@ -475,18 +475,27 @@
             <form id="pte-form" onsubmit="savePTE(event)" style="margin-top:16px;">
                 <input type="hidden" id="pte-project-id">
 
-                <div class="admin-form-group" style="margin-bottom:14px;">
-                    <label for="pte-title" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Project Title</label>
-                    <input type="text" id="pte-title" class="admin-input" placeholder="e.g. WAYANAD De143Globe">
+                <!-- Two-column row: Project Title | Tagline -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                    <div class="admin-form-group">
+                        <label for="pte-title" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">
+                            Project Title <span style="color:var(--status-cancelled);">*</span>
+                        </label>
+                        <input type="text" id="pte-title" class="admin-input" placeholder="e.g. WAYANAD De143Globe">
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="pte-tagline" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">
+                            Tagline
+                        </label>
+                        <input type="text" id="pte-tagline" class="admin-input" placeholder="e.g. ✨ Your Private Paradise Awaits in the Lap of Nature ✨">
+                    </div>
                 </div>
 
-                <div class="admin-form-group" style="margin-bottom:14px;">
-                    <label for="pte-tagline" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Tagline <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">(short line shown below title on card)</span></label>
-                    <input type="text" id="pte-tagline" class="admin-input" placeholder="e.g. ✨ Your Private Paradise Awaits in the Lap of Nature ✨">
-                </div>
-
+                <!-- Full-width Description -->
                 <div class="admin-form-group" style="margin-bottom:20px;">
-                    <label for="pte-description" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">Description</label>
+                    <label for="pte-description" style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:5px;font-weight:600;">
+                        Intro Description <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">(Supports &lt;strong&gt; bold tags)</span>
+                    </label>
                     <textarea id="pte-description" class="admin-textarea" rows="4" placeholder="Write a detailed description of this project..."></textarea>
                 </div>
 
@@ -519,7 +528,7 @@
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
     <script src="admin.js?v=20261109_2"></script>
-    <script src="projects.js?v=20261109_3"></script>
+    <script src="projects.js?v=20261109_4"></script>
 
 </body>
 </html>
