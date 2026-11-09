@@ -169,11 +169,7 @@ function renderProjectsTable(projects) {
                         <button type="button" onclick="openProjectTextEditor('${p._id}')" style="background:rgba(201,168,76,0.18);border:1px solid var(--primary-gold);color:var(--primary-gold);font-size:0.72rem;padding:4px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;" title="Edit Text &amp; Gallery">
                             <i class="fa-solid fa-file-pen"></i> Edit Text
                         </button>
-                        ${isWayanad ? `
-                        <button type="button" onclick="openWayanadModalEditor()" style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.4);color:var(--primary-gold);font-size:0.68rem;padding:3px 7px;border-radius:4px;display:inline-flex;align-items:center;gap:3px;cursor:pointer;" title="Edit Wayanad Popup">
-                            <i class="fa-solid fa-hotel"></i>
-                        </button>
-                        ` : ''}
+                        
                         <button class="icon-btn delete-btn" title="Delete Project" onclick="promptDeleteProject('${p._id}')">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
