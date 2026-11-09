@@ -154,7 +154,7 @@ router.post('/', requireAuth, async (req, res) => {
 // Protected: Update project
 router.patch('/:id', requireAuth, async (req, res) => {
     try {
-        const { title, category, location, description, status, images } = req.body;
+        const { title, category, location, description, tagline, status, images } = req.body;
 
         if (mongoose.connection.readyState !== 1) {
             return res.json({ success: true, message: 'Project updated successfully' });
