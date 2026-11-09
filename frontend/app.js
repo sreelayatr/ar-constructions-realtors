@@ -1106,15 +1106,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loadingAttr = idx < 6 ? 'loading="eager"' : 'loading="lazy"';
                 const fetchPriorityAttr = idx < 3 ? ' fetchpriority="high"' : '';
 
-                const hasOverlay = Boolean(displayTitle || clientText || p.tagline);
+                const hasOverlay = Boolean(displayTitle || clientText);
                 const overlayHtml = hasOverlay ? `
                         <div class="project-overlay">
                             ${displayTitle ? `<h3 class="project-title">${displayTitle}</h3>` : ''}
-                            ${p.tagline ? `<p class="project-tagline" style="color:var(--color-accent-gold-light,#e5c97b);font-size:0.82rem;margin:2px 0 4px;font-style:italic;line-height:1.3;">${p.tagline}</p>` : ''}
                             ${clientText ? `<p class="project-client">${clientText}</p>` : ''}
-                            <span class="project-card-badge" style="display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--color-accent-gold,#c9a84c);margin-top:6px;font-weight:600;letter-spacing:0.5px;">
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i> View Details
-                            </span>
                         </div>` : '';
 
                 return `
