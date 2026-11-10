@@ -233,14 +233,26 @@ const frontendPath = path.join(__dirname, "..", "frontend");
 const adminPath = path.join(__dirname, "..", "admin");
 
 // ============================================================
-// ADMIN SUBDOMAIN ROUTING
+// ADMIN SUBDOMAIN ROUTING & STATIC ASSETS
 // ============================================================
+
+const adminStaticOptions = {
+  etag: false,
+  maxAge: 0,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith(".html") || filePath.endsWith(".js") || filePath.endsWith(".css")) {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+    }
+  }
+};
 
 app.use((req, res, next) => {
   const host = req.headers.host || "";
 
   if (host.startsWith("admin.")) {
-    return express.static(adminPath)(req, res, next);
+    return express.static(adminPath, adminStaticOptions)(req, res, next);
   }
 
   next();
@@ -251,7 +263,7 @@ app.use((req, res, next) => {
 // ============================================================
 
 // Admin website
-app.use("/admin", express.static(adminPath));
+app.use("/admin", express.static(adminPath, adminStaticOptions));
 
 // Frontend static alias (allows relative ../frontend/ image paths to resolve cleanly over HTTP)
 app.use("/frontend", express.static(frontendPath));
