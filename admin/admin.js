@@ -278,3 +278,71 @@ function togglePasswordVisibility(inputId, btn) {
         icon.className = isPassword ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
     }
 }
+
+// ==========================================================================
+// GUARANTEED WHATSAPP BUTTON FOR ENQUIRY DETAILS MODAL
+// ==========================================================================
+function ensureModalWhatsAppButton() {
+    const modal = document.getElementById('detail-modal');
+    if (!modal) return;
+    const emailBtn = modal.querySelector('a[href^="mailto:"]');
+    if (!emailBtn) return;
+    
+    const parent = emailBtn.parentElement;
+    if (!parent || parent.querySelector('.btn-whatsapp-admin')) return;
+
+    let phone = '';
+    const modalText = modal.innerText || modal.textContent || '';
+    const phoneMatch = modalText.match(/Phone:\s*([+0-9\s-]+)/i);
+    if (phoneMatch && phoneMatch[1]) {
+        phone = phoneMatch[1].replace(/\D/g, '');
+    }
+    if (phone.startsWith('0') && phone.length === 11) phone = phone.slice(1);
+    if (phone.length === 10) phone = '91' + phone;
+
+    let name = '';
+    const nameMatch = modalText.match(/Customer Name:\s*([^\n\r]+)/i);
+    if (nameMatch && nameMatch[1]) {
+        name = nameMatch[1].trim();
+    }
+
+    let subject = '';
+    const subjMatch = modalText.match(/Subject:\s*([^\n\r]+)/i);
+    if (subjMatch && subjMatch[1]) {
+        subject = subjMatch[1].trim();
+    }
+
+    const waMsg = encodeURIComponent('Hi ' + (name || 'there') + ', thank you for contacting AR Constructions & Realtors regarding "' + (subject || 'your inquiry') + '". How can we assist you?');
+    const waLink = phone ? ('https://wa.me/' + phone + '?text=' + waMsg) : '#';
+
+    const waBtn = document.createElement('a');
+    waBtn.className = 'btn-whatsapp-admin';
+    waBtn.target = '_blank';
+    waBtn.rel = 'noopener noreferrer';
+    waBtn.title = 'Send WhatsApp Message';
+    waBtn.style.cssText = 'font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff !important; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: all 0.25s ease; cursor: pointer; margin-left: 10px;';
+    waBtn.innerHTML = '<i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message';
+    
+    if (phone) {
+        waBtn.href = waLink;
+    } else {
+        waBtn.href = '#';
+        waBtn.style.opacity = '0.6';
+        waBtn.onclick = function(e) {
+            e.preventDefault();
+            if (typeof showToast === 'function') showToast('No phone number provided for this client', 'error');
+            else alert('No phone number provided for this client');
+        };
+    }
+
+    if (emailBtn.nextSibling) {
+        parent.insertBefore(waBtn, emailBtn.nextSibling);
+    } else {
+        parent.appendChild(waBtn);
+    }
+}
+
+if (typeof window !== 'undefined') {
+    setInterval(ensureModalWhatsAppButton, 250);
+    document.addEventListener('DOMContentLoaded', ensureModalWhatsAppButton);
+}
