@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="admin.css?v=20261112_1">
+    <link rel="stylesheet" href="admin.css?v=20261113_1">
     <link rel="icon" type="image/png" href="assets/ar-logo.png">
 </head>
 <body>
@@ -168,73 +168,9 @@
     </div>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="admin.js?v=20261112_1"></script>
-    <script src="bookings.js?v=20261112_1"></script>
+    <script src="admin.js?v=20261113_1"></script>
+    <script src="bookings.js?v=20261113_1"></script>
 
-    <script>
-        // Real-time watcher: ensure Send WhatsApp Message button is always present next to Send Email button
-        function ensureModalWhatsAppButton() {
-            var modal = document.getElementById('detail-modal');
-            if (!modal) return;
-            var emailBtn = modal.querySelector('a[href^="mailto:"]');
-            if (!emailBtn) return;
-            
-            var parent = emailBtn.parentElement;
-            if (!parent || parent.querySelector('.btn-whatsapp-admin')) return;
-
-            var phone = '';
-            var modalText = modal.innerText || modal.textContent || '';
-            var phoneMatch = modalText.match(/Phone:\s*([+0-9\s-]+)/i);
-            if (phoneMatch && phoneMatch[1]) {
-                phone = phoneMatch[1].replace(/\D/g, '');
-            }
-            if (phone.startsWith('0') && phone.length === 11) phone = phone.slice(1);
-            if (phone.length === 10) phone = '91' + phone;
-
-            var name = '';
-            var nameMatch = modalText.match(/Customer Name:\s*([^\n\r]+)/i);
-            if (nameMatch && nameMatch[1]) {
-                name = nameMatch[1].trim();
-            }
-
-            var subject = '';
-            var subjMatch = modalText.match(/Subject:\s*([^\n\r]+)/i);
-            if (subjMatch && subjMatch[1]) {
-                subject = subjMatch[1].trim();
-            }
-
-            var waMsg = encodeURIComponent('Hi ' + (name || 'there') + ', thank you for contacting AR Constructions & Realtors regarding "' + (subject || 'your inquiry') + '". How can we assist you?');
-            var waLink = phone ? ('https://wa.me/' + phone + '?text=' + waMsg) : '#';
-
-            var waBtn = document.createElement('a');
-            waBtn.className = 'btn-whatsapp-admin';
-            waBtn.target = '_blank';
-            waBtn.rel = 'noopener noreferrer';
-            waBtn.title = 'Send WhatsApp Message';
-            waBtn.style.cssText = 'font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff !important; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: all 0.25s ease; cursor: pointer; margin-left: 10px;';
-            waBtn.innerHTML = '<i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message';
-            
-            if (phone) {
-                waBtn.href = waLink;
-            } else {
-                waBtn.href = '#';
-                waBtn.style.opacity = '0.6';
-                waBtn.onclick = function(e) {
-                    e.preventDefault();
-                    if (typeof showToast === 'function') showToast('No phone number provided for this client', 'error');
-                    else alert('No phone number provided for this client');
-                };
-            }
-
-            if (emailBtn.nextSibling) {
-                parent.insertBefore(waBtn, emailBtn.nextSibling);
-            } else {
-                parent.appendChild(waBtn);
-            }
-        }
-        setInterval(ensureModalWhatsAppButton, 250);
-        document.addEventListener('DOMContentLoaded', ensureModalWhatsAppButton);
-    </script>
 
 </body>
 </html>

@@ -148,7 +148,7 @@ async function viewBookingDetails(id) {
                 <div style="display: grid; gap: 14px; margin-top: 10px;">
                     <div><strong>Customer Name:</strong> ${escapeHtml(b.name)}</div>
                     <div><strong>Email:</strong> <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" style="color: var(--primary-gold); text-decoration: none;">${escapeHtml(b.email)} <i class="fa-solid fa-envelope" style="font-size: 0.8rem; margin-left: 4px;"></i></a></div>
-                    <div><strong>Phone:</strong> ${b.phone ? `<a href="tel:+${phoneClean}" style="color: var(--text-primary); text-decoration: none;">${escapeHtml(b.phone)}</a> ${phoneClean ? `<a href="${waLink}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; background: #25D366; color: #fff; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; text-decoration: none; margin-left: 8px; font-weight: 600;" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>` : ''}` : '<span style="color: var(--text-muted);">N/A</span>'}</div>
+                    <div><strong>Phone:</strong> ${b.phone ? `<a href="tel:+${phoneClean}" style="color: var(--text-primary); text-decoration: none;">${escapeHtml(b.phone)}</a>` : '<span style="color: var(--text-muted);">N/A</span>'}</div>
                     <div><strong>Subject:</strong> ${escapeHtml(b.subject || 'N/A')}</div>
                     <div><strong>Status:</strong> <span class="badge badge-${b.status}">${escapeHtml(b.status)}</span></div>
                     <div><strong>Submitted Date:</strong> ${formatDate(b.createdAt)}</div>
@@ -160,15 +160,6 @@ async function viewBookingDetails(id) {
                         <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                             <i class="fa-regular fa-envelope"></i> Send Email to Client
                         </a>
-                        ${phoneClean ? `
-                            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-admin" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff !important; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: all 0.25s ease;" title="Send WhatsApp Message">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
-                            </a>
-                        ` : `
-                            <button type="button" class="btn-whatsapp-admin" style="font-size: 0.85rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: #25D366; opacity: 0.6; cursor: not-allowed; color: #ffffff !important; border: none; border-radius: var(--radius-sm); font-weight: 600;" onclick="showToast('No phone number provided for this client', 'error')">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
-                            </button>
-                        `}
                     </div>
                 </div>
             `;
