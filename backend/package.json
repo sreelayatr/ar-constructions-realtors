@@ -1,6 +1,6 @@
 {
   "name": "ar-constructions-backend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Backend API and Admin Server for AR Constructions & Realtors",
   "main": "server.js",
   "scripts": {
