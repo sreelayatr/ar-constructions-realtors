@@ -239,15 +239,18 @@ function populateAndOpenEditModal(p) {
     const customInput = document.getElementById('p-category-custom');
     const knownCategories = ['Residential', 'Commercial', 'Interior', 'Renovation'];
 
-    if (!cat || cat === 'Residential') {
-        // Defaults to '-- Select Category (Optional) --'
+    const matchedKnown = knownCategories.find(c => c.toLowerCase() === cat.toLowerCase());
+
+    if (!cat) {
+        // No category selected
         catSelect.value = '';
         if (customInput) {
             customInput.value = '';
             customInput.style.display = 'none';
         }
-    } else if (knownCategories.includes(cat)) {
-        catSelect.value = cat;
+    } else if (matchedKnown) {
+        // Match known category properly (including Residential, Commercial, Interior, Renovation)
+        catSelect.value = matchedKnown;
         if (customInput) {
             customInput.value = '';
             customInput.style.display = 'none';
