@@ -218,8 +218,21 @@ function showToast(message, type = 'success') {
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    const icon = type === 'success' ? 'fa-circle-check' : 'fa-bell';
-    toast.innerHTML = `<i class="fa-solid ${icon}" style="color: var(--primary-gold);"></i> <span>${escapeHtml(message)}</span>`;
+
+    // If message already starts with an emoji/icon (e.g. 🔔), don't prepend the 1st bell icon
+    const msgStr = String(message || '').trim();
+    const hasLeadingEmoji = /^[\p{Extended_Pictographic}\uFE0F]/u.test(msgStr) || msgStr.includes('🔔');
+
+    let iconHtml = '';
+    if (!hasLeadingEmoji) {
+        let icon = 'fa-bell';
+        if (type === 'success') icon = 'fa-circle-check';
+        else if (type === 'error') icon = 'fa-circle-exclamation';
+        else if (type === 'warning') icon = 'fa-triangle-exclamation';
+        iconHtml = `<i class="fa-solid ${icon}" style="color: var(--primary-gold);"></i> `;
+    }
+
+    toast.innerHTML = `${iconHtml}<span>${escapeHtml(message)}</span>`;
 
     container.appendChild(toast);
 
