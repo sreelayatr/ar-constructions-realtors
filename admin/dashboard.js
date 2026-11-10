@@ -94,8 +94,12 @@ function renderRecentBookings(bookings) {
     }
 
     tbody.innerHTML = bookings.map(b => {
-        const phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
-        const waLink = phoneClean ? `https://wa.me/${phoneClean}` : '#';
+        let phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
+        if (phoneClean.length === 10) phoneClean = '91' + phoneClean;
+        const clientName = b.name ? b.name.trim() : '';
+        const clientSubject = b.subject ? b.subject.trim() : 'your inquiry';
+        const waText = encodeURIComponent(`Hi ${clientName}, thank you for contacting AR Constructions & Realtors regarding "${clientSubject}". How can we assist you?`);
+        const waLink = phoneClean ? `https://wa.me/${phoneClean}?text=${waText}` : '#';
 
         return `
             <tr id="booking-row-${b._id}">
@@ -131,23 +135,35 @@ async function viewBookingDetails(id) {
         const data = await res.json();
         if (data.success && data.data) {
             const b = data.data;
+            let phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
+            if (phoneClean.length === 10) phoneClean = '91' + phoneClean;
+            const clientName = b.name ? b.name.trim() : '';
+            const clientSubject = b.subject ? b.subject.trim() : 'your inquiry';
+            const waText = encodeURIComponent(`Hi ${clientName}, thank you for contacting AR Constructions & Realtors regarding "${clientSubject}". How can we assist you?`);
+            const waLink = phoneClean ? `https://wa.me/${phoneClean}?text=${waText}` : '';
+
             const content = document.getElementById('modal-detail-content');
             content.innerHTML = `
                 <div style="display: grid; gap: 14px; margin-top: 10px;">
                     <div><strong>Customer Name:</strong> ${escapeHtml(b.name)}</div>
                     <div><strong>Email:</strong> <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" style="color: var(--primary-gold); text-decoration: none;">${escapeHtml(b.email)} <i class="fa-solid fa-envelope" style="font-size: 0.8rem; margin-left: 4px;"></i></a></div>
-                    <div><strong>Phone:</strong> ${escapeHtml(b.phone || 'N/A')}</div>
+                    <div><strong>Phone:</strong> ${b.phone ? `<a href="tel:+${phoneClean}" style="color: var(--text-primary); text-decoration: none;">${escapeHtml(b.phone)}</a> ${phoneClean ? `<a href="${waLink}" target="_blank" style="color: #25D366; margin-left: 6px; text-decoration: none;" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>` : ''}` : '<span style="color: var(--text-muted);">N/A</span>'}</div>
                     <div><strong>Subject:</strong> ${escapeHtml(b.subject || 'N/A')}</div>
                     <div><strong>Status:</strong> <span class="badge badge-${b.status}">${escapeHtml(b.status)}</span></div>
                     <div><strong>Submitted Date:</strong> ${formatDate(b.createdAt)}</div>
                     <div><strong>Source:</strong> ${escapeHtml(b.source || 'website-contact-form')}</div>
                     <hr style="border-color: var(--border-color); margin: 10px 0;">
-                    <div><strong>Message:</strong></div>
+                    <div><strong>Message Content:</strong></div>
                     <div style="background: var(--bg-input); padding: 14px; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem; color: var(--text-secondary); border: 1px solid var(--border-color);">${escapeHtml(b.message)}</div>
-                    <div style="margin-top: 10px;">
-                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 8px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 9px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                             <i class="fa-regular fa-envelope"></i> Send Email to Client
                         </a>
+                        ${phoneClean ? `
+                            <a href="${waLink}" target="_blank" style="font-size: 0.85rem; padding: 9px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; border-radius: var(--radius-sm); font-weight: 600; transition: var(--transition);">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.05rem;"></i> Send WhatsApp Message
+                            </a>
+                        ` : ''}
                     </div>
                 </div>
             `;
