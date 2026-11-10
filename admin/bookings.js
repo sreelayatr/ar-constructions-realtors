@@ -212,6 +212,9 @@ async function viewBookingDetails(id) {
                         <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                             <i class="fa-regular fa-envelope"></i> Send Email to Client
                         </a>
+                        <a href="${waLink || '#'}" target="_blank" rel="noopener noreferrer" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: all 0.25s ease;" title="Send WhatsApp Message">
+                            <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
+                        </a>
                     </div>
                 </div>
             `;
