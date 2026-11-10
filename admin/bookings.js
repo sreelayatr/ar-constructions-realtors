@@ -93,7 +93,8 @@ async function loadBookings() {
 }
 
 function createBookingRowHtml(b, isNew = false) {
-    let phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
+    let phoneClean = b.phone ? String(b.phone).replace(/\D/g, '') : '';
+    if (phoneClean.startsWith('0') && phoneClean.length === 11) phoneClean = phoneClean.slice(1);
     if (phoneClean.length === 10) phoneClean = '91' + phoneClean;
     const clientName = b.name ? b.name.trim() : '';
     const clientSubject = b.subject ? b.subject.trim() : 'your inquiry';
@@ -186,12 +187,13 @@ async function viewBookingDetails(id) {
         const data = await res.json();
         if (data.success && data.data) {
             const b = data.data;
-            let phoneClean = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
+            let phoneClean = b.phone ? String(b.phone).replace(/\D/g, '') : '';
+            if (phoneClean.startsWith('0') && phoneClean.length === 11) phoneClean = phoneClean.slice(1);
             if (phoneClean.length === 10) phoneClean = '91' + phoneClean;
             const clientName = b.name ? b.name.trim() : '';
             const clientSubject = b.subject ? b.subject.trim() : 'your inquiry';
             const waText = encodeURIComponent(`Hi ${clientName}, thank you for contacting AR Constructions & Realtors regarding "${clientSubject}". How can we assist you?`);
-            const waLink = phoneClean ? `https://wa.me/${phoneClean}?text=${waText}` : '';
+            const waLink = phoneClean ? `https://wa.me/${phoneClean}?text=${waText}` : '#';
 
             const content = document.getElementById('modal-detail-content');
             content.innerHTML = `
@@ -214,7 +216,11 @@ async function viewBookingDetails(id) {
                             <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-admin" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff !important; border-radius: var(--radius-sm); font-weight: 600; box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35); transition: all 0.25s ease;" title="Send WhatsApp Message">
                                 <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
                             </a>
-                        ` : ''}
+                        ` : `
+                            <button type="button" class="btn-whatsapp-admin" style="font-size: 0.85rem; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; background: #25D366; opacity: 0.6; cursor: not-allowed; color: #ffffff !important; border: none; border-radius: var(--radius-sm); font-weight: 600;" onclick="showToast('No phone number provided for this client', 'error')">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
+                            </button>
+                        `}
                     </div>
                 </div>
             `;
