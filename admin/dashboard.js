@@ -155,13 +155,13 @@ async function viewBookingDetails(id) {
                     <hr style="border-color: var(--border-color); margin: 10px 0;">
                     <div><strong>Message Content:</strong></div>
                     <div style="background: var(--bg-input); padding: 14px; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem; color: var(--text-secondary); border: 1px solid var(--border-color);">${escapeHtml(b.message)}</div>
-                    <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 9px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                    <div style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                        <a href="mailto:${escapeHtml(b.email)}?subject=Re:%20${encodeURIComponent(b.subject || 'AR Constructions Inquiry')}" target="_blank" class="btn-gold" style="font-size: 0.85rem; padding: 10px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                             <i class="fa-regular fa-envelope"></i> Send Email to Client
                         </a>
                         ${phoneClean ? `
-                            <a href="${waLink}" target="_blank" style="font-size: 0.85rem; padding: 9px 16px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; border-radius: var(--radius-sm); font-weight: 600; transition: var(--transition);">
-                                <i class="fa-brands fa-whatsapp" style="font-size: 1.05rem;"></i> Send WhatsApp Message
+                            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp-admin" title="Chat on WhatsApp">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i> Send WhatsApp Message
                             </a>
                         ` : ''}
                     </div>
