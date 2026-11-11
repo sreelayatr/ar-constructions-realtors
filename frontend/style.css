@@ -3679,15 +3679,8 @@ button, input, textarea {
 /* ==========================================
    PROJECT DETAILS POPUP MODALS & SCROLL LOCK
    ========================================== */
-html.modal-open,
 body.modal-open {
     overflow: hidden !important;
-    height: 100% !important;
-    touch-action: none;
-}
-
-body.modal-open {
-    padding-right: var(--scrollbar-width, 0px);
 }
 
 .pmodal-overlay {

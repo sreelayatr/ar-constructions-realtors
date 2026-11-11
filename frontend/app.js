@@ -716,26 +716,43 @@ document.addEventListener('DOMContentLoaded', () => {
         let allProjectsList = _initCached || [];
         let currentRenderSignature = _initCached ? getSignature(_initCached) : null;
 
-        // ── Background Scroll Lock Helpers (Keep background still while modal scrolls) ──
-        let scrollbarWidth = null;
+        // ── Background Scroll Lock Helpers (Keeps background still & preserves scroll position) ──
+        let savedScrollY = 0;
+        let isScrollLocked = false;
+
         const lockBodyScroll = () => {
-            if (scrollbarWidth === null) {
-                scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-            }
-            if (scrollbarWidth > 0) {
-                document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
-            }
-            document.documentElement.classList.add('modal-open');
+            if (isScrollLocked) return;
+            // Record current scroll position precisely before locking
+            savedScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
             document.body.classList.add('modal-open');
-            document.documentElement.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${savedScrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.width = '100%';
             document.body.style.overflow = 'hidden';
+            if (scrollbarWidth > 0) {
+                document.body.style.paddingRight = `${scrollbarWidth}px`;
+            }
+            isScrollLocked = true;
         };
 
         const unlockBodyScroll = () => {
-            document.documentElement.classList.remove('modal-open');
+            if (!isScrollLocked) return;
             document.body.classList.remove('modal-open');
-            document.documentElement.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.width = '';
             document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            // Restore exact scroll position without jumping to top
+            window.scrollTo(0, savedScrollY);
+            isScrollLocked = false;
         };
 
         const preventOverlayBackgroundScroll = (modalEl) => {
