@@ -777,6 +777,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (genericModal) {
                 genericModal.classList.remove('active');
                 unlockBodyScroll();
+                const card = genericModal.querySelector('.pmodal-card');
+                if (card) {
+                    card.scrollTop = 0;
+                }
+                genericModal.scrollTop = 0;
             }
         };
 
@@ -901,6 +906,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 waBtn.href = `https://wa.me/${cleanNum}?text=${encodeURIComponent(finalWaMsg)}`;
             }
 
+            const card = genericModal.querySelector('.pmodal-card');
+            if (card) {
+                card.scrollTop = 0;
+            }
+            genericModal.scrollTop = 0;
             genericModal.classList.add('active');
             lockBodyScroll();
         };
@@ -911,6 +921,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const openWayanadModal = () => {
             if (wayanadModal) {
+                const card = wayanadModal.querySelector('.pmodal-card');
+                if (card) {
+                    card.scrollTop = 0;
+                }
+                wayanadModal.scrollTop = 0;
                 wayanadModal.classList.add('active');
                 lockBodyScroll();
             }
@@ -920,6 +935,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (wayanadModal) {
                 wayanadModal.classList.remove('active');
                 unlockBodyScroll();
+                const card = wayanadModal.querySelector('.pmodal-card');
+                if (card) {
+                    card.scrollTop = 0;
+                }
+                wayanadModal.scrollTop = 0;
             }
         };
 
