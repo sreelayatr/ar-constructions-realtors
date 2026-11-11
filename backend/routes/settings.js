@@ -90,17 +90,29 @@ const defaultSettings = {
     }
 };
 
-// In-memory store fallback when DB is disconnected
+// In-memory store fallback and high-speed cache
 const inMemorySettings = { ...defaultSettings };
+const settingsCache = new Map();
 
 // Public: Get site setting by key (e.g. GET /api/settings/projects_hero_image)
 router.get('/:key', async (req, res) => {
     try {
         const { key } = req.params;
+        res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
+
+        // Check in-memory fast cache
+        if (settingsCache.has(key)) {
+            return res.json({
+                success: true,
+                key,
+                value: settingsCache.get(key)
+            });
+        }
 
         if (mongoose.connection.readyState === 1) {
-            const setting = await SiteSetting.findOne({ key });
+            const setting = await SiteSetting.findOne({ key }).lean();
             if (setting) {
+                settingsCache.set(key, setting.value);
                 return res.json({
                     success: true,
                     key,
@@ -110,6 +122,7 @@ router.get('/:key', async (req, res) => {
         }
 
         const value = inMemorySettings[key] !== undefined ? inMemorySettings[key] : (defaultSettings[key] || '');
+        settingsCache.set(key, value);
         res.json({
             success: true,
             key,
@@ -138,6 +151,7 @@ router.post('/:key', requireAuth, async (req, res) => {
         }
 
         inMemorySettings[key] = value;
+        settingsCache.set(key, value);
 
         if (mongoose.connection.readyState === 1) {
             const updated = await SiteSetting.findOneAndUpdate(

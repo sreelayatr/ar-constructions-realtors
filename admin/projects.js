@@ -55,10 +55,26 @@ document.addEventListener('DOMContentLoaded', () => {
    AR CONSTRUCTIONS & REALTORS - PROJECTS MANAGEMENT SCRIPT
    ========================================================================== */
 
+const ADMIN_PROJECTS_CACHE_KEY = 'ar_admin_projects_cache_v2';
 let searchTimeout = null;
 let cachedProjects = [];
 
+// Instantly restore cached projects from localStorage for 0ms delay on page open
+try {
+    const _stored = localStorage.getItem(ADMIN_PROJECTS_CACHE_KEY);
+    if (_stored) {
+        const _parsed = JSON.parse(_stored);
+        if (Array.isArray(_parsed) && _parsed.length > 0) {
+            cachedProjects = _parsed;
+        }
+    }
+} catch (e) {}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // If we have cached projects, immediately render the table with zero delay
+    if (cachedProjects.length > 0) {
+        filterProjectsLocally();
+    }
     loadHeroBanner();
     loadProjects();
     loadWayanadModalSettings();
@@ -119,6 +135,9 @@ async function loadProjects() {
 
         if (data.success) {
             cachedProjects = data.data || [];
+            try {
+                localStorage.setItem(ADMIN_PROJECTS_CACHE_KEY, JSON.stringify(cachedProjects));
+            } catch (e) {}
             filterProjectsLocally();
         } else if (cachedProjects.length === 0) {
             showToast('Failed to load projects', 'error');

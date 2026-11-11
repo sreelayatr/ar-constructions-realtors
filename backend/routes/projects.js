@@ -6,9 +6,30 @@ const { requireAuth } = require('../middleware/auth');
 
 const defaultProjects = [];
 
+// High-speed in-memory cache for GET / (cleared on any project mutations)
+let projectsMemoryCache = null;
+let projectsMemoryCacheTime = 0;
+const PROJECTS_CACHE_TTL_MS = 60 * 1000; // 60 seconds
+
+function invalidateProjectsCache() {
+    projectsMemoryCache = null;
+    projectsMemoryCacheTime = 0;
+}
+
 // Public/Admin: Get all projects
 router.get('/', async (req, res) => {
     try {
+        const { category, status, search } = req.query;
+        const isDefaultQuery = (!category || category === 'all') && (!status || status === 'all') && !search;
+
+        // Set caching headers for fast browser and CDN response
+        res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=120');
+
+        // Instant response from memory cache if available for default query
+        if (isDefaultQuery && projectsMemoryCache && (Date.now() - projectsMemoryCacheTime < PROJECTS_CACHE_TTL_MS)) {
+            return res.json(projectsMemoryCache);
+        }
+
         if (mongoose.connection.readyState !== 1) {
             return res.json({
                 success: true,
@@ -17,7 +38,6 @@ router.get('/', async (req, res) => {
             });
         }
 
-        const { category, status, search } = req.query;
         const query = {};
 
         if (category && category !== 'all') {
@@ -37,13 +57,20 @@ router.get('/', async (req, res) => {
             ];
         }
 
-        const projects = await Project.find(query).sort({ createdAt: -1 });
+        const projects = await Project.find(query).sort({ createdAt: -1 }).lean();
 
-        res.json({
+        const responsePayload = {
             success: true,
             count: projects.length,
             data: projects
-        });
+        };
+
+        if (isDefaultQuery) {
+            projectsMemoryCache = responsePayload;
+            projectsMemoryCacheTime = Date.now();
+        }
+
+        res.json(responsePayload);
     } catch (error) {
         console.error('Get Projects Error:', error.message);
         res.status(500).json({
@@ -135,6 +162,7 @@ router.post('/', requireAuth, async (req, res) => {
         });
 
         await project.save();
+        invalidateProjectsCache();
 
         const io = req.app.get('io');
         if (io) {
@@ -196,6 +224,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
             updateData,
             { new: true, runValidators: true }
         );
+        invalidateProjectsCache();
 
         if (!project) {
             return res.status(404).json({
@@ -237,6 +266,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
         }
 
         const project = await Project.findByIdAndDelete(req.params.id);
+        invalidateProjectsCache();
         if (!project) {
             return res.status(404).json({
                 success: false,

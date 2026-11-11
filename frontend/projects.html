@@ -18,6 +18,7 @@
     <link rel="dns-prefetch" href="https://res.cloudinary.com">
     <link rel="preconnect" href="https://ar-constructions-realtors.onrender.com" crossorigin>
     <link rel="dns-prefetch" href="https://ar-constructions-realtors.onrender.com">
+    <link rel="preload" as="fetch" href="https://ar-constructions-realtors.onrender.com/api/projects" crossorigin>
     <!-- Preload above-the-fold top project images for instantaneous display -->
     <link rel="preload" as="image" href="https://res.cloudinary.com/gbceotkl/image/upload/f_auto,q_auto,w_800/v1793702766/IMG_6020.jpg" fetchpriority="high">
     <link rel="preload" as="image" href="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208899/6a2684b5-56d0-4c84-804b-7587947b1a6c.png" fetchpriority="high">
@@ -97,186 +98,149 @@
                 </p>
             </div>
 
-            <div class="projects-grid" id="projects-grid">
-                <!-- Pre-rendered default projects for instant zero-delay loading -->
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                        <div class="projects-grid" id="projects-grid">
+                <!-- Pre-rendered verified projects for instant zero-delay loading -->
+                <div class="project-card animate-up reveal-active" data-id="6ae9bf959ab552e7ce9eb677" data-index="0" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/gbceotkl/image/upload/f_auto,q_auto,w_800/v1793702766/IMG_6020.jpg"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" fetchpriority="high" decoding="async"
+                         loading="eager" fetchpriority="high"
+                         decoding="async"
                          alt="4BHK">
                     <div class="project-overlay">
                         <h3 class="project-title">4BHK</h3>
-                        <p class="project-client">Residential • Bangalore, Karnataka</p>
+                        <p class="project-client">Residential • bengaluru, karnataka</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active project-card--contain" data-project-modal="wayanad" tabindex="0">
-                    <img class="project-img project-img--contain" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208899/6a2684b5-56d0-4c84-804b-7587947b1a6c.png"
+                <div class="project-card animate-up reveal-active project-card--contain" data-project-modal="wayanad" data-id="6ae225727bb212085e79e68a" data-index="1" tabindex="0">
+                    <img class="project-img project-img--contain" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793202892/86f551ee-fbd4-4c62-9825-0d91ac87ff2b.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" fetchpriority="high" decoding="async"
+                         loading="eager" fetchpriority="high"
+                         decoding="async"
                          alt="WAYANAD De143Globe">
                     <div class="project-overlay">
                         <h3 class="project-title">WAYANAD De143Globe</h3>
                         <p class="project-client">Commercial • Wayanad, Kerala</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active project-card--contain" data-project-modal="wayanad" tabindex="0">
-                    <img class="project-img project-img--contain" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1793208785/98c0d3b5-0e1e-4390-9ff3-6820465a60a1.png"
-                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" fetchpriority="high" decoding="async"
-                         alt="WAYANAD De143Globe">
-                    <div class="project-overlay">
-                        <h3 class="project-title">WAYANAD De143Globe</h3>
-                        <p class="project-client">Commercial • Wayanad, Kerala</p>
-                    </div>
-                </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9eb6acbba00a880e976a28" data-index="2" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788711132/f249f284-72b1-431c-b58c-421852e789b1.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async"
+                         loading="eager" fetchpriority="high"
+                         decoding="async"
                          alt="Residential (Bangalore, Karnataka)">
                     <div class="project-overlay">
-                        <h3 class="project-title">Residential</h3>
-                        <p class="project-client">Commercial • Bangalore, Karnataka</p>
+                        <h3 class="project-title">Residential (Bangalore, Karnataka)</h3>
+                        <p class="project-client">Residential • bengaluru, karnataka</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da8f33dbcfd4adeb462d6" data-index="3" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788712420/87d999b5-e7c0-4a57-a8b8-88184b174601.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async"
+                         loading="eager"
+                         decoding="async"
                          alt="Modern Layout">
                     <div class="project-overlay">
                         <h3 class="project-title">Modern Layout</h3>
-                        <p class="project-client">Residential • Kerala</p>
+                        <p class="project-client">bengaluru, karnataka</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788717169/bdbafd6c-9936-4380-8315-ae818c20c535.png"
-                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="eager" decoding="async"
-                         alt="Living Area">
-                    <div class="project-overlay">
-                        <h3 class="project-title">Living Area</h3>
-                        <p class="project-client">Residential • Bangalore, Karnataka</p>
-                    </div>
-                </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788644703/Screenshot_2026-09-06_031433.png"
-                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
-                         alt="Courtyard">
-                    <div class="project-overlay">
-                        <h3 class="project-title">Courtyard</h3>
-                        <p class="project-client">Residential • Bangalore, Karnataka</p>
-                    </div>
-                </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788647720/Screenshot_2026-09-06_040458.png"
-                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
-                         alt="Waiting Room">
-                    <div class="project-overlay">
-                        <h3 class="project-title">Waiting Room</h3>
-                        <p class="project-client">Residential • Kerala</p>
-                    </div>
-                </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da72c3dbcfd4adeb462c1" data-index="4" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709069/Screenshot_2026-09-06_210724.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="eager"
+                         decoding="async"
                          alt="Dr. RAJANI’S CLINIC COMMERCIAL PROJECT">
                     <div class="project-overlay">
                         <h3 class="project-title">Dr. RAJANI’S CLINIC COMMERCIAL PROJECT</h3>
                         <p class="project-client">Interior • JP NAGAR, BANGALORE</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da6d33dbcfd4adeb462bd" data-index="5" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788710261/Screenshot_2026-09-06_212716.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="eager"
+                         decoding="async"
                          alt="Rainbow Residency Luxury Villa">
                     <div class="project-overlay">
                         <h3 class="project-title">Rainbow Residency Luxury Villa</h3>
                         <p class="project-client">Residential • Sarjapur, Bangalore</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da6843dbcfd4adeb462b8" data-index="6" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788711046/89b33f0e-e171-459b-8f74-a9a2388ce06e.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="Modern Kitchen & Utility">
                     <div class="project-overlay">
                         <h3 class="project-title">Modern Kitchen & Utility</h3>
                         <p class="project-client">Residential • karnataka</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da62b3dbcfd4adeb462b4" data-index="7" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788708392/Screenshot_2026-09-06_205556.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="COMMERCIAL PROJECT LRC - Conference Room">
                     <div class="project-overlay">
                         <h3 class="project-title">COMMERCIAL PROJECT LRC - Conference Room</h3>
                         <p class="project-client">Commercial • Hyderabad</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da5c13dbcfd4adeb462b0" data-index="8" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788708843/Screenshot_2026-09-06_210328.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="TV Unit">
                     <div class="project-overlay">
                         <h3 class="project-title">TV Unit</h3>
-                        <p class="project-client">Residential • Tamil Nadu</p>
+                        
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da58a3dbcfd4adeb462ac" data-index="9" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788647899/Screenshot_2026-09-06_040757.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="Vaastu HillView">
                     <div class="project-overlay">
                         <h3 class="project-title">Vaastu HillView</h3>
                         <p class="project-client">Residential • RR Nagar Bangalore</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da5473dbcfd4adeb462a8" data-index="10" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709653/Screenshot_2026-09-06_211613.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="Nanda Prakruthi Luxury Villa (4BHK)">
                     <div class="project-overlay">
                         <h3 class="project-title">Nanda Prakruthi Luxury Villa (4BHK)</h3>
                         <p class="project-client">Residential • Kanakpura, Bangalore</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
-                    <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788644345/Screenshot_2026-09-06_030759.png"
-                         onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
-                         alt="Entrance">
-                    <div class="project-overlay">
-                        <h3 class="project-title">Entrance</h3>
-                        <p class="project-client">Residential • Bangalore, Karnataka</p>
-                    </div>
-                </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da3ed3dbcfd4adeb4629b" data-index="11" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788643394/Screenshot_2026-09-06_024824.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="Luxury Apartment 4BHK">
                     <div class="project-overlay">
                         <h3 class="project-title">Luxury Apartment 4BHK</h3>
                         <p class="project-client">Residential • L&T Bangalore</p>
                     </div>
                 </div>
-                <div class="project-card animate-up reveal-active" tabindex="0">
+                <div class="project-card animate-up reveal-active" data-id="6a9da3933dbcfd4adeb46295" data-index="12" tabindex="0">
                     <img class="project-img" src="https://res.cloudinary.com/vht1gwyc/image/upload/f_auto,q_auto,w_800/v1788709858/Screenshot_2026-09-06_212040.png"
                          onerror="this.src='https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'"
-                         loading="lazy" decoding="async"
+                         loading="lazy"
+                         decoding="async"
                          alt="Living Area (Terrazzo Flooring)">
                     <div class="project-overlay">
                         <h3 class="project-title">Living Area (Terrazzo Flooring)</h3>
-                        <p class="project-client">Residential • Tamil Nadu</p>
+                        
                     </div>
                 </div>
             </div>
