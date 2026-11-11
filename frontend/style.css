@@ -3677,8 +3677,19 @@ button, input, textarea {
     }
 }
 /* ==========================================
-   WAYANAD DE143GLOBE PROJECT DETAILS POPUP MODAL
+   PROJECT DETAILS POPUP MODALS & SCROLL LOCK
    ========================================== */
+html.modal-open,
+body.modal-open {
+    overflow: hidden !important;
+    height: 100% !important;
+    touch-action: none;
+}
+
+body.modal-open {
+    padding-right: var(--scrollbar-width, 0px);
+}
+
 .pmodal-overlay {
     position: fixed;
     inset: 0;
@@ -3693,6 +3704,9 @@ button, input, textarea {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overscroll-behavior: contain;
+    overflow-y: hidden;
+    touch-action: none;
 }
 
 .pmodal-overlay.active {
@@ -3709,6 +3723,9 @@ button, input, textarea {
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
     padding: 36px 36px 32px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(201, 168, 76, 0.15);
     color: var(--color-text-light, #f5f5f5);

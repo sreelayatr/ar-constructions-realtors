@@ -716,6 +716,42 @@ document.addEventListener('DOMContentLoaded', () => {
         let allProjectsList = _initCached || [];
         let currentRenderSignature = _initCached ? getSignature(_initCached) : null;
 
+        // ── Background Scroll Lock Helpers (Keep background still while modal scrolls) ──
+        let scrollbarWidth = null;
+        const lockBodyScroll = () => {
+            if (scrollbarWidth === null) {
+                scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            }
+            if (scrollbarWidth > 0) {
+                document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+            }
+            document.documentElement.classList.add('modal-open');
+            document.body.classList.add('modal-open');
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+        };
+
+        const unlockBodyScroll = () => {
+            document.documentElement.classList.remove('modal-open');
+            document.body.classList.remove('modal-open');
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+        };
+
+        const preventOverlayBackgroundScroll = (modalEl) => {
+            if (!modalEl) return;
+            modalEl.addEventListener('wheel', (e) => {
+                if (e.target === modalEl) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            modalEl.addEventListener('touchmove', (e) => {
+                if (e.target === modalEl) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        };
+
         // ── Generic Project Modal Handlers (For All Projects) ──────
         const genericModal = document.getElementById('generic-project-modal');
         const closeGenericModalBtn = document.getElementById('close-generic-project-modal');
@@ -723,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeGenericProjectModal = () => {
             if (genericModal) {
                 genericModal.classList.remove('active');
-                document.body.style.overflow = '';
+                unlockBodyScroll();
             }
         };
 
@@ -736,6 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeGenericProjectModal();
             }
         });
+        preventOverlayBackgroundScroll(genericModal);
 
         const openGenericProjectModal = (p) => {
             if (!genericModal || !p) return;
@@ -848,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             genericModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            lockBodyScroll();
         };
 
         // ── Wayanad Popup Modal Handlers ───────────────────────────
@@ -858,14 +895,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const openWayanadModal = () => {
             if (wayanadModal) {
                 wayanadModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
+                lockBodyScroll();
             }
         };
 
         const closeWayanadModal = () => {
             if (wayanadModal) {
                 wayanadModal.classList.remove('active');
-                document.body.style.overflow = '';
+                unlockBodyScroll();
             }
         };
 
@@ -878,6 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeWayanadModal();
             }
         });
+        preventOverlayBackgroundScroll(wayanadModal);
         window.openWayanadModal = openWayanadModal;
 
         // ── Wayanad Popup Modal Dynamic Content Sync ───────────────
