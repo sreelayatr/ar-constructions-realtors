@@ -706,14 +706,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch {}
         };
 
-        // Track rendered signature to avoid DOM thrashing if API data hasn't changed
-        let currentRenderSignature = null;
-        let allProjectsList = [];
-
         const getSignature = (list) => {
             if (!Array.isArray(list)) return '';
             return list.map(p => `${p._id || ''}:${p.updatedAt || ''}:${p.title || ''}:${p.tagline || ''}:${p.description || ''}:${(p.images && p.images.length) || ''}:${(p.images && p.images[0]) || ''}`).join('|');
         };
+
+        // Track rendered signature and initialize from cache immediately
+        const _initCached = readCache();
+        let allProjectsList = _initCached || [];
+        let currentRenderSignature = _initCached ? getSignature(_initCached) : null;
 
         // ── Generic Project Modal Handlers (For All Projects) ──────
         const genericModal = document.getElementById('generic-project-modal');
@@ -1217,6 +1218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok && result.success && Array.isArray(result.data)) {
                     writeCache(result.data);
+                    allProjectsList = result.data;
                     const newSig = getSignature(result.data);
                     // Only update DOM if server data differs from currently rendered data
                     if (newSig !== currentRenderSignature) {
@@ -1239,8 +1241,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const cached = readCache();
 
             if (cached && cached.length > 0) {
-                // Instant zero-delay render from cache
-                renderProjects(cached);
+                allProjectsList = cached;
+                currentRenderSignature = getSignature(cached);
+                const existingCards = projectsGrid.querySelectorAll('.project-card');
+                if (existingCards.length === 0) {
+                    renderProjects(cached);
+                } else {
+                    attachCardListeners();
+                }
                 fetchFresh(true);       // silent background refresh
             } else {
                 // If pre-rendered HTML cards already exist in DOM, keep them visible!
